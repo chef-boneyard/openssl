@@ -10,7 +10,7 @@ attribute :mode,       :kind_of => String
 attribute :org,        :kind_of => String
 attribute :org_unit,   :kind_of => String
 attribute :country,    :kind_of => String
-attribute :comon_name, :kind_of => String
+attribute :common_name, :kind_of => String
 attribute :key_file,   :kind_of => String, :default => nil
 attribute :key_pass,   :kind_of => String, :default => nil
 attribute :key_length, :kind_of => Fixnum, :default => 2048

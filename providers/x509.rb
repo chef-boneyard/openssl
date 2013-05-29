@@ -45,7 +45,7 @@ def subject
   @subject ||= "/C="  + new_resource.country + 
                "/O="  + new_resource.org +
                "/OU=" + new_resource.org_unit +
-               "/CN=" + new_resource.comon_name
+               "/CN=" + new_resource.common_name
 end
 
 def extensions

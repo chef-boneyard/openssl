@@ -28,7 +28,7 @@ This cookbook includes an LWRP for generating Self Signed Certificates
 generate a pem formatted x509 cert + key  
 
 ### Attributes
-`comon_name` A String representing the `CN` ssl field
+`common_name` A String representing the `CN` ssl field
 `org` A String representing the `O` ssl field
 `org_unit` A String representing the `OU` ssl field
 `country` A String representing the `C` ssl field
@@ -43,7 +43,7 @@ generate a pem formatted x509 cert + key
 ### Example usage
 
     openssl_x509 "/tmp/mycert.pem" do
-      comon_name "www.f00bar.com"
+      common_name "www.f00bar.com"
       org "Foo Bar"
       org_unit "Lab"
       country "US"
