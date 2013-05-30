@@ -1,5 +1,5 @@
 #
-# x509 self signed cert provider 
+# x509 self signed cert provider
 #
 # Author:: Jesse Nelson <spheromak@gmail.com>
 #
@@ -9,11 +9,11 @@ use_inline_resources
 
 attr_reader :key_file, :key, :cert, :ef
 
-action :create  do 
-  unless ::File.exists? new_resource.name 
+action :create  do
+  unless ::File.exists? new_resource.name
     create_keys
 
-    file new_resource.name do 
+    file new_resource.name do
       action :create_if_missing
       mode  new_resource.mode
       owner new_resource.owner
@@ -32,7 +32,7 @@ action :create  do
   end
 end
 
-private 
+protected
 
   def key_file
     unless new_resource.key_file
@@ -44,7 +44,7 @@ private
   end
 
   def key
-    if ::File.exists? key_file 
+    if ::File.exists? key_file
       @key ||= OpenSSL::PKey::RSA.new File.read(key_file), new_resource.key_pass
     else
       @key ||= OpenSSL::PKey::RSA.new(new_resource.key_length)
@@ -54,7 +54,7 @@ private
 
   def cert
     @cert ||= OpenSSL::X509::Certificate.new
-  end 
+  end
 
   def gen_cert
     cert
@@ -67,7 +67,7 @@ private
   end
 
   def subject
-    @subject ||= "/C="  + new_resource.country + 
+    @subject ||= "/C="  + new_resource.country +
                  "/O="  + new_resource.org +
                  "/OU=" + new_resource.org_unit +
                  "/CN=" + new_resource.common_name
@@ -90,4 +90,3 @@ private
                                        "keyid:always,issuer:always")
     cert.sign key, OpenSSL::Digest::SHA1.new
   end
-
