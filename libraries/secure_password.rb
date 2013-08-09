@@ -23,7 +23,7 @@ require 'openssl'
 module Opscode
   module OpenSSL
     module Password
-      def secure_password( length = 20 )
+      def secure_password(length = 20)
         pw = String.new
         
         while pw.length < length
