@@ -1,3 +1,8 @@
-## v1.0.2:
+openssl Cookbook CHANGELOG
+==========================
+This file is used to list changes made in each version of the openssl cookbook.
 
-* Add name attribute to metadata
+
+v1.0.2
+------
+- Add name attribute to metadata
