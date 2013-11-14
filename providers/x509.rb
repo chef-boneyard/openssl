@@ -44,11 +44,11 @@ protected
   end
 
   def key
-    if ::File.exists? key_file
-      @key ||= OpenSSL::PKey::RSA.new File.read(key_file), new_resource.key_pass
-    else
-      @key ||= OpenSSL::PKey::RSA.new(new_resource.key_length)
-    end
+    @key ||= if ::File.exists? key_file
+               OpenSSL::PKey::RSA.new File.read(key_file), new_resource.key_pass
+             else
+               OpenSSL::PKey::RSA.new(new_resource.key_length)
+             end
     @key
   end
 
