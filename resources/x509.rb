@@ -6,7 +6,7 @@ attribute :name,       :kind_of => String,  :name_attribute => true
 attribute :owner,       :kind_of => String
 attribute :group,      :kind_of => String
 attribute :expire,     :kind_of => Fixnum
-attribute :mode,       :kind_of => String
+attribute :mode
 attribute :org,        :kind_of => String, :required => true
 attribute :org_unit,   :kind_of => String, :required => true
 attribute :country,    :kind_of => String, :required => true
