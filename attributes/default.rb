@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: openssl
-# Recipe:: default
+# Attributes:: default
 #
-# Copyright 2009, Opscode, Inc.
+# Copyright 2014, Chef Software, Inc. <legal@getchef.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,3 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+default['openssl']['packages'] = []
+default['openssl']['restart_services'] = []
