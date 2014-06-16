@@ -5,7 +5,7 @@
 #
 require 'openssl'
 
-use_inline_resources
+use_inline_resources if defined?(use_inline_resources)
 
 attr_reader :key_file, :key, :cert, :ef
 
