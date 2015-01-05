@@ -23,3 +23,6 @@ suites:
     openssl:
       restart_services:
       - postfix
+- name: lwrp
+  run_list:
+  - recipe[test::lwrp]
