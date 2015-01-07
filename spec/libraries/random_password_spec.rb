@@ -40,6 +40,12 @@ describe OpenSSLCookbook::RandomPassword do
         # depending on the encoding and whatnot...
         expect { instance.random_password(mode: :random_bytes) }.to_not raise_error
       end
+
+      it "raises an error if the mode is invalid" do
+        expect {
+          instance.random_password(mode: :bacon)
+        }.to raise_error(OpenSSLCookbook::RandomPassword::InvalidPasswordMode)
+      end
     end
 
     context "with the :encoding option" do
