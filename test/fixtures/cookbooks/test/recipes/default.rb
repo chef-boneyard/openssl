@@ -2,7 +2,7 @@
 # Cookbook Name:: test
 # Recipe:: default
 #
-# Copyright:: Copyright (c) 2014, Chef Software, Inc. <legal@getchef.com>
+# Copyright:: Copyright (c) 2014, Chef Software, Inc. <legal@chef.io>
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
