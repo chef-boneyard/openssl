@@ -2,6 +2,10 @@ openssl Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the openssl cookbook.
 
+v3.0.0 (2014-02-17)
+-------------------
+- Changing helper module name from Opscode to OpenSSLCookbook
+
 v2.0.2 (2014-12-30)
 -------------------
 - Call cert.to_pem before recipe DSL
