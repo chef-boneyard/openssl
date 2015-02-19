@@ -1,4 +1,4 @@
-j#
+#
 # Cookbook Name:: openssl
 # Library:: secure_password
 # Author:: Joshua Timberman <joshua@chef.io>
