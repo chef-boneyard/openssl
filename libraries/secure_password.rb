@@ -1,4 +1,4 @@
-j#
+#
 # Cookbook Name:: openssl
 # Library:: secure_password
 # Author:: Joshua Timberman <joshua@chef.io>
@@ -20,17 +20,18 @@ j#
 
 require 'openssl'
 
-module OpenSSLCookbook
-  module Password
-    def secure_password(length = 20)
-      pw = String.new
+module Chef
+  module OpenSSL
+    module Password
+      def secure_password(length = 20)
+        pw = String.new
 
-      while pw.length < length
-        pw << ::OpenSSL::Random.random_bytes(1).gsub(/\W/, '')
+        while pw.length < length
+          pw << ::OpenSSL::Random.random_bytes(1).gsub(/\W/, '')
+        end
+
+        pw
       end
-
-      pw
     end
   end
 end
-
