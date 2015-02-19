@@ -20,7 +20,7 @@
 
 require 'openssl'
 
-module Chef
+module Opscode
   module OpenSSL
     module Password
       def secure_password(length = 20)
