@@ -2,6 +2,14 @@ openssl Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the openssl cookbook.
 
+v4.0.0 (2014-02-19)
+-------------------
+- Reverting to Opscode module namespace
+
+v3.0.2 (2014-12-30)
+-------------------
+- Accidently released 2.0.2 as 3.0.2
+
 v2.0.2 (2014-12-30)
 -------------------
 - Call cert.to_pem before recipe DSL
