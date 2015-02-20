@@ -2,13 +2,14 @@ openssl Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the openssl cookbook.
 
-v4.0.0 (2014-02-19)
+v4.0.0 (2015-02-19)
 -------------------
 - Reverting to Opscode module namespace
 
-v3.0.2 (2014-12-30)
+v3.0.2 (2015-12-18)
 -------------------
 - Accidently released 2.0.2 as 3.0.2
+- Re-namespaced `Opscode::OpenSSL::Password` module as `Chef::OpenSSL::Password`
 
 v2.0.2 (2014-12-30)
 -------------------
