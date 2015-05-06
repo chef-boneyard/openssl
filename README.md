@@ -39,7 +39,7 @@ Usage
 Most often this will be used to generate a secure password for an attribute. In a recipe:
 
 ```ruby
-::Chef::Recipe.send(:include, Chef::OpenSSL::Password)
+::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
 node.set_unless[:my_password] = secure_password
 ```
 
