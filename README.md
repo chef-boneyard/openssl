@@ -54,17 +54,17 @@ This cookbook includes an LWRP for generating Self Signed Certificates
 generate a pem formatted x509 cert + key  
 
 ### Attributes
-`common_name` A String representing the `CN` ssl field
-`org` A String representing the `O` ssl field
-`org_unit` A String representing the `OU` ssl field
-`country` A String representing the `C` ssl field
-`expire` A Fixnum reprenting the number of days from _now_ to expire the cert
-`key_file` Optional A string to the key file to use. If no key is present it will generate and store one. 
-`key_pass` A String that is the key's passphrase
-`key_length` A Fixnum reprenting your desired Bit Length _Default: 2048_
-`owner` The owner of the files _Default: "root"_
-`group` The group of the files _Default: "root"_
-`mode`  The mode to store the files in _Default: "0400"_
+`common_name` A String representing the `CN` ssl field  
+`org` A String representing the `O` ssl field  
+`org_unit` A String representing the `OU` ssl field  
+`country` A String representing the `C` ssl field  
+`expire` A Fixnum reprenting the number of days from _now_ to expire the cert  
+`key_file` Optional A string to the key file to use. If no key is present it will generate and store one.  
+`key_pass` A String that is the key's passphrase  
+`key_length` A Fixnum reprenting your desired Bit Length _Default: 2048_  
+`owner` The owner of the files _Default: "root"_  
+`group` The group of the files _Default: "root"_  
+`mode`  The mode to store the files in _Default: "0400"_  
 
 ### Example usage
 
