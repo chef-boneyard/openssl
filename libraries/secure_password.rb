@@ -22,9 +22,10 @@ require 'openssl'
 
 module Opscode
   module OpenSSL
+    # Generate secure passwords with OpenSSL
     module Password
       def secure_password(length = 20)
-        pw = String.new
+        pw = ''
 
         while pw.length < length
           pw << ::OpenSSL::Random.random_bytes(1).gsub(/\W/, '')
