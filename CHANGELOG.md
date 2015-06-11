@@ -2,13 +2,16 @@ openssl Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the openssl cookbook.
 
+v4.1.1 (2015-06-11)
+-------------------
+- README.md fixes
+
 v4.1.0 (2015-06-11)
 -------------------
 - Add new random_password Mixin (Thanks, Seth!)
 - Rewritten README.md
 - Refactor specs
 - Clear Rubocop violations
-
 
 v4.0.0 (2015-02-19)
 -------------------

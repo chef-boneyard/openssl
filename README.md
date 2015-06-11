@@ -115,17 +115,18 @@ This LWRP generates self-signed, PEM-formatted x509 certificates. If no existing
 #### Example Usage
 
 In this example, an administrator wishes to create a self-signed x509 certificate for use with a web server. In order to create the certificate, the administrator crafts this recipe:
+
 ```ruby
-openssl_x509 "/etc/httpd/ssl/mycert.pem" do
-  common_name "www.f00bar.com"
-  org "Foo Bar"
-  org_unit "Lab"
-  country "US"
+openssl_x509 '/etc/httpd/ssl/mycert.pem' do
+  common_name 'www.f00bar.com'
+  org 'Foo Bar'
+  org_unit 'Lab'
+  country 'US'
 end
 ```
 
 When executed, this recipe will generate a key certificate at `/etc/httpd/ssl/mycert.key`. It will then use that key to generate a new certificate file at `/etc/httpd/ssl/mycert.pem`.
-    
+
 License and Author
 ------------------
 
