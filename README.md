@@ -63,13 +63,32 @@ When executed, this recipe will ensure that openssl is upgraded to the latest ve
 Libraries & LWRPs
 -----------------
 
-### secure_password
+There are two mixins packaged with this cookbook.
 
-Most often this method will be used to generate a secure password for use in a variable or an attribute. For example, in a recipe:
+### random_password (`OpenSSLCookbook::RandomPassword`)
 
+The `RandomPassword` mixin can be used to generate secure random passwords in Chef cookbooks, usually for assignment to a variable or an attribute. `random_password` uses Ruby's SecureRandom library and is customizable.
+
+#### Example Usage
+```ruby
+Chef::Recipe.send(:include, OpenSSLCookbook::RandomPassword)
+node.set['my_secure_attribute'] = random_password
+node.set_unless['my_secure_attribute'] = random_password
+node.set['my_secure_attribute'] = random_password(length: 50)
+node.set['my_secure_attribute'] = random_password(length: 50, mode: :base64)
+node.set['my_secure_attribute'] = random_password(length: 50, mode: :base64, encoding: 'ASCII')
+```
+
+Note that node attributes are widely accessible. Storing unencrypted passwords in node attributes, as in this example, carries risk.
+
+### secure_password (`Opscode::OpenSSL::Password`)
+
+This library should be considered deprecated and will be removed in a future version. Please use `OpenSSLCookbook::RandomPassword` instead. The documentation is kept here for historical reasons.
+
+#### Example Usage
 ```ruby
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
-node.set_unless[:my_password] = secure_password
+node.set_unless['my_password'] = secure_password
 ```
 
 Note that node attributes are widely accessible. Storing unencrypted passwords in node attributes, as in this example, carries risk.
@@ -111,13 +130,11 @@ License and Author
 ------------------
 
 Author:: Jesse Nelson (<spheromak@gmail.com>)  
+Author:: Seth Vargo (<sethvargo@gmail.com>)
 Author:: Charles Johnson (<charles@chef.io>)  
 Author:: Joshua Timberman (<joshua@chef.io>)
 
 =======
-
-
-
 
 ```text
 Copyright:: 2009-2015, Chef Software, Inc <lega@chef.io>
@@ -134,4 +151,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-
