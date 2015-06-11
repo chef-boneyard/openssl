@@ -130,7 +130,7 @@ License and Author
 ------------------
 
 Author:: Jesse Nelson (<spheromak@gmail.com>)  
-Author:: Seth Vargo (<sethvargo@gmail.com>)
+Author:: Seth Vargo (<sethvargo@gmail.com>)  
 Author:: Charles Johnson (<charles@chef.io>)  
 Author:: Joshua Timberman (<joshua@chef.io>)
 
