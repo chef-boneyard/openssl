@@ -91,7 +91,7 @@ This LWRP generates self-signed, PEM-formatted x509 certificates. If no existing
 | `key_length` | Fixnum (Optional) | The desired Bit Length of the generated key. _Default: 2048_ |
 | `owner` | String (optional) | The owner of all files created by the LWRP. _Default: "root"_ |
 | `group` | String (optional) | The group of all files created by the LWRP. _Default: "root"_ |
-| `mode` | The permission mode of all files created by the LWRP.  _Default: "0400"_ |
+| `mode` | String or Fixnum (Optional) | The permission mode of all files created by the LWRP.  _Default: "0400"_ |
 
 #### Example Usage
 
