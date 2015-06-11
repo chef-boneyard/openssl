@@ -9,7 +9,7 @@ This cookbook provides tools for working with the Ruby OpenSSL library. It inclu
 Requirements
 ------------
 
-The `secure_password` method works on any platform with OpenSSL Ruby bindings installed. These bindings are already included with Chef.
+The `random_password` mixin works on any platform with the Ruby SecureRandom module. This module are already included with Chef.
 
 The `openssl_x509` lwrp works on any platform with the OpenSSL Ruby bindings installed. These bindings are already included with Chef.
 
@@ -63,16 +63,35 @@ When executed, this recipe will ensure that openssl is upgraded to the latest ve
 Libraries & LWRPs
 -----------------
 
-### secure_password
+There are two mixins packaged with this cookbook.
 
-Most often this method will be used to generate a secure password for use in a variable or an attribute. For example, in a recipe:
+### random_password (`OpenSSLCookbook::RandomPassword`)
 
+The `RandomPassword` mixin can be used to generate secure random passwords in Chef cookbooks, usually for assignment to a variable or an attribute. `random_password` uses Ruby's SecureRandom library and is customizable.
+
+#### Example Usage
 ```ruby
-::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
-node.set_unless[:my_password] = secure_password
+Chef::Recipe.send(:include, OpenSSLCookbook::RandomPassword)
+node.set['my_secure_attribute'] = random_password
+node.set_unless['my_secure_attribute'] = random_password
+node.set['my_secure_attribute'] = random_password(length: 50)
+node.set['my_secure_attribute'] = random_password(length: 50, mode: :base64)
+node.set['my_secure_attribute'] = random_password(length: 50, mode: :base64, encoding: 'ASCII')
 ```
 
 Note that node attributes are widely accessible. Storing unencrypted passwords in node attributes, as in this example, carries risk.
+
+### ~~secure_password (`Opscode::OpenSSL::Password`)~~
+
+This library should be considered deprecated and will be removed in a future version. Please use `OpenSSLCookbook::RandomPassword` instead. The documentation is kept here for historical reasons.
+
+#### ~~Example Usage~~
+```ruby
+::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
+node.set_unless['my_password'] = secure_password
+```
+
+~~Note that node attributes are widely accessible. Storing unencrypted passwords in node attributes, as in this example, carries risk.~~
 
 ### openssl_x509
 
@@ -91,7 +110,7 @@ This LWRP generates self-signed, PEM-formatted x509 certificates. If no existing
 | `key_length` | Fixnum (Optional) | The desired Bit Length of the generated key. _Default: 2048_ |
 | `owner` | String (optional) | The owner of all files created by the LWRP. _Default: "root"_ |
 | `group` | String (optional) | The group of all files created by the LWRP. _Default: "root"_ |
-| `mode` | The permission mode of all files created by the LWRP.  _Default: "0400"_ |
+| `mode` | String or Fixnum (Optional) | The permission mode of all files created by the LWRP.  _Default: "0400"_ |
 
 #### Example Usage
 
@@ -111,13 +130,11 @@ License and Author
 ------------------
 
 Author:: Jesse Nelson (<spheromak@gmail.com>)  
+Author:: Seth Vargo (<sethvargo@gmail.com>)
 Author:: Charles Johnson (<charles@chef.io>)  
 Author:: Joshua Timberman (<joshua@chef.io>)
 
 =======
-
-
-
 
 ```text
 Copyright:: 2009-2015, Chef Software, Inc <lega@chef.io>
@@ -134,4 +151,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-

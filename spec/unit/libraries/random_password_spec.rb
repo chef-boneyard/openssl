@@ -1,5 +1,5 @@
-require_relative '../spec_helper'
-require_relative '../../libraries/random_password'
+require 'spec_helper'
+require_relative '../../../libraries/random_password'
 
 describe OpenSSLCookbook::RandomPassword do
   let(:instance) do
