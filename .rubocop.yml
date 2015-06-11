@@ -10,9 +10,11 @@ AllCops:
     - test/**/metadata.rb
     - vendor/**
 
-ClassLength:
+Metrics/CyclomaticComplexity:
+  Max: 8
+Style/Documentation:
   Enabled: false
-Documentation:
+ClassLength:
   Enabled: false
 Encoding:
   Enabled: false

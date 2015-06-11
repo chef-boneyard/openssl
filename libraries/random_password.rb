@@ -16,7 +16,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+# rubocop:disable UnusedMethodArgument, Style/RaiseArgs
 
 module OpenSSLCookbook
   module RandomPassword
@@ -62,19 +62,19 @@ EOH
     def random_password(options = {})
       length   = options[:length] || 20
       mode     = options[:mode] || :hex
-      encoding = options[:encoding] || "UTF-8"
+      encoding = options[:encoding] || 'UTF-8'
 
       # Convert to a "proper" length, since the size is actually in bytes
       length = case mode
-      when :hex
-        length / 2
-      when :base64
-        length * 3 / 4
-      when :random_bytes
-        length
-      else
-        raise InvalidPasswordMode.new(mode)
-      end
+               when :hex
+                 length / 2
+               when :base64
+                 length * 3 / 4
+               when :random_bytes
+                 length
+               else
+                 fail InvalidPasswordMode.new(mode)
+               end
 
       SecureRandom.send(mode, length).force_encoding(encoding)
     end
