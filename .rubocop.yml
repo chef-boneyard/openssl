@@ -1,11 +1,13 @@
 AllCops:
-  Includes:
+  Include:
     - Berksfile
     - Gemfile
     - Rakefile
     - Thorfile
     - Guardfile
-  Excludes:
+  Exclude:
+    - metadata.rb
+    - test/**/metadata.rb
     - vendor/**
 
 ClassLength:
