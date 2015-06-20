@@ -8,30 +8,36 @@ require 'openssl'
 
 use_inline_resources
 
+def whyrun_supported?
+  true
+end
+
 attr_reader :key_file, :key, :cert, :ef
 
 action :create  do
-  unless ::File.exist? new_resource.name
-    create_keys
-    cert_content = cert.to_pem
-    key_content = key.to_pem
+  converge_by("Create #{ @new_resource }") do
+    unless ::File.exist? new_resource.name
+      create_keys
+      cert_content = cert.to_pem
+      key_content = key.to_pem
 
-    file new_resource.name do
-      action :create_if_missing
-      mode new_resource.mode
-      owner new_resource.owner
-      group new_resource.group
-      content cert_content
+      file new_resource.name do
+        action :create_if_missing
+        mode new_resource.mode
+        owner new_resource.owner
+        group new_resource.group
+        content cert_content
+      end
+
+      file new_resource.key_file do
+        action :create_if_missing
+        mode new_resource.mode
+        owner new_resource.owner
+        group new_resource.group
+        content key_content
+      end
+
     end
-
-    file new_resource.key_file do
-      action :create_if_missing
-      mode new_resource.mode
-      owner new_resource.owner
-      group new_resource.group
-      content key_content
-    end
-
   end
 end
 

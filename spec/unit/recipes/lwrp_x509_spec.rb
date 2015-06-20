@@ -28,7 +28,7 @@ require 'spec_helper'
 describe 'test::lwrp_x509' do
   context 'When all attributes are default, on an unspecified platform:' do
     let(:chef_run) do
-      runner = ChefSpec::ServerRunner.new
+      runner = ChefSpec::ServerRunner.new(step_into: ['openssl_x509'])
       runner.converge(described_recipe)
     end
 
@@ -46,6 +46,14 @@ describe 'test::lwrp_x509' do
 
     it 'adds an openssl_x509 resource \'/etc/ssl_test/mycert.crt\' with action create' do
       expect(chef_run).to create_x509_certificate('/etc/ssl_test/mycert.crt')
+    end
+
+    it 'The LWRP adds a file resource \'/etc/ssl_test/mycert.crt\' with action create_if_missing' do
+      expect(chef_run).to create_file_if_missing('/etc/ssl_test/mycert.crt')
+    end
+
+    it 'The LWRP adds a file resource \'/etc/ssl_test/mycert.key\' with action create_if_missing' do
+      expect(chef_run).to create_file_if_missing('/etc/ssl_test/mycert.key')
     end
   end
 end
