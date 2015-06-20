@@ -27,6 +27,10 @@ file '/etc/ssl_test/mycert.key' do
   action :delete
 end
 
+file '/etc/ssl_test/mycert2.crt' do
+  action :delete
+end
+
 # Create directory if not already present
 directory '/etc/ssl_test' do
   recursive true
@@ -38,4 +42,13 @@ openssl_x509 '/etc/ssl_test/mycert.crt' do
   org 'Test Kitchen Example'
   org_unit 'Kitchens'
   country 'UK'
+end
+
+# Generate a new key from an existing certificate
+openssl_x509 '/etc/ssl_test/mycert2.crt' do
+  common_name 'mycert2.example.com'
+  org 'Test Kitchen Example'
+  org_unit 'Kitchens'
+  country 'UK'
+  key_file '/etc/ssl_test/mycert.key'
 end
