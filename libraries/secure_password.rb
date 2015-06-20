@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-require 'openssl'
+include OpenSSLCookbook::Helpers
 
 module Opscode
   module OpenSSL
