@@ -55,7 +55,7 @@ protected
 
   def key
     @key ||= if key_file_valid?(key_file, new_resource.key_pass)
-               OpenSSL::PKey::RSA.new File.read(key_file), new_resource.key_pass
+               OpenSSL::PKey::RSA.new ::File.read(key_file), new_resource.key_pass
              else
                OpenSSL::PKey::RSA.new(new_resource.key_length)
              end
