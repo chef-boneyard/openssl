@@ -2,6 +2,16 @@ openssl Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the openssl cookbook.
 
+v4.1.2 (2015-06-20)
+-------------------
+- Add Serverspec suite
+- Removed update suite from .kitchen.yml
+- Add explicit license to test cookbook recipes
+- Add Whyrun support to x509 LWRP
+- Expand Chefspec tests for x509 LWRP to step_into LWRP
+- Add helper library
+- Update x509 LWRP to verify existing keys, if specified
+
 v4.1.1 (2015-06-11)
 -------------------
 - README.md fixes
