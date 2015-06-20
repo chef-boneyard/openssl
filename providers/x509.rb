@@ -4,7 +4,7 @@
 # Author:: Jesse Nelson <spheromak@gmail.com>
 #
 
-require 'openssl'
+include OpenSSLCookbook::Helpers
 
 use_inline_resources
 
