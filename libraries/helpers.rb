@@ -15,6 +15,12 @@ module OpenSSLCookbook
       key.private?
     end
 
+    def get_key_filename(cert_filename)
+      cert_file_path, cert_filename = ::File.split(cert_filename)
+      cert_filename = ::File.basename(cert_filename, ::File.extname(cert_filename))
+      cert_file_path + ::File::SEPARATOR + cert_filename + '.key'
+    end
+
     def dhparam_pem_valid?(dhparam_pem_path)
       # Check if the dhparam.pem file exists
       # Verify the dhparam.pem file contains a key

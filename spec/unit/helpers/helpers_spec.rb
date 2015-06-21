@@ -120,4 +120,20 @@ describe OpenSSLCookbook::Helpers do
       end
     end
   end
+
+  describe '#get_key_filename' do
+    context 'When the input is not a string' do
+      it 'Throws a TypeError' do
+        expect do
+          instance.get_key_filename(33)
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'when the input is a string' do
+      it 'Generates valid keyfile names' do
+        expect(instance.get_key_filename('/etc/temp.crt')).to match('/etc/temp.key')
+      end
+    end
+  end
 end
