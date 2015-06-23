@@ -2,8 +2,9 @@ OpenSSL Cookbook
 ================
 
 This cookbook provides tools for working with the Ruby OpenSSL library. It includes:
-- A library method to generate secure random passwords in recipes, using the Ruby OpenSSL library.
+- A library method to generate secure random passwords in recipes, using the Ruby SecureRandom library.
 - An LWRP for generating x509 certificates.
+- An LWRP for generating dhparam.pem files.
 - An attribute-driven recipe for upgrading OpenSSL packages.
 
 Requirements
@@ -11,7 +12,7 @@ Requirements
 
 The `random_password` mixin works on any platform with the Ruby SecureRandom module. This module are already included with Chef.
 
-The `openssl_x509` lwrp works on any platform with the OpenSSL Ruby bindings installed. These bindings are already included with Chef.
+The `openssl_x509` and 'openssl_dhparam' lwrps work on any platform with the OpenSSL Ruby bindings installed. These bindings are already included with Chef.
 
 The `upgrade` recipe has been tested on the following platforms:
 
@@ -97,7 +98,7 @@ node.set_unless['my_password'] = secure_password
 
 This LWRP generates self-signed, PEM-formatted x509 certificates. If no existing key is specified, the LWRP will automatically generate a passwordless key with the certificate.
 
-### Attributes
+#### Attributes
 | Name  | Type | Description |
 | ----- | ---- | ------------ |
 | `common_name`  | String (Required)  | Value for the `CN` certificate field. |
@@ -126,6 +127,32 @@ end
 ```
 
 When executed, this recipe will generate a key certificate at `/etc/httpd/ssl/mycert.key`. It will then use that key to generate a new certificate file at `/etc/httpd/ssl/mycert.pem`.
+
+### openssl_dhparam
+
+This LWRP generates dhparam.pem files. If a valid dhparam.pem file is found at the specified location, no new file will be created. If a file is found at the specified location but it is not a valid dhparam file, it will be overwritten.
+
+#### Attributes
+| Name  | Type | Description |
+| ----- | ---- | ------------ |
+| `key_length` | Fixnum (Optional) | The desired Bit Length of the generated key. _Default: 2048_ |
+| `generator` | Fixnum (Optional) | The desired Diffie-Hellmann generator. Can be _2_ or _5_. |
+| `owner` | String (optional) | The owner of all files created by the LWRP. _Default: "root"_ |
+| `group` | String (optional) | The group of all files created by the LWRP. _Default: "root"_ |
+| `mode` | String or Fixnum (Optional) | The permission mode of all files created by the LWRP.  _Default: "0644"_ |
+
+#### Example Usage
+
+In this example, an administrator wishes to create a dhparam.pem file for use with a web server. In order to create the .pem file, the administrator crafts this recipe:
+
+```ruby
+openssl_dhparam '/etc/httpd/ssl/dhparam.pem' do
+  key_length 2048 
+  generator 2
+end
+```
+
+When executed, this recipe will generate a dhparam file at `/etc/httpd/ssl/mdhparam.pem`.
 
 License and Author
 ------------------
