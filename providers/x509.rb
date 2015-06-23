@@ -36,7 +36,7 @@ action :create  do
         group new_resource.group
         content key_content
       end
-
+      new_resource.updated_by_last_action(true)
     end
   end
 end
