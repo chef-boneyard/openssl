@@ -68,4 +68,56 @@ describe OpenSSLCookbook::Helpers do
       @keyfile.unlink
     end
   end
+
+  describe '#dhparam_pem_valid?' do
+    require 'tempfile'
+
+    before(:each) do
+      @dhparam_file = Tempfile.new('dhparam')
+    end
+
+    context 'When the dhparam.pem file does not exist' do
+      it 'returns false' do
+        expect(instance.dhparam_pem_valid?('/tmp/bad_filename')).to be_falsey
+      end
+    end
+
+    context 'When the dhparam.pem file does exist, but does not contain a valid dhparam key' do
+      it 'Throws an OpenSSL::PKey::RSAError exception' do
+        expect do
+          @dhparam_file.puts('I_am_not_a_key_I_am_a_free_man')
+          @dhparam_file.close
+          instance.dhparam_pem_valid?(@dhparam_file.path)
+        end.to raise_error(OpenSSL::PKey::DHError)
+      end
+    end
+
+    context 'When the dhparam.pem file does exist, and does contain a vaild dhparam key' do
+      it 'returns true' do
+        @dhparam_file.puts(OpenSSL::PKey::DH.new(1024).to_pem)
+        @dhparam_file.close
+        expect(instance.dhparam_pem_valid?(@dhparam_file.path)).to be_truthy
+      end
+    end
+
+    after(:each) do
+      @dhparam_file.unlink
+    end
+  end
+
+  describe '#gen_dhparam' do
+    context 'When a non-Integer key length is given' do
+      it 'Throws a TypeError' do
+        expect do
+          instance.gen_dhparam('string')
+        end.to raise_error(OpenSSL::PKey::DHError)
+      end
+    end
+
+    context 'When a proper key length is given' do
+      it 'Generates a dhparam object' do
+        expect(instance.gen_dhparam(1024)).to be_kind_of(OpenSSL::PKey::DH)
+      end
+    end
+  end
 end
