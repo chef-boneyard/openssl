@@ -2,6 +2,11 @@ openssl Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the openssl cookbook.
 
+v4.2 (2015-06-23)
+-------------------
+- NEW: Add dhparam lwrp
+- FIX: x509 lwrp now updates resource count correctly
+
 v4.1.2 (2015-06-20)
 -------------------
 - Add Serverspec suite
