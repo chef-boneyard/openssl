@@ -8,7 +8,7 @@ AllCops:
   Exclude:
     - metadata.rb
     - test/**/metadata.rb
-    - vendor/**
+    - vendor/**/*
 
 Metrics/CyclomaticComplexity:
   Max: 8
