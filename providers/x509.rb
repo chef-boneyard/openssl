@@ -15,7 +15,7 @@ end
 attr_reader :key_file, :key, :cert, :ef
 
 action :create  do
-  converge_by("Create #{ @new_resource }") do
+  converge_by("Create #{@new_resource}") do
     unless ::File.exist? new_resource.name
       create_keys
       cert_content = cert.to_pem
@@ -77,8 +77,8 @@ protected
   end
 
   def subject
-    @subject ||= '/C='  + new_resource.country +
-                 '/O='  + new_resource.org +
+    @subject ||= '/C=' + new_resource.country +
+                 '/O=' + new_resource.org +
                  '/OU=' + new_resource.org_unit +
                  '/CN=' + new_resource.common_name
   end

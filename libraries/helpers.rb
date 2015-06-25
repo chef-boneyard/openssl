@@ -1,8 +1,6 @@
 module OpenSSLCookbook
   # Helper functions for the OpenSSL cookbook.
   module Helpers
-    # rubocop:disable Metrics/AbcSize, Style/IndentationConsistency
-
     include Chef::DSL::IncludeRecipe
 
     def self.included(_base)
