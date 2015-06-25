@@ -1,0 +1,14 @@
+sudo: false
+cache: bundler
+language: ruby
+bundler_args: --Gemfile=travis-Gemfile --retry=3 --jobs=3 --retry=3
+rvm:
+    - 2.0.0
+    - 2.1
+before_script:
+    - bundle exec berks install
+script:
+    - bundle exec foodcritic -f any .
+    - bundle exec rubocop
+    - bundle exec rspec
+
