@@ -11,4 +11,4 @@ recipe 'upgrade', 'Upgrade OpenSSL library and restart dependent services'
 
 # chef-sugar greatly reduces the amount of code required to check
 # conditionals for the attributes used in the upgrader recipe.
-depends 'chef-sugar'
+depends 'chef-sugar', '>= 3.1.1'
