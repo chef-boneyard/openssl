@@ -11,7 +11,7 @@ This cookbook provides tools for working with the Ruby OpenSSL library. It inclu
 Requirements
 ------------
 
-The `random_password` mixin works on any platform with the Ruby SecureRandom module. This module are already included with Chef.
+The `random_password` mixin works on any platform with the Ruby SecureRandom module. This module is already included with Chef.
 
 The `openssl_x509` and 'openssl_dhparam' lwrps work on any platform with the OpenSSL Ruby bindings installed. These bindings are already included with Chef.
 
