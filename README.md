@@ -108,7 +108,7 @@ This LWRP generates self-signed, PEM-formatted x509 certificates. If no existing
 | `country` | String (Required) | Value for the `C` ssl field. |
 | `expire` | Fixnum (Optional) | Value representing the number of days from _now_ through which the issued certificate cert will remain valid. The certificate will expire after this period. |
 | `key_file` | String (Optional) | The path to a certificate key file on the filesystem. If the `key_file` attribute is specified, the LWRP will attempt to source a key from this location. If no key file is found, the LWRP will generate a new key file at this location. If the `key_file` attribute is not specified, the LWRP will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
-| `key_pass` | String (Optional) | The passphrase for an existing  is the key's passphrase  
+| `key_pass` | String (Optional) | The passphrase for an existing key's passphrase  
 | `key_length` | Fixnum (Optional) | The desired Bit Length of the generated key. _Default: 2048_ |
 | `owner` | String (optional) | The owner of all files created by the LWRP. _Default: "root"_ |
 | `group` | String (optional) | The group of all files created by the LWRP. _Default: "root"_ |
