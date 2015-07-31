@@ -19,15 +19,18 @@
 #
 
 # Ensure files are not present, so the lwrp makes new keys every time
-file '/etc/ssl_test/mycert.crt' do
+file 'Any potential existing cert' do
+  path '/etc/ssl_test/mycert.crt'
   action :delete
 end
 
-file '/etc/ssl_test/mycert.key' do
+file 'Any potential existing key' do
+  path '/etc/ssl_test/mycert.key'
   action :delete
 end
 
-file '/etc/ssl_test/mycert2.crt' do
+file 'Any potential existing second cert' do
+  path '/etc/ssl_test/mycert2.crt'
   action :delete
 end
 
@@ -44,7 +47,7 @@ openssl_x509 '/etc/ssl_test/mycert.crt' do
   country 'UK'
 end
 
-# Generate a new key from an existing certificate
+# Generate a new certificate from an existing key
 openssl_x509 '/etc/ssl_test/mycert2.crt' do
   common_name 'mycert2.example.com'
   org 'Test Kitchen Example'

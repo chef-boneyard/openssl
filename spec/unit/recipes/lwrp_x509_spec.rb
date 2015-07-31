@@ -33,15 +33,15 @@ describe 'test::lwrp_x509' do
     end
 
     it 'adds a file resource \'/etc/ssl_test/mycert.crt\' with action delete' do
-      expect(chef_run).to delete_file('/etc/ssl_test/mycert.crt')
+      expect(chef_run).to delete_file('Any potential existing cert')
     end
 
     it 'adds a file resource \'/etc/ssl_test/mycert.key\' with action delete' do
-      expect(chef_run).to delete_file('/etc/ssl_test/mycert.key')
+      expect(chef_run).to delete_file('Any potential existing key')
     end
 
     it 'adds a file resource \'/etc/ssl_test/mycert2.crt\' with action delete' do
-      expect(chef_run).to delete_file('/etc/ssl_test/mycert2.crt')
+      expect(chef_run).to delete_file('Any potential existing second cert')
     end
 
     it 'adds a directory resource \'/etc/ssl_test\' with action create' do
