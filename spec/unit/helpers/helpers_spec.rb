@@ -1,4 +1,3 @@
-require_relative '../../spec_helper'
 require_relative '../../../libraries/helpers'
 
 describe OpenSSLCookbook::Helpers do
@@ -15,6 +14,7 @@ describe OpenSSLCookbook::Helpers do
 
   describe '#key_file_valid?' do
     require 'tempfile'
+    require 'openssl' unless defined?(OpenSSL)
 
     cipher =  OpenSSL::Cipher::Cipher.new('des3')
 
@@ -117,6 +117,22 @@ describe OpenSSLCookbook::Helpers do
     context 'When a proper key length is given' do
       it 'Generates a dhparam object' do
         expect(instance.gen_dhparam(1024)).to be_kind_of(OpenSSL::PKey::DH)
+      end
+    end
+  end
+
+  describe '#get_key_filename' do
+    context 'When the input is not a string' do
+      it 'Throws a TypeError' do
+        expect do
+          instance.get_key_filename(33)
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'when the input is a string' do
+      it 'Generates valid keyfile names' do
+        expect(instance.get_key_filename('/etc/temp.crt')).to match('/etc/temp.key')
       end
     end
   end

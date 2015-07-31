@@ -19,7 +19,8 @@
 #
 
 # Ensure files are not present, so the lwrp makes new keys every time
-file '/etc/ssl_test/dhparam.pem' do
+file 'any potential existing key' do
+  path '/etc/ssl_test/dhparam.pem'
   action :delete
 end
 

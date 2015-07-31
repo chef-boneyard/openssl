@@ -1,8 +1,6 @@
 module OpenSSLCookbook
   # Helper functions for the OpenSSL cookbook.
   module Helpers
-    include Chef::DSL::IncludeRecipe
-
     def self.included(_base)
       require 'openssl' unless defined?(OpenSSL)
     end
@@ -13,6 +11,12 @@ module OpenSSLCookbook
       return false unless File.exist?(key_file_path)
       key = OpenSSL::PKey::RSA.new File.read(key_file_path), key_password
       key.private?
+    end
+
+    def get_key_filename(cert_filename)
+      cert_file_path, cert_filename = ::File.split(cert_filename)
+      cert_filename = ::File.basename(cert_filename, ::File.extname(cert_filename))
+      cert_file_path + ::File::SEPARATOR + cert_filename + '.key'
     end
 
     def dhparam_pem_valid?(dhparam_pem_path)

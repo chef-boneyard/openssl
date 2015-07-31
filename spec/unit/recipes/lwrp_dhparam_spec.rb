@@ -33,7 +33,8 @@ describe 'test::lwrp_dhparam' do
     end
 
     it 'adds a file resource \'/etc/ssl_test/dhparam.pem\' with action delete' do
-      expect(chef_run).to delete_file('/etc/ssl_test/dhparam.pem')
+      expect(chef_run).to delete_file('any potential existing key')
+        .with(path: '/etc/ssl_test/dhparam.pem')
     end
 
     it 'adds a directory resource \'/etc/ssl_test\' with action create' do
