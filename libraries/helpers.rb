@@ -1,8 +1,6 @@
 module OpenSSLCookbook
   # Helper functions for the OpenSSL cookbook.
   module Helpers
-    include Chef::DSL::IncludeRecipe
-
     def self.included(_base)
       require 'openssl' unless defined?(OpenSSL)
     end

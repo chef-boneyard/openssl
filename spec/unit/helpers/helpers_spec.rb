@@ -1,4 +1,3 @@
-require_relative '../../spec_helper'
 require_relative '../../../libraries/helpers'
 
 describe OpenSSLCookbook::Helpers do
@@ -15,6 +14,7 @@ describe OpenSSLCookbook::Helpers do
 
   describe '#key_file_valid?' do
     require 'tempfile'
+    require 'openssl' unless defined?(OpenSSL)
 
     cipher =  OpenSSL::Cipher::Cipher.new('des3')
 
