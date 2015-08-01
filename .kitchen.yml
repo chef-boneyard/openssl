@@ -100,3 +100,6 @@ suites:
 - name: lwrp_dhparam
   run_list:
   - recipe[test::lwrp_dhparam]
+- name: lwrp_rsa_key
+  run_list:
+  - recipe[test::lwrp_rsa_key]

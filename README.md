@@ -4,6 +4,7 @@ OpenSSL Cookbook
 
 This cookbook provides tools for working with the Ruby OpenSSL library. It includes:
 - A library method to generate secure random passwords in recipes, using the Ruby SecureRandom library.
+- An LWRP for generating RSA private keys.
 - An LWRP for generating x509 certificates.
 - An LWRP for generating dhparam.pem files.
 - An attribute-driven recipe for upgrading OpenSSL packages.
@@ -13,7 +14,7 @@ Requirements
 
 The `random_password` mixin works on any platform with the Ruby SecureRandom module. This module is already included with Chef.
 
-The `openssl_x509` and 'openssl_dhparam' lwrps work on any platform with the OpenSSL Ruby bindings installed. These bindings are already included with Chef.
+The `openssl_x509`, `openssl_rsa_key` and `openssl_dhparam` LWRPs work on any platform with the OpenSSL Ruby bindings installed. These bindings are already included with Chef.
 
 The `upgrade` recipe has been tested on the following platforms:
 
@@ -153,7 +154,33 @@ openssl_dhparam '/etc/httpd/ssl/dhparam.pem' do
 end
 ```
 
-When executed, this recipe will generate a dhparam file at `/etc/httpd/ssl/mdhparam.pem`.
+When executed, this recipe will generate a dhparam file at `/etc/httpd/ssl/dhparam.pem`.
+
+### openssl_rsa_key
+
+This LWRP generates rsa key files. If a valid rsa key file can be opened at the specified location, no new file will be created. If the RSA key file cannot be opened, either because it does not exist or because the password to the RSA key file does not match the password in the recipe, it will be overwritten.
+
+#### Attributes
+| Name  | Type | Description |
+| ----- | ---- | ------------ |
+| `key_length` | Fixnum (Optional) | The desired Bit Length of the generated key. _Default: 2048_ |
+| `key_pass` | String (Optional) | The desired passphrase for the key. |
+| `owner` | String (optional) | The owner of all files created by the LWRP. _Default: "root"_ |
+| `group` | String (optional) | The group of all files created by the LWRP. _Default: "root"_ |
+| `mode` | String or Fixnum (Optional) | The permission mode of all files created by the LWRP.  _Default: "0644"_ |
+
+#### Example Usage
+
+In this example, an administrator wishes to create a new RSA private key file in order to generate other certificates and public keys. In order to create the key file, the administrator crafts this recipe:
+
+```ruby
+openssl_rsa_key '/etc/httpd/ssl/server.key' do
+  key_length 2048 
+end
+```
+
+When executed, this recipe will generate a passwordless RSA key file at `/etc/httpd/ssl/server.key`.
+
 
 License and Author
 ------------------

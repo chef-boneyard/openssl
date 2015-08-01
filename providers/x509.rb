@@ -26,6 +26,7 @@ action :create  do
         mode new_resource.mode
         owner new_resource.owner
         group new_resource.group
+        sensitive true
         content cert_content
       end
 
@@ -34,6 +35,7 @@ action :create  do
         mode new_resource.mode
         owner new_resource.owner
         group new_resource.group
+        sensitive true
         content key_content
       end
       new_resource.updated_by_last_action(true)
