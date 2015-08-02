@@ -2,7 +2,8 @@ openssl Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the openssl cookbook.
 
-v4.3.1 (2015-08-01)
+v4.3.2 (2015-08-01)
+-------------------
 - FIX: Updated changelog
 
 v4.3 (2015-08-01)
