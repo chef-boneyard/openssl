@@ -13,9 +13,9 @@ def whyrun_supported?
 end
 
 action :create  do
-  converge_by("Create #{@new_resource}") do
+  converge_by("Create a dhparam file #{@new_resource}") do
     unless dhparam_pem_valid?(new_resource.name)
-      dhparam_content = gen_dhparam(new_resource.key_length).to_pem
+      dhparam_content = gen_dhparam(new_resource.key_length, new_resource.generator).to_pem
 
       log "Generating #{new_resource.key_length} bit "\
           "dhparam file at #{new_resource.name}, this may take some time"
@@ -28,7 +28,6 @@ action :create  do
         sensitive true
         content dhparam_content
       end
-      new_resource.updated_by_last_action(true)
     end
   end
 end

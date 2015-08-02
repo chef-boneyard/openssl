@@ -156,14 +156,22 @@ describe OpenSSLCookbook::Helpers do
     context 'When given an invalid key length' do
       it 'Throws an ArgumentError' do
         expect do
-          instance.gen_dhparam(2046)
+          instance.gen_dhparam(2046, 2)
         end.to raise_error(ArgumentError)
       end
     end
 
-    context 'When a proper key length is given' do
+    context 'When given an invalid generator id' do
+      it 'Throws an ArgumentError' do
+        expect do
+          instance.gen_dhparam(2046, 'bob')
+        end.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'When a proper key length and generator id are given' do
       it 'Generates a dhparam object' do
-        expect(instance.gen_dhparam(1024)).to be_kind_of(OpenSSL::PKey::DH)
+        expect(instance.gen_dhparam(1024, 2)).to be_kind_of(OpenSSL::PKey::DH)
       end
     end
   end

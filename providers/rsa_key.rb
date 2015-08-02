@@ -13,7 +13,7 @@ def whyrun_supported?
 end
 
 action :create  do
-  converge_by("Create #{@new_resource}") do
+  converge_by("Create an RSA key #{@new_resource}") do
     unless key_file_valid?(new_resource.name, new_resource.key_pass)
 
       log "Generating #{new_resource.key_length} bit "\
@@ -34,9 +34,6 @@ action :create  do
         sensitive true
         content rsa_key_content
       end
-
-      new_resource.updated_by_last_action(true)
-
     end
   end
 end
