@@ -2,6 +2,14 @@ openssl Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the openssl cookbook.
 
+v4.3.1 (2015-08-01)
+- FIX: Updated changelog
+
+v4.3 (2015-08-01)
+-------------------
+- NEW: Add rsa_key lwrp
+- FIX: dhparam lwrp now correctly honors the generator parameter
+
 v4.2 (2015-06-23)
 -------------------
 - NEW: Add dhparam lwrp
