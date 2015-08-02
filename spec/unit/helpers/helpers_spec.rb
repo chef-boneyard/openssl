@@ -162,10 +162,10 @@ describe OpenSSLCookbook::Helpers do
     end
 
     context 'When given an invalid generator id' do
-      it 'Throws an ArgumentError' do
+      it 'Throws a TypeError' do
         expect do
-          instance.gen_dhparam(2046, 'bob')
-        end.to raise_error(ArgumentError)
+          instance.gen_dhparam(2048, 'bob')
+        end.to raise_error(TypeError)
       end
     end
 
