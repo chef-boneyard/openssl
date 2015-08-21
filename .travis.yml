@@ -4,8 +4,9 @@ language: ruby
 gemfile: travis-Gemfile
 bundler_args: --gemfile=travis-Gemfile --retry=3 --jobs=3
 rvm:
-  - 2.0.0
+  - 2.0
   - 2.1
+  - 2.2
 env:
   - BUNDLE_GEMFILE=travis-Gemfile
 cache: 
