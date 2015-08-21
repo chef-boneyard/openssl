@@ -53,7 +53,7 @@ module OpenSSLCookbook
       fail TypeError, 'rsa_key must be a Ruby OpenSSL::PKey::RSA object' unless rsa_key.is_a?(OpenSSL::PKey::RSA)
       fail TypeError, 'RSA key password must be a string' unless key_password.is_a?(String)
 
-      cipher =  OpenSSL::Cipher::Cipher.new('des3')
+      cipher = OpenSSL::Cipher::Cipher.new('des3')
       rsa_key.to_pem(cipher, key_password)
     end
   end

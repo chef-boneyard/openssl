@@ -98,7 +98,7 @@ describe OpenSSLCookbook::Helpers do
     require 'tempfile'
     require 'openssl' unless defined?(OpenSSL)
 
-    cipher =  OpenSSL::Cipher::Cipher.new('des3')
+    cipher = OpenSSL::Cipher::Cipher.new('des3')
 
     before(:each) do
       @keyfile = Tempfile.new('keyfile')

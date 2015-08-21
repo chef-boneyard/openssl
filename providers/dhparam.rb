@@ -12,7 +12,7 @@ def whyrun_supported?
   true
 end
 
-action :create  do
+action :create do
   converge_by("Create a dhparam file #{@new_resource}") do
     unless dhparam_pem_valid?(new_resource.name)
       dhparam_content = gen_dhparam(new_resource.key_length, new_resource.generator).to_pem

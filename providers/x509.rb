@@ -14,7 +14,7 @@ end
 
 attr_reader :key_file, :key, :cert, :ef
 
-action :create  do
+action :create do
   converge_by("Create #{@new_resource}") do
     unless ::File.exist? new_resource.name
       create_keys
@@ -49,7 +49,7 @@ protected
   def key_file
     unless new_resource.key_file
       path, file = ::File.split(new_resource.name)
-      filename  = ::File.basename(file, ::File.extname(file))
+      filename = ::File.basename(file, ::File.extname(file))
       new_resource.key_file path + '/' + filename + '.key'
     end
     new_resource.key_file
