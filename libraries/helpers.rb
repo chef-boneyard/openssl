@@ -36,7 +36,7 @@ module OpenSSLCookbook
     # Generators
     def gen_dhparam(key_length, generator)
       fail ArgumentError, 'Key length must be a power of 2 greater than or equal to 1024' unless key_length_valid?(key_length)
-      fail ArgumentError, 'Generator must be an integer' unless generator.is_a?(Integer)
+      fail TypeError, 'Generator must be an integer' unless generator.is_a?(Integer)
 
       OpenSSL::PKey::DH.new(key_length, generator)
     end
