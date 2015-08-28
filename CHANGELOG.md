@@ -2,6 +2,11 @@ openssl Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the openssl cookbook.
 
+v4.4.0 (2015-08-28)
+-------------------
+- NEW: x509 certificates are now signed via SHA-256 instead of SHA-1
+- FIX: gen_dhparam error now correctly fails with TypeError instead of ArgumentError if Generator argument isn't an integer
+
 v4.3.2 (2015-08-01)
 -------------------
 - FIX: Updated changelog
