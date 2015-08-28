@@ -21,4 +21,9 @@ describe 'test::lwrp_x509' do
     key = OpenSSL::PKey::RSA.new File.read('/etc/ssl_test/mycert.key')
     expect(cert.verify(key)).to be_truthy
   end
+
+  it 'The certificate is signed with the SHA-256 algorithm' do
+    cert = OpenSSL::X509::Certificate.new File.read('/etc/ssl_test/mycert.crt')
+    expect(cert.signature_algorithm).to eq 'sha256WithRSAEncryption'
+  end
 end
