@@ -1,6 +1,7 @@
 OpenSSL Cookbook
 ================
-[![Build Status](https://travis-ci.org/opscode-cookbooks/openssl.svg?branch=master)](https://travis-ci.org/opscode-cookbooks/openssl)
+[![Build Status](https://travis-ci.org/chef-cookbooks/openssl.svg?branch=master)](http://travis-ci.org/chef-cookbooks/openssl)
+[![Cookbook Version](https://img.shields.io/cookbook/v/openssl.svg)](https://supermarket.chef.io/cookbooks/openssl)
 
 This cookbook provides tools for working with the Ruby OpenSSL library. It includes:
 - A library method to generate secure random passwords in recipes, using the Ruby SecureRandom library.
