@@ -1,19 +1,12 @@
 sudo: false
 cache: bundler
 language: ruby
-gemfile: travis-Gemfile
-bundler_args: --gemfile=travis-Gemfile --retry=3 --jobs=3
+bundler_args: --without kitchen_common kitchen_vagrant kitchen_cloud
 rvm:
   - 2.0
   - 2.1
   - 2.2
-env:
-  - BUNDLE_GEMFILE=travis-Gemfile
-cache: 
-  - bundler
-before_script:
-  - bundle exec berks install
 script:
   - bundle exec foodcritic -t ~FC002 -f any .
   - bundle exec rubocop
-  - bundle exec rspec
+  - bundle exec rspec --color --format progress
