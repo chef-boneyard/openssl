@@ -1,26 +1,31 @@
 AllCops:
-  Include:
-    - Berksfile
-    - Gemfile
-    - Rakefile
-    - Thorfile
-    - Guardfile
   Exclude:
-    - metadata.rb
-    - test/**/metadata.rb
     - vendor/**/*
+    - Guardfile
 
-Metrics/CyclomaticComplexity:
-  Max: 8
-Style/Documentation:
+AlignParameters:
   Enabled: false
 ClassLength:
   Enabled: false
+CyclomaticComplexity:
+  Enabled: false
+Documentation:
+  Enabled: false
 Encoding:
+  Enabled: false
+Style/FileName:
   Enabled: false
 LineLength:
   Enabled: false
 MethodLength:
   Enabled: false
-SignalException:
+Metrics/AbcSize:
+  Enabled: false
+PerceivedComplexity:
+  Enabled: false
+SingleSpaceBeforeFirstArg:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/FileName:
   Enabled: false
