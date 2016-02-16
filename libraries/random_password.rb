@@ -73,7 +73,7 @@ EOH
                when :random_bytes
                  length
                else
-                 fail InvalidPasswordMode.new(mode)
+                 raise InvalidPasswordMode.new(mode)
                end
 
       SecureRandom.send(mode, length).force_encoding(encoding)
