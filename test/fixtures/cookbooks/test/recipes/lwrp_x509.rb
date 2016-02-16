@@ -45,6 +45,7 @@ openssl_x509 '/etc/ssl_test/mycert.crt' do
   org 'Test Kitchen Example'
   org_unit 'Kitchens'
   country 'UK'
+  subject_alt_name ['IP:127.0.0.1', 'DNS:localhost.localdomain']
 end
 
 # Generate a new certificate from an existing key

@@ -85,10 +85,24 @@ def subject
 end
 
 def extensions
-  [
-    ef.create_extension('basicConstraints', 'CA:TRUE', true),
-    ef.create_extension('subjectKeyIdentifier', 'hash')
-  ]
+  exts = []
+  exts << ef.create_extension('basicConstraints', 'CA:TRUE', true)
+  exts << ef.create_extension('subjectKeyIdentifier', 'hash')
+
+  unless new_resource.subject_alt_name.empty?
+    san = {}
+    counters = {}
+    new_resource.subject_alt_name.each do |an|
+      kind, value = an.split(':', 2)
+      counters[kind] ||= 0
+      counters[kind] += 1
+      san["#{kind}.#{counters[kind]}"] = value
+    end
+    ef.config['alt_names'] = san
+    exts << ef.create_extension('subjectAltName', '@alt_names')
+  end
+
+  exts
 end
 
 def create_keys
@@ -96,6 +110,8 @@ def create_keys
   @ef ||= OpenSSL::X509::ExtensionFactory.new
   ef.subject_certificate = cert
   ef.issuer_certificate = cert
+  ef.config = OpenSSL::Config.load(OpenSSL::Config::DEFAULT_CONFIG_FILE)
+
   cert.extensions = extensions
   cert.add_extension ef.create_extension('authorityKeyIdentifier',
                                          'keyid:always,issuer:always')
