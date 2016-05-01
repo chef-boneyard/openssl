@@ -13,14 +13,14 @@ services: docker
 
 env:
   matrix:
-  - INSTANCE=lwrp-x509-ubuntu-1204
-  - INSTANCE=lwrp-x509-ubuntu-1404
-  - INSTANCE=lwrp-x509-ubuntu-1604
-  - INSTANCE=lwrp-x509-debian-8
-  - INSTANCE=lwrp-x509-centos-5
-  - INSTANCE=lwrp-x509-centos-6
-  - INSTANCE=lwrp-x509-centos-7
-  - INSTANCE=lwrp-x509-fedora-23
+  - INSTANCE=resource-x509-ubuntu-1204
+  - INSTANCE=resource-x509-ubuntu-1404
+  - INSTANCE=resource-x509-ubuntu-1604
+  - INSTANCE=resource-x509-debian-8
+  - INSTANCE=resource-x509-centos-5
+  - INSTANCE=resource-x509-centos-6
+  - INSTANCE=resource-x509-centos-7
+  - INSTANCE=resource-x509-fedora-23
 
 # Don't `bundle install`
 install: echo "skip bundle install"

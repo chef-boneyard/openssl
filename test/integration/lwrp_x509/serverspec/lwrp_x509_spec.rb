@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'openssl'
 
-describe 'test::lwrp_x509' do
+describe 'test::resource_x509' do
   # Serverspec examples can be found at
   # http://serverspec.org/resource_types.html
   describe command('openssl rsa -in /etc/ssl_test/mycert.key -check -noout') do

@@ -87,12 +87,12 @@ platforms:
       - RUN /usr/bin/apt-get install apt-transport-https net-tools -y
 
 suites:
-- name: lwrp_x509
+- name: resource_x509
   run_list:
-  - recipe[test::lwrp_x509]
-- name: lwrp_dhparam
+  - recipe[test::resource_x509]
+- name: resource_dhparam
   run_list:
-  - recipe[test::lwrp_dhparam]
-- name: lwrp_rsa_key
+  - recipe[test::resource_dhparam]
+- name: resource_rsa_key
   run_list:
-  - recipe[test::lwrp_rsa_key]
+  - recipe[test::resource_rsa_key]

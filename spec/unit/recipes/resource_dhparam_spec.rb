@@ -1,11 +1,11 @@
 # This Chefspec test was created by Chef generate
 #
 # Cookbook Name:: openssl
-# Spec:: lwrp-dhparam
+# Spec:: resource-dhparam
 #
 # Author:: Charles Johnson (<charles@chef.io>)
 #
-# Copyright 2015, Chef Software, Inc.
+# Copyright 2015-2016, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 
 require 'spec_helper'
 
-describe 'test::lwrp_dhparam' do
+describe 'test::resource_dhparam' do
   context 'When all attributes are default, on an unspecified platform:' do
     let(:chef_run) do
       runner = ChefSpec::ServerRunner.new(step_into: ['openssl_dhparam'])

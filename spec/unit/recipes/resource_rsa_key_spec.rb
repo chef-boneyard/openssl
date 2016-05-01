@@ -1,11 +1,11 @@
 # This Chefspec test was created by Chef generate
 #
 # Cookbook Name:: openssl
-# Spec:: lwrp-rsa-key
+# Spec:: resource-rsa-key
 #
 # Author:: Charles Johnson (<charles@chef.io>)
 #
-# Copyright 2015, Chef Software, Inc.
+# Copyright 2015-2016, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 
 require 'spec_helper'
 
-describe 'test::lwrp_rsa_key' do
+describe 'test::resource_rsa_key' do
   context 'When all attributes are default, on an unspecified platform:' do
     let(:chef_run) do
       runner = ChefSpec::ServerRunner.new(step_into: ['openssl_rsa_key'])

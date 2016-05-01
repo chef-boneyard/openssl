@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: test
-# Recipe:: lwrp_rsa_key
+# Recipe:: resource_rsa_key
 #
 # Copyright:: Copyright (c) 2015, Chef Software, Inc. <legal@chef.io>
 # License:: Apache License, Version 2.0
