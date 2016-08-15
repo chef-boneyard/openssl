@@ -35,6 +35,8 @@ Attributes
 
 * `node['openssl']['packages']` - An array of packages required to use openssl. The default attributes attempt to be smart about which packages are the default, but this may need to be changed by users of the `openssl::upgrade` recipe.
 * `node['openssl']['restart_services']` - An array of service resources that depend on the packages listed in the `node['openssl']['packages']` attribute. This array is empty by default, as Chef has no reasonable way to detect which applications or services are compiled against these packages. *Note* Each service listed in this array should represent a "`service`" resource specified in the recipes of the node's run list.
+* `node['default_x509_dir']` - The directory where new x509 certificates
+  are placed unless specified otherwise.
 
 Recipes
 -------
@@ -109,8 +111,11 @@ This LWRP generates self-signed, PEM-formatted x509 certificates. If no existing
 | `org_unit` | String (Required) | Value for the `OU` certificate field. |
 | `country` | String (Required) | Value for the `C` ssl field. |
 | `expire` | Fixnum (Optional) | Value representing the number of days from _now_ through which the issued certificate cert will remain valid. The certificate will expire after this period. |
+| `cert_dir` | String (Optional) | The directory to place new
+certificates when resource name is not an absolute path. Overrides `node['openssl']['default_x509_dir']`. _Default: varies by
+platform family._ |
 | `key_file` | String (Optional) | The path to a certificate key file on the filesystem. If the `key_file` attribute is specified, the LWRP will attempt to source a key from this location. If no key file is found, the LWRP will generate a new key file at this location. If the `key_file` attribute is not specified, the LWRP will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
-| `key_pass` | String (Optional) | The passphrase for an existing key's passphrase  
+| `key_pass` | String (Optional) | The passphrase for an existing key's passphrase |
 | `key_length` | Fixnum (Optional) | The desired Bit Length of the generated key. _Default: 2048_ |
 | `owner` | String (optional) | The owner of all files created by the LWRP. _Default: "root"_ |
 | `group` | String (optional) | The group of all files created by the LWRP. _Default: "root"_ |
@@ -121,7 +126,24 @@ This LWRP generates self-signed, PEM-formatted x509 certificates. If no existing
 In this example, an administrator wishes to create a self-signed x509 certificate for use with a web server. In order to create the certificate, the administrator crafts this recipe:
 
 ```ruby
+
 openssl_x509 '/etc/httpd/ssl/mycert.pem' do
+  common_name 'www.f00bar.com'
+  org 'Foo Bar'
+  org_unit 'Lab'
+  country 'US'
+end
+
+openssl_x509 'mycert.crt' do
+  cert_dir '/etc/httpd/ssl'
+  common_name 'www.f00bar.com'
+  org 'Foo Bar'
+  org_unit 'Lab'
+  country 'US'
+end
+
+# Created at `/etc/ssl/localcerts/mycert.pem` on Debian platforms.
+openssl_x509 'mycert.pem' do
   common_name 'www.f00bar.com'
   org 'Foo Bar'
   org_unit 'Lab'

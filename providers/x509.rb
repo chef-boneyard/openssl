@@ -4,6 +4,8 @@
 # Author:: Jesse Nelson <spheromak@gmail.com>
 #
 
+require 'pathname'
+
 include OpenSSLCookbook::Helpers
 
 use_inline_resources
@@ -16,12 +18,12 @@ attr_reader :key_file, :key, :cert, :ef
 
 action :create do
   converge_by("Create #{@new_resource}") do
-    unless ::File.exist? new_resource.name
+    unless ::File.exist? cert_file
       create_keys
       cert_content = cert.to_pem
       key_content = key.to_pem
 
-      file new_resource.name do
+      file cert_file do
         action :create_if_missing
         mode new_resource.mode
         owner new_resource.owner
@@ -47,7 +49,7 @@ protected
 
 def key_file
   unless new_resource.key_file
-    path, file = ::File.split(new_resource.name)
+    path, file = ::File.split(cert_file)
     filename = ::File.basename(file, ::File.extname(file))
     new_resource.key_file path + '/' + filename + '.key'
   end
@@ -65,6 +67,16 @@ end
 
 def cert
   @cert ||= OpenSSL::X509::Certificate.new
+end
+
+def cert_file
+  @cert_file ||= if Pathname.new(new_resource.name).absolute?
+                   new_resource.name
+                 else
+                   cert_dir = new_resource.cert_dir || node['openssl']['default_x509_dir']
+                   ::File.join(cert_dir, new_resource.name)
+                 end
+  @cert_file
 end
 
 def gen_cert

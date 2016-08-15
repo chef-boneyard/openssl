@@ -19,3 +19,10 @@
 
 default['openssl']['packages'] = []
 default['openssl']['restart_services'] = []
+
+case node['platform_family']
+when 'rhel'
+  default['openssl']['default_x509_dir'] = '/etc/pki/tls/localcerts'
+when 'debian'
+  default['openssl']['default_x509_dir'] = '/etc/ssl/localcerts'
+end
