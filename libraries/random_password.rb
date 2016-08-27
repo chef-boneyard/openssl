@@ -28,7 +28,7 @@ module OpenSSLCookbook
     end
 
     class InvalidPasswordMode < StandardError
-      def initialize(given, acceptable)
+      def initialize(given, _acceptable = nil)
         super <<-EOH
 The given password mode '#{given}' is not valid. Valid password modes are :hex,
 :base64, and :random_bytes!
