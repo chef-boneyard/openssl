@@ -27,7 +27,7 @@ env:
   - INSTANCE=resource-x509-centos-5
   - INSTANCE=resource-x509-centos-6
   - INSTANCE=resource-x509-centos-7
-  - INSTANCE=resource-x509-fedora-23
+  - INSTANCE=resource-x509-fedora-latest
 
 
 before_script:
