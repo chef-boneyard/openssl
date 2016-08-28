@@ -103,6 +103,9 @@ suites:
 - name: resource_dhparam
   run_list:
   - recipe[test::resource_dhparam]
+- name: upgrade
+  run_list:
+  - recipe[test::upgrade]
 - name: resource_rsa_key
   run_list:
   - recipe[test::resource_rsa_key]

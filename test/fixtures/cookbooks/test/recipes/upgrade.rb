@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: test
-# Recipe:: default
+# Recipe:: upgrade
 #
-# Copyright:: Copyright (c) 2014-2015, Chef Software, Inc. <legal@chef.io>
+# Copyright:: Copyright (c) 2015, Chef Software, Inc. <legal@chef.io>
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,4 +18,6 @@
 # limitations under the License.
 #
 
-execute 'apt-get update' if platform_family?('debian')
+apt_update 'update' if platform_family?('debian')
+
+include_recipe 'openssl::upgrade'

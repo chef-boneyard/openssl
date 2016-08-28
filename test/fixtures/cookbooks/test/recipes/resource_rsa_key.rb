@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+apt_update 'update' if platform_family?('debian')
+
 # Ensure files are not present, so the lwrp makes new keys every time
 file 'any potential existing unsecured key' do
   path '/etc/ssl_test/rsakey.pem'
