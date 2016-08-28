@@ -27,7 +27,7 @@ require 'spec_helper'
 
 describe 'test::resource_dhparam' do
   context 'When all attributes are default, on an unspecified platform:' do
-    let(:chef_run) do
+    cached(:chef_run) do
       runner = ChefSpec::ServerRunner.new(step_into: ['openssl_dhparam'])
       runner.converge(described_recipe)
     end
