@@ -21,85 +21,54 @@
 # limitations under the License.
 #
 
-# Chefspec examples can be found at
-# https://github.com/sethvargo/chefspec/tree/master/examples
-
 require 'spec_helper'
 
 describe 'openssl::upgrade' do
-  let(:openssl) { chef_run.node['openssl'] }
-
-  shared_examples_for :upgrade_recipe do
-    it 'includes the chef-sugar recipe' do
-      expect(chef_run).to include_recipe('chef-sugar')
-    end
-
-    it 'adds a package resource with action upgrade for each package in the [\'openssl\'][\'packages\'] array' do
-      openssl['packages'].each do |pkg|
-        expect(chef_run).to upgrade_package(pkg)
-      end
-    end
-  end
-
-  context 'When all attributes are default, on an unspecified platform:' do
-    let(:chef_run) do
-      runner = ChefSpec::ServerRunner.new
-      runner.converge(described_recipe)
-    end
-
-    it 'sets the default attributes correctly' do
-      expect(openssl['packages']).to be_empty
-      expect(openssl['restart_services']).to be_empty
-    end
-
-    it_behaves_like :upgrade_recipe
-  end
-
-  context 'When all attributes are default, on the Ubuntu Precise platform or later, the recipe:' do
-    let(:chef_run) do
+  context 'When all attributes are default, on Ubuntu the recipe:' do
+    cached(:chef_run) do
       runner = ChefSpec::ServerRunner.new(platform: 'ubuntu', version: '12.04')
       runner.converge(described_recipe)
     end
 
-    it 'sets the default attributes correctly' do
-      expect(openssl['packages']).to match_array(['libssl1.0.0', 'openssl'])
-      expect(openssl['restart_services']).to be_empty
+    it 'installs the correct packages' do
+      expect(chef_run).to upgrade_package('libssl1.0.0')
+      expect(chef_run).to upgrade_package('openssl')
     end
-
-    it_behaves_like :upgrade_recipe
   end
 
-  context 'When all attributes are default, on RedHat 6.5, the recipe:' do
-    let(:chef_run) do
-      runner = ChefSpec::ServerRunner.new(platform: 'redhat', version: '6.5')
+  context 'When all attributes are default, on CentOS, the recipe:' do
+    cached(:chef_run) do
+      runner = ChefSpec::ServerRunner.new(platform: 'centos', version: '6.8')
       runner.converge(described_recipe)
     end
 
-    it 'sets the default attributes correctly' do
-      expect(openssl['packages']).to match_array(['openssl'])
-      expect(openssl['restart_services']).to be_empty
+    it 'installs the correct packages' do
+      expect(chef_run).to upgrade_package('openssl')
     end
 
-    it_behaves_like :upgrade_recipe
   end
 
-  context 'When the [\'openssl\'][\'restart_services\'] array is set to [\'httpd\'], on RedHat 6.5, the recipe:' do
-    let(:chef_run) do
+  context 'When all attributes are default, on openSUSE, the recipe:' do
+    cached(:chef_run) do
+      runner = ChefSpec::ServerRunner.new(platform: 'opensuse', version: '13.2')
+      runner.converge(described_recipe)
+    end
+
+    it 'installs the correct packages' do
+      expect(chef_run).to upgrade_package('openssl')
+    end
+
+  end
+
+  context 'When the [\'openssl\'][\'restart_services\'] array is set to [\'httpd\'], the recipe:' do
+    cached(:chef_run) do
       runner = ChefSpec::ServerRunner.new(platform: 'redhat', version: '6.5')
-      runner.node.set['openssl']['restart_services'] = ['httpd']
+      runner.node.normal['openssl']['restart_services'] = ['httpd']
       runner.converge('test::httpd', described_recipe)
     end
 
-    it 'sets the default attributes correctly' do
-      expect(openssl['packages']).to match_array(['openssl'])
-    end
-
-    it_behaves_like :upgrade_recipe
-
-    let(:package) { chef_run.package('openssl') }
-
     it 'The created package resource to upgrade openssl notifies the httpd service resource to restart' do
-      expect(package).to notify('service[httpd]').to(:restart)
+      expect(chef_run.package('openssl')).to notify('service[httpd]').to(:restart)
     end
   end
 end
