@@ -17,8 +17,6 @@
 # limitations under the License.
 #
 
-# Attributes are set here and not in attributes/default.rb because of the
-# chef-sugar dependency for the methods evaluated in the case statement.
 case node['platform_family']
 when 'debian', 'ubuntu'
   packages = %w(libssl1.0.0 openssl)
