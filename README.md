@@ -74,11 +74,11 @@ The `RandomPassword` mixin can be used to generate secure random passwords in Ch
 
 ```ruby
 Chef::Recipe.send(:include, OpenSSLCookbook::RandomPassword)
-node.set['my_secure_attribute'] = random_password
-node.set_unless['my_secure_attribute'] = random_password
-node.set['my_secure_attribute'] = random_password(length: 50)
-node.set['my_secure_attribute'] = random_password(length: 50, mode: :base64)
-node.set['my_secure_attribute'] = random_password(length: 50, mode: :base64, encoding: 'ASCII')
+node.normal['my_secure_attribute'] = random_password
+node.normal_unless['my_secure_attribute'] = random_password
+node.normal['my_secure_attribute'] = random_password(length: 50)
+node.normal['my_secure_attribute'] = random_password(length: 50, mode: :base64)
+node.normal['my_secure_attribute'] = random_password(length: 50, mode: :base64, encoding: 'ASCII')
 ```
 
 Note that node attributes are widely accessible. Storing unencrypted passwords in node attributes, as in this example, carries risk.
@@ -91,7 +91,7 @@ This library should be considered deprecated and will be removed in a future ver
 
 ```ruby
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
-node.set_unless['my_password'] = secure_password
+node.normal_unless['my_password'] = secure_password
 ```
 
 ~~Note that node attributes are widely accessible. Storing unencrypted passwords in node attributes, as in this example, carries risk.~~
