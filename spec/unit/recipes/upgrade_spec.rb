@@ -45,7 +45,6 @@ describe 'openssl::upgrade' do
     it 'installs the correct packages' do
       expect(chef_run).to upgrade_package('openssl')
     end
-
   end
 
   context 'When all attributes are default, on openSUSE, the recipe:' do
@@ -57,7 +56,6 @@ describe 'openssl::upgrade' do
     it 'installs the correct packages' do
       expect(chef_run).to upgrade_package('openssl')
     end
-
   end
 
   context 'When the [\'openssl\'][\'restart_services\'] array is set to [\'httpd\'], the recipe:' do
