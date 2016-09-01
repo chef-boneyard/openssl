@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 5.0.1 (2016-09-01)
+- Update docs from node.normal as node.set has been deprecated
+- Testing updates
+
 ## 5.0.0 (2016-08-27)
 
 - Remove the need for the chef-sugar cookbook
