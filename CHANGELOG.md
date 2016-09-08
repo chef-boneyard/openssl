@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 6.0.0 (2016-09-08)
+
+- Update the minimum chef release to 12.1
+
 ## 5.0.1 (2016-09-01)
 - Update docs from node.normal as node.set has been deprecated
 - Testing updates
