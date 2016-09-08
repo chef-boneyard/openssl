@@ -25,7 +25,7 @@ The `upgrade` recipe has been tested on the following platforms:
 
 ## Chef
 
-- Chef 11+
+- Chef 12.1+
 
 ## Cookbooks
 
