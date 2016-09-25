@@ -38,7 +38,6 @@ action :create do
         sensitive true
         content key_content
       end
-      new_resource.updated_by_last_action(true)
     end
   end
 end
