@@ -87,7 +87,7 @@ end
 def extensions
   [
     ef.create_extension('basicConstraints', 'CA:TRUE', true),
-    ef.create_extension('subjectKeyIdentifier', 'hash')
+    ef.create_extension('subjectKeyIdentifier', 'hash'),
   ]
 end
 

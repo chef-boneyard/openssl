@@ -14,7 +14,7 @@ module OpenSSLCookbook
 
     # Validation helpers
     def key_length_valid?(number)
-      number >= 1024 && number & (number - 1) == 0
+      number >= 1024 && number & (number - 1).zero?
     end
 
     def dhparam_pem_valid?(dhparam_pem_path)
