@@ -11,5 +11,4 @@ recipe 'upgrade', 'Upgrade OpenSSL library and restart dependent services'
 
 source_url 'https://github.com/chef-cookbooks/openssl'
 issues_url 'https://github.com/chef-cookbooks/openssl/issues'
-
-chef_version '>= 12.1'
+chef_version '>= 12.1' if respond_to?(:chef_version)
