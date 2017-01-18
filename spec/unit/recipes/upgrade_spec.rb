@@ -26,7 +26,7 @@ require 'spec_helper'
 describe 'openssl::upgrade' do
   context 'When all attributes are default, on Ubuntu the recipe:' do
     cached(:chef_run) do
-      runner = ChefSpec::ServerRunner.new(platform: 'ubuntu', version: '12.04')
+      runner = ChefSpec::ServerRunner.new(platform: 'ubuntu', version: '16.04')
       runner.converge(described_recipe)
     end
 
