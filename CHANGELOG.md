@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 6.1.1 (2017-01-19)
+
+- Resolve deprecation warnings in chefspec
+- Use proper ::File class and fix ^2 validation of dhparam key length
+- Disable .zero? in cookstyle for now
+
 ## 6.1.0 (2017-01-18)
 
 - [#37] Support for Subject Alternative Names on generated self-signed certificates
