@@ -1,8 +1,0 @@
-# this is a temp fix to remove .zero?
-# we'll be able to remove this when the next
-# cookstyle ships
-
-Style/NumericPredicate:
-  Exclude:
-    - 'spec/**/*'
-    - 'libraries/helpers.rb'
