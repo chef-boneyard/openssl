@@ -8,8 +8,8 @@ property :group,       String
 property :mode,        [Integer, String]
 
 action :create do
-  converge_by("Create a dhparam file #{@new_resource}") do
-    unless dhparam_pem_valid?(new_resource.name)
+  unless dhparam_pem_valid?(new_resource.name) # ~FC023
+    converge_by("Create a dhparam file #{@new_resource}") do
       dhparam_content = gen_dhparam(new_resource.key_length, new_resource.generator).to_pem
 
       log "Generating #{new_resource.key_length} bit "\

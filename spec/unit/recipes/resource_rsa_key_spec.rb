@@ -5,7 +5,7 @@
 #
 # Author:: Charles Johnson (<charles@chef.io>)
 #
-# Copyright:: 2015-2016, Chef Software, Inc.
+# Copyright:: 2015-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ describe 'test::resource_rsa_key' do
       expect(chef_run).to create_rsa_key('/etc/ssl_test/rsakey.pem')
     end
 
-    it 'The LWRP adds a file resource \'/etc/ssl_test/rsakey.pem\' with action create' do
+    it 'The resource adds a file resource \'/etc/ssl_test/rsakey.pem\' with action create' do
       expect(chef_run).to create_file('/etc/ssl_test/rsakey.pem')
     end
 
@@ -59,7 +59,7 @@ describe 'test::resource_rsa_key' do
         .with(key_pass: 'oink')
     end
 
-    it 'The LWRP adds a file resource \'/etc/ssl_test/rsakeypass.pem\' with action create' do
+    it 'The resource adds a file resource \'/etc/ssl_test/rsakeypass.pem\' with action create' do
       expect(chef_run).to create_file('/etc/ssl_test/rsakeypass.pem')
     end
   end

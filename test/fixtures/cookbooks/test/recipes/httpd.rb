@@ -2,7 +2,7 @@
 # Cookbook:: test
 # Recipe:: httpd
 #
-# Copyright:: 2015-2016, Chef Software, Inc. <legal@chef.io>
+# Copyright:: 2015-2017, Chef Software, Inc. <legal@chef.io>
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

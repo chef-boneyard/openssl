@@ -3,7 +3,7 @@
 # Library:: random_password
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2015-2016, Seth Vargo
+# Copyright:: 2015-2017, Seth Vargo
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

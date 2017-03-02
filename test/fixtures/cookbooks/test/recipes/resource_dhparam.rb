@@ -2,7 +2,7 @@
 # Cookbook:: test
 # Recipe:: resource_dhparam
 #
-# Copyright:: 2015-2016, Chef Software, Inc. <legal@chef.io>
+# Copyright:: 2015-2017, Chef Software, Inc. <legal@chef.io>
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,9 @@
 # limitations under the License.
 #
 
-apt_update 'update' if platform_family?('debian')
+apt_update 'update'
 
-# Ensure files are not present, so the lwrp makes new keys every time
+# Ensure files are not present, so the resource makes new keys every time
 file 'any potential existing key' do
   path '/etc/ssl_test/dhparam.pem'
   action :delete

@@ -8,9 +8,8 @@ property :group,       String
 property :mode,        [Integer, String]
 
 action :create do
-  converge_by("Create an RSA key #{@new_resource}") do
-    unless key_file_valid?(new_resource.name, new_resource.key_pass)
-
+  unless key_file_valid?(new_resource.name, new_resource.key_pass)
+    converge_by("Create an RSA key #{@new_resource}") do
       log "Generating #{new_resource.key_length} bit "\
           "RSA key file at #{new_resource.name}, this may take some time"
 

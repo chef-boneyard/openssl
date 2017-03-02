@@ -5,7 +5,7 @@
 #
 # Author:: Charles Johnson (<charles@chef.io>)
 #
-# Copyright:: 2015-2016, Chef Software, Inc.
+# Copyright:: 2015-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ describe 'test::resource_dhparam' do
       expect(chef_run).to create_dhparam_pem('/etc/ssl_test/dhparam.pem')
     end
 
-    it 'The LWRP adds a file resource \'/etc/ssl_test/dhparam.pem\' with action create' do
+    it 'The resource adds a file resource \'/etc/ssl_test/dhparam.pem\' with action create' do
       expect(chef_run).to create_file('/etc/ssl_test/dhparam.pem')
     end
   end

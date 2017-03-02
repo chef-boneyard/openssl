@@ -14,11 +14,9 @@ property :key_file,         String
 property :key_pass,         String
 property :key_length,       equal_to: [1024, 2048, 4096, 8192], default: 2048
 
-attr_reader :key_file, :key, :cert, :ef
-
 action :create do
-  converge_by("Create #{@new_resource}") do
-    unless ::File.exist? new_resource.name
+  unless ::File.exist? new_resource.name
+    converge_by("Create #{@new_resource}") do
       create_keys
       cert_content = cert.to_pem
       key_content = key.to_pem
@@ -40,13 +38,12 @@ action :create do
         sensitive true
         content key_content
       end
-      new_resource.updated_by_last_action(true)
     end
   end
 end
 
-action_class.class_eval do
-  def key_file
+action_class do
+  def generate_key_file
     unless new_resource.key_file
       path, file = ::File.split(new_resource.name)
       filename = ::File.basename(file, ::File.extname(file))
@@ -56,8 +53,8 @@ action_class.class_eval do
   end
 
   def key
-    @key ||= if key_file_valid?(key_file, new_resource.key_pass)
-               OpenSSL::PKey::RSA.new ::File.read(key_file), new_resource.key_pass
+    @key ||= if key_file_valid?(generate_key_file, new_resource.key_pass)
+               OpenSSL::PKey::RSA.new ::File.read(generate_key_file), new_resource.key_pass
              else
                OpenSSL::PKey::RSA.new(new_resource.key_length)
              end
@@ -87,8 +84,8 @@ action_class.class_eval do
 
   def extensions
     exts = []
-    exts << ef.create_extension('basicConstraints', 'CA:TRUE', true)
-    exts << ef.create_extension('subjectKeyIdentifier', 'hash')
+    exts << @ef.create_extension('basicConstraints', 'CA:TRUE', true)
+    exts << @ef.create_extension('subjectKeyIdentifier', 'hash')
 
     unless new_resource.subject_alt_name.empty?
       san = {}
@@ -99,8 +96,8 @@ action_class.class_eval do
         counters[kind] += 1
         san["#{kind}.#{counters[kind]}"] = value
       end
-      ef.config['alt_names'] = san
-      exts << ef.create_extension('subjectAltName', '@alt_names')
+      @ef.config['alt_names'] = san
+      exts << @ef.create_extension('subjectAltName', '@alt_names')
     end
 
     exts
@@ -109,12 +106,12 @@ action_class.class_eval do
   def create_keys
     gen_cert
     @ef ||= OpenSSL::X509::ExtensionFactory.new
-    ef.subject_certificate = cert
-    ef.issuer_certificate = cert
-    ef.config = OpenSSL::Config.load(OpenSSL::Config::DEFAULT_CONFIG_FILE)
+    @ef.subject_certificate = cert
+    @ef.issuer_certificate = cert
+    @ef.config = OpenSSL::Config.load(OpenSSL::Config::DEFAULT_CONFIG_FILE)
 
     cert.extensions = extensions
-    cert.add_extension ef.create_extension('authorityKeyIdentifier',
+    cert.add_extension @ef.create_extension('authorityKeyIdentifier',
                                            'keyid:always,issuer:always')
     cert.sign key, OpenSSL::Digest::SHA256.new
   end
