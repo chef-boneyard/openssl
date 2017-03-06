@@ -5,7 +5,7 @@
 #
 # Author:: Charles Johnson (<charles@chef.io>)
 #
-# Copyright:: 2015-2016, Chef Software, Inc.
+# Copyright:: 2015-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,11 +52,11 @@ describe 'test::resource_x509' do
       expect(chef_run).to create_x509_certificate('/etc/ssl_test/mycert.crt')
     end
 
-    it 'The LWRP adds a file resource \'/etc/ssl_test/mycert.crt\' with action create_if_missing' do
+    it 'The resource adds a file resource \'/etc/ssl_test/mycert.crt\' with action create_if_missing' do
       expect(chef_run).to create_file_if_missing('/etc/ssl_test/mycert.crt')
     end
 
-    it 'The LWRP adds a file resource \'/etc/ssl_test/mycert.key\' with action create_if_missing' do
+    it 'The resource adds a file resource \'/etc/ssl_test/mycert.key\' with action create_if_missing' do
       expect(chef_run).to create_file_if_missing('/etc/ssl_test/mycert.key')
     end
   end
