@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 7.0.0 (2017-03-06)
+
+- Converted LWRPs to custom resources, increasing the chef-client dependency to 12.5+. This fixes the bus where each resource notified on every run even if it didn't actually update the files on disk.
+- Added testing for Chef 13
+- Test with Local Delivery instead of Rake
+
 ## 6.1.1 (2017-01-19)
 
 - Resolve deprecation warnings in chefspec
