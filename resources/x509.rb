@@ -42,7 +42,7 @@ action :create do
   end
 end
 
-action_class do
+action_class.class_eval do
   def generate_key_file
     unless new_resource.key_file
       path, file = ::File.split(new_resource.name)
