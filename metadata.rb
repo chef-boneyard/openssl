@@ -10,7 +10,7 @@ recipe 'openssl', 'Empty, this cookbook provides a library, see README.md'
 recipe 'upgrade', 'Upgrade OpenSSL library and restart dependent services'
 
 %w(ubuntu debian redhat centos suse opensuse opensuseleap scientific oracle amazon zlinux).each do |os|
-    supports os
+  supports os
 end
 
 source_url 'https://github.com/chef-cookbooks/openssl'

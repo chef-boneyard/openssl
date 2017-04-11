@@ -20,7 +20,7 @@
 case node['platform_family']
 when 'debian', 'ubuntu'
   packages = %w(libssl1.0.0 openssl)
-when 'rhel', 'fedora', 'suse'
+when 'rhel', 'fedora', 'suse', 'amazon'
   packages = %w(openssl)
 else
   packages = []
