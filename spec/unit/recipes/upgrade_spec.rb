@@ -60,7 +60,7 @@ describe 'openssl::upgrade' do
 
   context 'When the [\'openssl\'][\'restart_services\'] array is set to [\'httpd\'], the recipe:' do
     cached(:chef_run) do
-      runner = ChefSpec::ServerRunner.new(platform: 'redhat', version: '6.5')
+      runner = ChefSpec::ServerRunner.new(platform: 'redhat', version: '6.7')
       runner.node.normal['openssl']['restart_services'] = ['httpd']
       runner.converge('test::httpd', described_recipe)
     end
