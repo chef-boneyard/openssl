@@ -9,6 +9,8 @@ property :org,              String, required: true
 property :org_unit,         String, required: true
 property :country,          String, required: true
 property :common_name,      String, required: true
+property :state,            String, default: ''
+property :city,             String, default: ''
 property :subject_alt_name, Array, default: []
 property :key_file,         String
 property :key_pass,         String
@@ -77,6 +79,8 @@ action_class do
 
   def subject
     @subject ||= '/C=' + new_resource.country +
+                 (new_resource.state != '' ? '/ST=' + new_resource.state : '') +
+                 (new_resource.city != '' ? '/L=' + new_resource.city : '') +
                  '/O=' + new_resource.org +
                  '/OU=' + new_resource.org_unit +
                  '/CN=' + new_resource.common_name
