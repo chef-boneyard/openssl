@@ -1,17 +1,17 @@
 include OpenSSLCookbook::Helpers
 
-property :name,        String, name_property: true
+property :path,        String, name_property: true
 property :key_length,  equal_to: [1024, 2048, 4096, 8192], default: 2048
 property :key_pass,    String
-property :owner,       String
-property :group,       String
-property :mode,        [Integer, String]
+property :owner,       String, default: 'root'
+property :group,       String, default: node['root_group']
+property :mode,        [Integer, String], default: '0644'
 
 action :create do
-  unless key_file_valid?(new_resource.name, new_resource.key_pass)
-    converge_by("Create an RSA key #{@new_resource}") do
+  unless key_file_valid?(new_resource.path, new_resource.key_pass)
+    converge_by("Create an RSA key #{new_resource.path}") do
       log "Generating #{new_resource.key_length} bit "\
-          "RSA key file at #{new_resource.name}, this may take some time"
+          "RSA key file at #{new_resource.path}, this may take some time"
 
       if new_resource.key_pass
         unencrypted_rsa_key = gen_rsa_key(new_resource.key_length)
@@ -20,7 +20,7 @@ action :create do
         rsa_key_content = gen_rsa_key(new_resource.key_length).to_pem
       end
 
-      file new_resource.name do
+      file new_resource.path do
         action :create
         owner new_resource.owner
         group new_resource.group

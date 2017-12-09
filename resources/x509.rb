@@ -1,10 +1,10 @@
 include OpenSSLCookbook::Helpers
 
-property :name,             String, name_property: true
-property :owner,            String
-property :group,            String
+property :path,             String, name_property: true
+property :owner,            String, default: 'root'
+property :group,            String, default: node['root_group']
 property :expire,           Integer
-property :mode,             [Integer, String]
+property :mode,             [Integer, String], default: '0644'
 property :org,              String, required: true
 property :org_unit,         String, required: true
 property :country,          String, required: true
@@ -15,13 +15,13 @@ property :key_pass,         String
 property :key_length,       equal_to: [1024, 2048, 4096, 8192], default: 2048
 
 action :create do
-  unless ::File.exist? new_resource.name
+  unless ::File.exist? new_resource.path
     converge_by("Create #{@new_resource}") do
       create_keys
       cert_content = cert.to_pem
       key_content = key.to_pem
 
-      file new_resource.name do
+      file new_resource.path do
         action :create_if_missing
         mode new_resource.mode
         owner new_resource.owner
@@ -45,7 +45,7 @@ end
 action_class do
   def generate_key_file
     unless new_resource.key_file
-      path, file = ::File.split(new_resource.name)
+      path, file = ::File.split(new_resource.path)
       filename = ::File.basename(file, ::File.extname(file))
       new_resource.key_file path + '/' + filename + '.key'
     end

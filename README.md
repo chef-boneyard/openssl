@@ -37,10 +37,6 @@ The `upgrade` recipe has been tested on the following platforms:
 
 ## Recipes
 
-### default
-
-An empty placeholder recipe. Takes no action.
-
 ### upgrade
 
 The upgrade recipe iterates over the list of packages in the `node['openssl']['packages']` attribute, and manages them with the `:upgrade` action. Each package will send a `:restart` notification to service resources named in the `node['openssl']['restart_services']` attribute.
