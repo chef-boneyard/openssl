@@ -3,6 +3,7 @@ include OpenSSLCookbook::Helpers
 property :path,        String, name_property: true
 property :key_length,  equal_to: [1024, 2048, 4096, 8192], default: 2048
 property :key_pass,    String
+property :key_cipher,  String, default: 'des3', equal_to: valid_ciphers
 property :owner,       String, default: 'root'
 property :group,       String, default: node['root_group']
 property :mode,        [Integer, String], default: '0644'
@@ -15,7 +16,7 @@ action :create do
 
       if new_resource.key_pass
         unencrypted_rsa_key = gen_rsa_key(new_resource.key_length)
-        rsa_key_content = encrypt_rsa_key(unencrypted_rsa_key, new_resource.key_pass)
+        rsa_key_content = encrypt_rsa_key(unencrypted_rsa_key, new_resource.key_pass, new_resource.cipher)
       else
         rsa_key_content = gen_rsa_key(new_resource.key_length).to_pem
       end

@@ -19,7 +19,8 @@
 #
 
 %w(
-  /etc/ssl_test/rsakey.pem
+  /etc/ssl_test/rsakey_des3.pem
+  /etc/ssl_test/rsakey_aes128cbc.pem
   /etc/ssl_test/dhparam.pem
   /etc/ssl_test/mycert.crt
   /etc/ssl_test/mycert.key
@@ -50,16 +51,16 @@ end
 # RSA KEY HERE
 #
 
-# Generate new key
-openssl_rsa_key '/etc/ssl_test/rsakey.pem' do
-  key_length 1024
+# Generate new key with des3 cipher
+openssl_rsa_key '/etc/ssl_test/rsakey_des3.pem' do
+  key_length 2048
   action :create
 end
 
-# Generate new key with password
-openssl_rsa_key '/etc/ssl_test/rsakeypass.pem' do
+# Generate new key with aes-128-cbc cipher
+openssl_rsa_key '/etc/ssl_test/rsakey_aes128cbc.pem' do
   key_length 1024
-  key_pass 'oink'
+  key_cipher 'aes-128-cbc'
   action :create
 end
 

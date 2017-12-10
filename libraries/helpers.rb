@@ -33,6 +33,10 @@ module OpenSSLCookbook
       key.private?
     end
 
+    def valid_ciphers
+      OpenSSL::Cipher.ciphers
+    end
+
     # Generators
     def gen_dhparam(key_length, generator)
       raise ArgumentError, 'Key length must be a power of 2 greater than or equal to 1024' unless key_length_valid?(key_length)
@@ -49,11 +53,11 @@ module OpenSSLCookbook
 
     # Key manipulation helpers
     # Returns a pem string
-    def encrypt_rsa_key(rsa_key, key_password)
+    def encrypt_rsa_key(rsa_key, key_password, key_ciper)
       raise TypeError, 'rsa_key must be a Ruby OpenSSL::PKey::RSA object' unless rsa_key.is_a?(OpenSSL::PKey::RSA)
       raise TypeError, 'RSA key password must be a string' unless key_password.is_a?(String)
 
-      cipher = OpenSSL::Cipher::Cipher.new('des3')
+      cipher = OpenSSL::Cipher::Cipher.new(key_ciper)
       rsa_key.to_pem(cipher, key_password)
     end
   end

@@ -161,13 +161,14 @@ This resource generates rsa key files. If a valid rsa key file can be opened at 
 
 #### Attributes
 
-Name         | Type                        | Description
------------- | --------------------------- | ---------------------------------------------------------------------------
-`key_length` | Fixnum (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
-`key_pass`   | String (Optional)           | The desired passphrase for the key.
-`owner`      | String (optional)           | The owner of all files created by the resource. _Default: "root"_
-`group`      | String (optional)           | The group of all files created by the resource. _Default: "root"_
-`mode`       | String or Fixnum (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
+Name         | Type                         | Description
+------------ | ---------------------------- | ------------------------------------------------------------------------------------------------
+`key_length` | Fixnum (Optional)            | The desired Bit Length of the generated key. _Default: 2048_
+`cipher`     | String (Optional)            | The designed cipher to use when generating your key _Default: des3_
+`key_pass`   | String (Optional)            | The desired passphrase for the key.
+`owner`      | String (optional)            | The owner of all files created by the resource. _Default: "root"_
+`group`      | String (optional)            | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
+`mode`       | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
 
 #### Example Usage
 
