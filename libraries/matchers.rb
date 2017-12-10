@@ -10,4 +10,8 @@ if defined?(ChefSpec)
   def create_rsa_key(name)
     ChefSpec::Matchers::ResourceMatcher.new(:openssl_rsa_key, :create, name)
   end
+
+  def create_rsa_key(name)
+    ChefSpec::Matchers::ResourceMatcher.new(:openssl_rsa_private_key, :create, name)
+  end
 end

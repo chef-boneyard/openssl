@@ -51,13 +51,13 @@ end
 # RSA KEY HERE
 #
 
-# Generate new key with des3 cipher
-openssl_rsa_key '/etc/ssl_test/rsakey_des3.pem' do
+# Generate new key with des3 cipher using the new resource name
+openssl_rsa_private_key '/etc/ssl_test/rsakey_des3.pem' do
   key_length 2048
   action :create
 end
 
-# Generate new key with aes-128-cbc cipher
+# Generate new key with aes-128-cbc cipher with the old resource name
 openssl_rsa_key '/etc/ssl_test/rsakey_aes128cbc.pem' do
   key_length 1024
   key_cipher 'aes-128-cbc'

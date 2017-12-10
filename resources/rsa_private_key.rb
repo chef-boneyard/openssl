@@ -1,3 +1,6 @@
+provides :openssl_rsa_key # legacy name
+provides :openssl_rsa_private_key
+
 include OpenSSLCookbook::Helpers
 
 property :path,        String, name_property: true
