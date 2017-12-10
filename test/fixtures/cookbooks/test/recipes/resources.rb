@@ -1,6 +1,6 @@
 #
 # Cookbook:: test
-# Recipe:: resource_rsa_key
+# Recipe:: resource_dhparam
 #
 # Copyright:: 2015-2017, Chef Software, Inc. <legal@chef.io>
 # License:: Apache License, Version 2.0
@@ -18,23 +18,37 @@
 # limitations under the License.
 #
 
-apt_update 'update'
-
-# Ensure files are not present, so the resource makes new keys every time
-file 'any potential existing unsecured key' do
-  path '/etc/ssl_test/rsakey.pem'
-  action :delete
-end
-
-file 'any potential existing passworded key' do
-  path '/etc/ssl_test/rsakeypass.pem'
-  action :delete
+%w(
+  /etc/ssl_test/rsakey.pem
+  /etc/ssl_test/dhparam.pem
+  /etc/ssl_test/mycert.crt
+  /etc/ssl_test/mycert.key
+  /etc/ssl_test/mycert2.crt
+).each do |f|
+  file "delete existing test file #{f}" do
+    path f
+    action :delete
+  end
 end
 
 # Create directory if not already present
 directory '/etc/ssl_test' do
   recursive true
 end
+
+#
+# DHPARAM HERE
+#
+
+# Generate new key and certificate
+openssl_dhparam '/etc/ssl_test/dhparam.pem' do
+  key_length 1024
+  action :create
+end
+
+#
+# RSA KEY HERE
+#
 
 # Generate new key
 openssl_rsa_key '/etc/ssl_test/rsakey.pem' do
@@ -47,4 +61,26 @@ openssl_rsa_key '/etc/ssl_test/rsakeypass.pem' do
   key_length 1024
   key_pass 'oink'
   action :create
+end
+
+#
+# X509 HERE
+#
+
+# Generate new key and certificate
+openssl_x509 '/etc/ssl_test/mycert.crt' do
+  common_name 'mycert.example.com'
+  org 'Test Kitchen Example'
+  org_unit 'Kitchens'
+  country 'UK'
+  subject_alt_name ['IP:127.0.0.1', 'DNS:localhost.localdomain']
+end
+
+# Generate a new certificate from an existing key
+openssl_x509 '/etc/ssl_test/mycert2.crt' do
+  common_name 'mycert2.example.com'
+  org 'Test Kitchen Example'
+  org_unit 'Kitchens'
+  country 'UK'
+  key_file '/etc/ssl_test/mycert.key'
 end
