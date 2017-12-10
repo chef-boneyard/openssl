@@ -171,6 +171,7 @@ Name         | Type                         | Description
 `owner`      | String (optional)            | The owner of all files created by the resource. _Default: "root"_
 `group`      | String (optional)            | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
 `mode`       | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
+`force`      | true/false (Optional)        | Force creating the key even if the existing key exists. _Default: false_
 
 #### Example Usage
 
