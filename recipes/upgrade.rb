@@ -19,7 +19,11 @@
 
 case node['platform_family']
 when 'debian', 'ubuntu'
-  packages = %w(libssl1.0.0 openssl)
+  packages = if platform?('debian') && node['platform_version'].to_i >= 9
+               %w(libssl1.0.2 openssl)
+             else
+               %w(libssl1.0.0 openssl)
+             end
 when 'rhel', 'fedora', 'suse', 'amazon'
   packages = %w(openssl)
 else
