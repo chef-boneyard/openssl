@@ -66,8 +66,9 @@ module OpenSSLCookbook
     # Returns a pem string
     def encrypt_rsa_key(rsa_key, key_password, key_cipher)
       raise TypeError, 'rsa_key must be a Ruby OpenSSL::PKey::RSA object' unless rsa_key.is_a?(OpenSSL::PKey::RSA)
-      raise TypeError, 'RSA key password must be a string' unless key_password.is_a?(String)
-      raise ArgumentError 'Invalid key_cipher specified' unless OpenSSL::Cipher.ciphers.include?(key_ciper)
+      raise TypeError, 'key_password must be a string' unless key_password.is_a?(String)
+      raise TypeError, 'key_cipher must be a string' unless key_cipher.is_a?(String)
+      raise ArgumentError 'Specified key_cipher is not available on this system' unless OpenSSL::Cipher.ciphers.include?(key_cipher)
 
       cipher = OpenSSL::Cipher.new(key_cipher)
       rsa_key.to_pem(cipher, key_password)
