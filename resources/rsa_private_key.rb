@@ -14,7 +14,7 @@ property :force,       [true, false], default: false
 
 action :create do
   unless new_resource.force || priv_key_file_valid?(new_resource.path, new_resource.key_pass)
-    converge_by("Create an RSA key #{new_resource.path}") do
+    converge_by("Create an RSA private key #{new_resource.path}") do
       log "Generating #{new_resource.key_length} bit "\
           "RSA key file at #{new_resource.path}, this may take some time"
 
