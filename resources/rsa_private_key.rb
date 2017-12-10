@@ -9,7 +9,7 @@ property :key_pass,    String
 property :key_cipher,  String, default: 'des3', equal_to: valid_ciphers
 property :owner,       String, default: 'root'
 property :group,       String, default: node['root_group']
-property :mode,        [Integer, String], default: '0644'
+property :mode,        [Integer, String], default: '0640'
 property :force        [true, false], default: false
 
 action :create do

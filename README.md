@@ -140,7 +140,7 @@ Name         | Type                         | Description
 `generator`  | Integer (Optional)           | The desired Diffie-Hellmann generator. Can be _2_ or _5_.
 `owner`      | String (optional)            | The owner of all files created by the resource. _Default: "root"_
 `group`      | String (optional)            | The group of all files created by the resource. _Default: "root"_
-`mode`       | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
+`mode`       | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0640"_
 
 #### Example Usage
 
@@ -170,7 +170,7 @@ Name         | Type                         | Description
 `key_pass`   | String (Optional)            | The desired passphrase for the key.
 `owner`      | String (optional)            | The owner of all files created by the resource. _Default: "root"_
 `group`      | String (optional)            | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
-`mode`       | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
+`mode`       | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0640"_
 `force`      | true/false (Optional)        | Force creating the key even if the existing key exists. _Default: false_
 
 #### Example Usage
