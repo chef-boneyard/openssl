@@ -200,7 +200,7 @@ describe OpenSSLCookbook::Helpers do
     context 'When given anything other than an RSA key object to encrypt' do
       it 'Raises a TypeError' do
         expect do
-          instance.encrypt_rsa_key('abcd', 'defg')
+          instance.encrypt_rsa_key('abcd', 'efgh', 'des3')
         end.to raise_error(TypeError)
       end
     end
@@ -208,16 +208,32 @@ describe OpenSSLCookbook::Helpers do
     context 'When given anything other than a string as the passphrase' do
       it 'Raises a TypeError' do
         expect do
-          instance.encrypt_rsa_key(@rsa_key, 1234)
+          instance.encrypt_rsa_key(@rsa_key, 1234, 'des3')
         end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When given anything other than a string as the cipher' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.encrypt_rsa_key(@rsa_key, '1234', 1234)
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When given an invalid cipher string' do
+      it 'Raises an ArgumentError' do
+        expect do
+          instance.encrypt_rsa_key(@rsa_key, '1234', 'des3_bogus')
+        end.to raise_error(ArgumentError)
       end
     end
 
     context 'When given a valid RSA key and a valid passphrase string' do
       it 'Generates a valid encrypted PEM' do
-        @encrypted_key = instance.encrypt_rsa_key(@rsa_key, 'oink')
+        @encrypted_key = instance.encrypt_rsa_key(@rsa_key, 'oink', 'des3')
         expect(@encrypted_key).to be_kind_of(String)
-        expect(OpenSSL::PKey::RSA.new(@encrypted_key, 'oink').private?).to be_truthy
+        expect(OpenSSL::PKey::RSA.new(@encrypted_key, 'oink', 'des3').private?).to be_truthy
       end
     end
   end
