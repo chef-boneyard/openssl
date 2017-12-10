@@ -10,10 +10,10 @@ property :key_cipher,  String, default: 'des3', equal_to: valid_ciphers
 property :owner,       String, default: 'root'
 property :group,       String, default: node['root_group']
 property :mode,        [Integer, String], default: '0640'
-property :force        [true, false], default: false
+property :force,       [true, false], default: false
 
 action :create do
-  unless new_resource.force == true || key_file_valid?(new_resource.path, new_resource.key_pass)
+  unless new_resource.force || priv_key_file_valid?(new_resource.path, new_resource.key_pass)
     converge_by("Create an RSA key #{new_resource.path}") do
       log "Generating #{new_resource.key_length} bit "\
           "RSA key file at #{new_resource.path}, this may take some time"
