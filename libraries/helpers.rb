@@ -52,7 +52,7 @@ module OpenSSLCookbook
       OpenSSL::PKey::RSA.new(key_length)
     end
 
-    def gen_rsa_pub_key(priv_key_path, key_type, priv_key_password = nil)
+    def gen_rsa_pub_key(priv_key_path, priv_key_password = nil)
       key = OpenSSL::PKey::RSA.new File.read(priv_key_path), priv_key_password
       key.public_key.to_pem
     end
