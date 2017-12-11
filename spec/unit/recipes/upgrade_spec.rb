@@ -38,7 +38,7 @@ describe 'openssl::upgrade' do
 
   context 'When all attributes are default, on CentOS, the recipe:' do
     cached(:chef_run) do
-      runner = ChefSpec::ServerRunner.new(platform: 'centos', version: '6.8')
+      runner = ChefSpec::ServerRunner.new(platform: 'centos', version: '6.9')
       runner.converge(described_recipe)
     end
 
@@ -49,7 +49,7 @@ describe 'openssl::upgrade' do
 
   context 'When all attributes are default, on openSUSE, the recipe:' do
     cached(:chef_run) do
-      runner = ChefSpec::ServerRunner.new(platform: 'opensuse', version: '13.2')
+      runner = ChefSpec::ServerRunner.new(platform: 'opensuse', version: '42.3')
       runner.converge(described_recipe)
     end
 
@@ -60,7 +60,7 @@ describe 'openssl::upgrade' do
 
   context 'When the [\'openssl\'][\'restart_services\'] array is set to [\'httpd\'], the recipe:' do
     cached(:chef_run) do
-      runner = ChefSpec::ServerRunner.new(platform: 'redhat', version: '6.7')
+      runner = ChefSpec::ServerRunner.new(platform: 'centos', version: '6.9')
       runner.node.normal['openssl']['restart_services'] = ['httpd']
       runner.converge('test::httpd', described_recipe)
     end

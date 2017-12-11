@@ -73,9 +73,17 @@ describe 'test::resources' do
     it 'The resource adds a file resource \'/etc/ssl_test/rsakey_des3.pem\' with action create' do
       expect(chef_run).to create_file('/etc/ssl_test/rsakey_des3.pem')
     end
-
-    it 'The resource adds a file resource \'/etc/ssl_test/rsakey_aes128cbc.pem\' with action create' do
-      expect(chef_run).to create_file('/etc/ssl_test/rsakey_aes128cbc.pem')
-    end
   end
+
+  # This does not work at the moment due to the private key not existing
+  # context 'the openssl_rsa_public_key resource:' do
+  #   cached(:chef_run) do
+  #     runner = ChefSpec::ServerRunner.new(platform: 'ubuntu', version: '16.04', step_into: ['openssl_rsa_public_key'])
+  #     runner.converge(described_recipe)
+  #   end
+  #
+  #   it 'The resource adds a file resource \'/etc/ssl_test/rsakey_des3.pub\' with action create' do
+  #     expect(chef_run).to create_file('/etc/ssl_test/rsakey_des3.pub')
+  #   end
+  # end
 end
