@@ -64,8 +64,15 @@ openssl_rsa_key '/etc/ssl_test/rsakey_aes128cbc.pem' do
   action :create
 end
 
+# we need to do this with a file resource so that chefspec stepping
+# into openssl_rsa_public_key can function. It's :(
+file '/etc/ssl_test/private_key.pem' do
+  content '-----BEGIN RSA PRIVATE KEY----- Proc-Type: 4,ENCRYPTED DEK-Info: DES-EDE3-CBC,1F2FDA436115C4EE W24gBmtq/Eik2FkSdBh3hF3th3gFq2lMZqSLbho/JVbHFpAQynDbcS9qH5x1fRkt Y7o4A/Sh7noy9kzC1eVIPaQpKFJu5da+uf3t1KxpVMqibzeIE33P9WI+5PzzOm5W xs9shvv/0anU6UMsqBqI+0cmQQ8lw3myTTpO9yWKav2FdTnx7svd+P6BmFknGQaM DYomD0qiB/JzjXbYHLgFspPQXHdyQGhe/YFMlvmjKE0Nut18XJsNwUTWjBA4nRj4 JdlE8XOkWrzIsWKfrBhuhx9bTD0ZVvgssYl2QEh26mv0P0nxx4V/zYx+9U5j0L7q tV4FXfQTgFyctKySuBNi8IT1HFqG9LQps14p8q0XeRigFsRUOVuR0S3eHqg7xiiW QVdF+LgYPpdVNX2mHOSFnHMpFdKLHs8VCNjcGwMNK7avKbne/TJ2NRcL4uhgpsX/ 4tg1kQlwIwtp8MlMqkcinHJ3fjIhWGgjNBVe85NJPVogRDy+c80SqBenaJSavwVA ytmiQOCeon4zhZdscESki+KmsyOWkPB9/zQK76E4ni2IVOL6ZYBMJNTkP47WmA9d Etv7UMxQMI6EYMEH43czvbe4bNCC+hlYotJUM2B52Al7I79W9sSy8cmYi3YZEl0G xtKgY7XwstUBD2XjMuaNyUT0EDjcoa0GhLJSCQkvgn8//BGKaLEyb+Lr+dmHGvxM phCnUKLkfZn9hAFempSJuW4iSaeBKIU3KgYOkBooTuYhXqbN2McoxH6Ec/gnAM5e TIaLiDaHY8IPI4Et5l0sr7v+YF3ZGKC1fL6k4eInNRlhy8oWsFMe79jKkh5wRflt WifTbEdy3D53pVH5lbXyJwpBIOjKJ0OqGWGegu02P5JTsAsniKD+jxNUS8iSOAXL gtpMe4jtqj38hb9D7pBir85Hm+uDqeEuwUqSXAiI+P2F/Jf4ep3h+ek8dcgZtkJQ 3iz92ic2g3M7HW+EE0JcBX+KBwU7yI+UJbWvNQmTXUAYbpoQOLIVm/TrFdGzZ6e9 t0T5wmkE2cS9C3QYiEc7D81nTcTadZChZJDURzUk2REwRGjnunQggHUsj/JKVWqO EPZbpgyDhCaIAkkloWK/SgKny4irMZClhVdeq+v55vDf9nbKR9bgHUb2ZNwp6DQc CPs1BteYthiLtILYzzasMKhlfdoUjEaYziYLGkAQca5XwvwEp0qWg0sMCUUL9pbW 9WzFELBvqNQ1WyIcjb4clcvM0fJdGZ2nKbCAw6zbeSQcGd50NzvTra0xE/J2q6Jo 0V6AGr1Zmu4bJ+tGZCdAIteEO2TosNfS6nrFy15DAe4M4+77ZUGJ8rcwOBopa9qI w7aAyPlfAhrtdSrbOLLp0kRP9EwzSIjSoqc/YJINaNMN8WM7JgnfklmPToT2AqPc 6MOX/Uktag6AXzjcQDtIZSQox326emX1o/huw+7z3/lSXgTdxm3brew/is+9iaQh 5katqPtbec+K/4qydINZSRRFPaoVkg27+6OXvd1AbVS7jmUGHL20xyzA0A9c1csN dm460w4eqbjJEUtDucyIhLPhtYJwPODoRitRmIrzF5DSPrgmSiG93TPiDpRfVPPU -----END RSA PRIVATE KEY-----'
+end
+
 openssl_rsa_public_key '/etc/ssl_test/rsakey_des3.pub' do
   private_key_path '/etc/ssl_test/rsakey_des3.pem'
+  private_key_pass 'something'
   action :create
 end
 

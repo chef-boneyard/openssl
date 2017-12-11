@@ -233,7 +233,7 @@ describe OpenSSLCookbook::Helpers do
       it 'Generates a valid encrypted PEM' do
         @encrypted_key = instance.encrypt_rsa_key(@rsa_key, 'oink', 'des3')
         expect(@encrypted_key).to be_kind_of(String)
-        expect(OpenSSL::PKey::RSA.new(@encrypted_key, 'oink', 'des3').private?).to be_truthy
+        expect(OpenSSL::PKey::RSA.new(@encrypted_key, 'oink').private?).to be_truthy
       end
     end
   end
