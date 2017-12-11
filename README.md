@@ -14,7 +14,7 @@ This cookbook provides tools for working with the Ruby OpenSSL library. It inclu
 
 The `random_password` mixin works on any platform with the Ruby SecureRandom module. This module is already included with Chef.
 
-The `openssl_x509`, `openssl_rsa_key` and `openssl_dhparam` resources work on any platform with the OpenSSL Ruby bindings installed. These bindings are already included with Chef.
+The `openssl_x509`, `openssl_rsa_private_key` and `openssl_dhparam` resources work on any platform with the OpenSSL Ruby bindings installed. These bindings are already included with Chef.
 
 The `upgrade` recipe has been tested on the following platforms:
 
@@ -96,22 +96,22 @@ node.normal_unless['my_password'] = secure_password
 
 This resource generates self-signed, PEM-formatted x509 certificates. If no existing key is specified, the resource will automatically generate a passwordless key with the certificate.
 
-#### Attributes
+#### Properties
 
-Name               | Type                        | Description
------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-`common_name`      | String (Required)           | Value for the `CN` certificate field.
-`org`              | String (Required)           | Value for the `O` certificate field.
-`org_unit`         | String (Required)           | Value for the `OU` certificate field.
-`country`          | String (Required)           | Value for the `C` ssl field.
-`expire`           | Fixnum (Optional)           | Value representing the number of days from _now_ through which the issued certificate cert will remain valid. The certificate will expire after this period.
-`subject_alt_name` | Array (Optional)            | Array of _Subject Alternative Name_ entries, in format `DNS:example.com` or `IP:1.2.3.4` _Default: empty_
-`key_file`         | String (Optional)           | The path to a certificate key file on the filesystem. If the `key_file` attribute is specified, the resource will attempt to source a key from this location. If no key file is found, the resource will generate a new key file at this location. If the `key_file` attribute is not specified, the resource will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
-`key_pass`         | String (Optional)           | The passphrase for an existing key's passphrase
-`key_length`       | Fixnum (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
-`owner`            | String (optional)           | The owner of all files created by the resource. _Default: "root"_
-`group`            | String (optional)           | The group of all files created by the resource. _Default: "root"_
-`mode`             | String or Fixnum (Optional) | The permission mode of all files created by the resource. _Default: "0400"_
+Name               | Type                         | Description
+------------------ | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+`common_name`      | String (Required)            | Value for the `CN` certificate field.
+`org`              | String (Required)            | Value for the `O` certificate field.
+`org_unit`         | String (Required)            | Value for the `OU` certificate field.
+`country`          | String (Required)            | Value for the `C` ssl field.
+`expire`           | Integer (Optional)           | Value representing the number of days from _now_ through which the issued certificate cert will remain valid. The certificate will expire after this period.
+`subject_alt_name` | Array (Optional)             | Array of _Subject Alternative Name_ entries, in format `DNS:example.com` or `IP:1.2.3.4` _Default: empty_
+`key_file`         | String (Optional)            | The path to a certificate key file on the filesystem. If the `key_file` attribute is specified, the resource will attempt to source a key from this location. If no key file is found, the resource will generate a new key file at this location. If the `key_file` attribute is not specified, the resource will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
+`key_pass`         | String (Optional)            | The passphrase for an existing key's passphrase
+`key_length`       | Integer (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
+`owner`            | String (optional)            | The owner of all files created by the resource. _Default: "root"_
+`group`            | String (optional)            | The group of all files created by the resource. _Default: "root"_
+`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0400"_
 
 #### Example Usage
 
@@ -132,15 +132,15 @@ When executed, this recipe will generate a key certificate at `/etc/httpd/ssl/my
 
 This resource generates dhparam.pem files. If a valid dhparam.pem file is found at the specified location, no new file will be created. If a file is found at the specified location but it is not a valid dhparam file, it will be overwritten.
 
-#### Attributes
+#### Properties
 
-Name         | Type                        | Description
------------- | --------------------------- | ---------------------------------------------------------------------------
-`key_length` | Fixnum (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
-`generator`  | Fixnum (Optional)           | The desired Diffie-Hellmann generator. Can be _2_ or _5_.
-`owner`      | String (optional)           | The owner of all files created by the resource. _Default: "root"_
-`group`      | String (optional)           | The group of all files created by the resource. _Default: "root"_
-`mode`       | String or Fixnum (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
+Name         | Type                         | Description
+------------ | ---------------------------- | ---------------------------------------------------------------------------
+`key_length` | Integer (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
+`generator`  | Integer (Optional)           | The desired Diffie-Hellmann generator. Can be _2_ or _5_.
+`owner`      | String (optional)            | The owner of all files created by the resource. _Default: "root"_
+`group`      | String (optional)            | The group of all files created by the resource. _Default: "root"_
+`mode`       | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0640"_
 
 #### Example Usage
 
@@ -155,26 +155,30 @@ end
 
 When executed, this recipe will generate a dhparam file at `/etc/httpd/ssl/dhparam.pem`.
 
-### openssl_rsa_key
+### openssl_rsa_private_key
 
-This resource generates rsa key files. If a valid rsa key file can be opened at the specified location, no new file will be created. If the RSA key file cannot be opened, either because it does not exist or because the password to the RSA key file does not match the password in the recipe, it will be overwritten.
+This resource generates rsa private key files. If a valid rsa key file can be opened at the specified location, no new file will be created. If the RSA key file cannot be opened, either because it does not exist or because the password to the RSA key file does not match the password in the recipe, it will be overwritten.
 
-#### Attributes
+Note: This resource was renamed from openssl_rsa_key to openssl_rsa_private_key. The legacy name will continue to function, but cookbook code should be updated for the new resource name.
 
-Name         | Type                        | Description
------------- | --------------------------- | ---------------------------------------------------------------------------
-`key_length` | Fixnum (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
-`key_pass`   | String (Optional)           | The desired passphrase for the key.
-`owner`      | String (optional)           | The owner of all files created by the resource. _Default: "root"_
-`group`      | String (optional)           | The group of all files created by the resource. _Default: "root"_
-`mode`       | String or Fixnum (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
+#### Properties
+
+Name         | Type                         | Description
+------------ | ---------------------------- | -----------------------------------------------------------------------------------------------------------------------------------
+`key_length` | Integer (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
+`cipher`     | String (Optional)            | The designed cipher to use when generating your key. Run `openssl list-cipher-algorithms` to see available options. _Default: des3_
+`key_pass`   | String (Optional)            | The desired passphrase for the key.
+`owner`      | String (optional)            | The owner of all files created by the resource. _Default: "root"_
+`group`      | String (optional)            | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
+`mode`       | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0640"_
+`force`      | true/false (Optional)        | Force creating the key even if the existing key exists. _Default: false_
 
 #### Example Usage
 
 In this example, an administrator wishes to create a new RSA private key file in order to generate other certificates and public keys. In order to create the key file, the administrator crafts this recipe:
 
 ```ruby
-openssl_rsa_key '/etc/httpd/ssl/server.key' do
+openssl_rsa_private_key '/etc/httpd/ssl/server.key' do
   key_length 2048
 end
 ```

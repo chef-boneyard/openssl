@@ -19,15 +19,15 @@ services: docker
 
 env:
   matrix:
-  - INSTANCE=resource-x509-ubuntu-1404
-  - INSTANCE=resource-x509-ubuntu-1604
-  - INSTANCE=resource-x509-debian-7
-  - INSTANCE=resource-x509-debian-8
-  - INSTANCE=resource-x509-debian-9
-  - INSTANCE=resource-x509-centos-6
-  - INSTANCE=resource-x509-centos-7
-  - INSTANCE=resource-x509-opensuse-leap
-  - INSTANCE=resource-x509-fedora-latest
+  - INSTANCE=resources-ubuntu-1404
+  - INSTANCE=resources-ubuntu-1604
+  - INSTANCE=resources-debian-7
+  - INSTANCE=resources-debian-8
+  - INSTANCE=resources-debian-9
+  - INSTANCE=resources-centos-6
+  - INSTANCE=resources-centos-7
+  - INSTANCE=resources-opensuse-leap
+  - INSTANCE=resources-fedora-latest
   - INSTANCE=upgrade-ubuntu-1404
   - INSTANCE=upgrade-ubuntu-1604
   - INSTANCE=upgrade-debian-7

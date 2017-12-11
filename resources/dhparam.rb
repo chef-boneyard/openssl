@@ -5,7 +5,7 @@ property :key_length,  equal_to: [1024, 2048, 4096, 8192], default: 2048
 property :generator,   equal_to: [2, 5], default: 2
 property :owner,       String, default: 'root'
 property :group,       String, default: node['root_group']
-property :mode,        [Integer, String], default: '0644'
+property :mode,        [Integer, String], default: '0640'
 
 action :create do
   unless dhparam_pem_valid?(new_resource.path)

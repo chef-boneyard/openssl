@@ -94,7 +94,7 @@ describe OpenSSLCookbook::Helpers do
     end
   end
 
-  describe '#key_file_valid?' do
+  describe '#priv_key_file_valid?' do
     require 'tempfile'
     require 'openssl' unless defined?(OpenSSL)
 
@@ -106,7 +106,7 @@ describe OpenSSLCookbook::Helpers do
 
     context 'When the key file does not exist' do
       it 'returns false' do
-        expect(instance.key_file_valid?('/tmp/bad_filename')).to be_falsey
+        expect(instance.priv_key_file_valid?('/tmp/bad_filename')).to be_falsey
       end
     end
 
@@ -115,7 +115,7 @@ describe OpenSSLCookbook::Helpers do
         expect do
           @keyfile.puts('I_am_not_a_key_I_am_a_free_man')
           @keyfile.close
-          instance.key_file_valid?(@keyfile.path)
+          instance.priv_key_file_valid?(@keyfile.path)
         end.to raise_error(OpenSSL::PKey::RSAError)
       end
     end
@@ -124,7 +124,7 @@ describe OpenSSLCookbook::Helpers do
       it 'returns true' do
         @keyfile.puts(OpenSSL::PKey::RSA.new(2048).to_pem)
         @keyfile.close
-        expect(instance.key_file_valid?(@keyfile.path)).to be_truthy
+        expect(instance.priv_key_file_valid?(@keyfile.path)).to be_truthy
       end
     end
 
@@ -133,7 +133,7 @@ describe OpenSSLCookbook::Helpers do
         expect do
           @keyfile.puts(OpenSSL::PKey::RSA.new(2048).to_pem(cipher, 'oink'))
           @keyfile.close
-          instance.key_file_valid?(@keyfile.path, 'poml')
+          instance.priv_key_file_valid?(@keyfile.path, 'poml')
         end.to raise_error(OpenSSL::PKey::RSAError)
       end
     end
@@ -142,7 +142,7 @@ describe OpenSSLCookbook::Helpers do
       it 'returns true' do
         @keyfile.puts(OpenSSL::PKey::RSA.new(2048).to_pem(cipher, 'oink'))
         @keyfile.close
-        expect(instance.key_file_valid?(@keyfile.path, 'oink')).to be_truthy
+        expect(instance.priv_key_file_valid?(@keyfile.path, 'oink')).to be_truthy
       end
     end
 
@@ -176,18 +176,18 @@ describe OpenSSLCookbook::Helpers do
     end
   end
 
-  describe '#gen_rsa_key' do
+  describe '#gen_rsa_priv_key' do
     context 'When given an invalid key length' do
       it 'Throws an ArgumentError' do
         expect do
-          instance.gen_rsa_key(4093)
+          instance.gen_rsa_priv_key(4093)
         end.to raise_error(ArgumentError)
       end
     end
 
     context 'When a proper key length is given' do
       it 'Generates an RSA key object' do
-        expect(instance.gen_rsa_key(1024)).to be_kind_of(OpenSSL::PKey::RSA)
+        expect(instance.gen_rsa_priv_key(1024)).to be_kind_of(OpenSSL::PKey::RSA)
       end
     end
   end
@@ -200,7 +200,7 @@ describe OpenSSLCookbook::Helpers do
     context 'When given anything other than an RSA key object to encrypt' do
       it 'Raises a TypeError' do
         expect do
-          instance.encrypt_rsa_key('abcd', 'defg')
+          instance.encrypt_rsa_key('abcd', 'efgh', 'des3')
         end.to raise_error(TypeError)
       end
     end
@@ -208,16 +208,32 @@ describe OpenSSLCookbook::Helpers do
     context 'When given anything other than a string as the passphrase' do
       it 'Raises a TypeError' do
         expect do
-          instance.encrypt_rsa_key(@rsa_key, 1234)
+          instance.encrypt_rsa_key(@rsa_key, 1234, 'des3')
         end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When given anything other than a string as the cipher' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.encrypt_rsa_key(@rsa_key, '1234', 1234)
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When given an invalid cipher string' do
+      it 'Raises an ArgumentError' do
+        expect do
+          instance.encrypt_rsa_key(@rsa_key, '1234', 'des3_bogus')
+        end.to raise_error(ArgumentError)
       end
     end
 
     context 'When given a valid RSA key and a valid passphrase string' do
       it 'Generates a valid encrypted PEM' do
-        @encrypted_key = instance.encrypt_rsa_key(@rsa_key, 'oink')
+        @encrypted_key = instance.encrypt_rsa_key(@rsa_key, 'oink', 'des3')
         expect(@encrypted_key).to be_kind_of(String)
-        expect(OpenSSL::PKey::RSA.new(@encrypted_key, 'oink').private?).to be_truthy
+        expect(OpenSSL::PKey::RSA.new(@encrypted_key, 'oink', 'des3').private?).to be_truthy
       end
     end
   end

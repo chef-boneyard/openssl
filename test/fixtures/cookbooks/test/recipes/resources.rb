@@ -1,6 +1,6 @@
 #
 # Cookbook:: test
-# Recipe:: resource_x509
+# Recipe:: resource_dhparam
 #
 # Copyright:: 2015-2017, Chef Software, Inc. <legal@chef.io>
 # License:: Apache License, Version 2.0
@@ -18,28 +18,60 @@
 # limitations under the License.
 #
 
-apt_update 'update'
-
-# Ensure files are not present, so the resource makes new keys every time
-file 'Any potential existing cert' do
-  path '/etc/ssl_test/mycert.crt'
-  action :delete
-end
-
-file 'Any potential existing key' do
-  path '/etc/ssl_test/mycert.key'
-  action :delete
-end
-
-file 'Any potential existing second cert' do
-  path '/etc/ssl_test/mycert2.crt'
-  action :delete
+%w(
+  /etc/ssl_test/rsakey_des3.pem
+  /etc/ssl_test/rsakey_aes128cbc.pem
+  /etc/ssl_test/dhparam.pem
+  /etc/ssl_test/mycert.crt
+  /etc/ssl_test/mycert.key
+  /etc/ssl_test/mycert2.crt
+).each do |f|
+  file "delete existing test file #{f}" do
+    path f
+    action :delete
+  end
 end
 
 # Create directory if not already present
 directory '/etc/ssl_test' do
   recursive true
 end
+
+#
+# DHPARAM HERE
+#
+
+# Generate new key and certificate
+openssl_dhparam '/etc/ssl_test/dhparam.pem' do
+  key_length 1024
+  action :create
+end
+
+#
+# RSA KEYS HERE
+#
+
+# Generate new key with des3 cipher using the new resource name
+openssl_rsa_private_key '/etc/ssl_test/rsakey_des3.pem' do
+  key_length 2048
+  action :create
+end
+
+# Generate new key with aes-128-cbc cipher with the old resource name
+openssl_rsa_key '/etc/ssl_test/rsakey_aes128cbc.pem' do
+  key_length 1024
+  key_cipher 'aes-128-cbc'
+  action :create
+end
+
+openssl_rsa_public_key '/etc/ssl_test/rsakey_des3.pub' do
+  private_key_path '/etc/ssl_test/rsakey_des3.pem'
+  action :create
+end
+
+#
+# X509 HERE
+#
 
 # Generate new key and certificate
 openssl_x509 '/etc/ssl_test/mycert.crt' do

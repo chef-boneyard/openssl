@@ -53,7 +53,7 @@ action_class do
   end
 
   def key
-    @key ||= if key_file_valid?(generate_key_file, new_resource.key_pass)
+    @key ||= if priv_key_file_valid?(generate_key_file, new_resource.key_pass)
                OpenSSL::PKey::RSA.new ::File.read(generate_key_file), new_resource.key_pass
              else
                OpenSSL::PKey::RSA.new(new_resource.key_length)
