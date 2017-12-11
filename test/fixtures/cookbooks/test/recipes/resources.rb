@@ -48,7 +48,7 @@ openssl_dhparam '/etc/ssl_test/dhparam.pem' do
 end
 
 #
-# RSA KEY HERE
+# RSA KEYS HERE
 #
 
 # Generate new key with des3 cipher using the new resource name
