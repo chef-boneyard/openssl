@@ -25,22 +25,11 @@ module OpenSSLCookbook
       dhparam.params_ok?
     end
 
-    def key_obj(key_file_path, key_password = nil)
-      # Check if the key file exists
-      # Verify the key file contains a key
-      return false unless ::File.exist?(key_file_path)
-      OpenSSL::PKey::RSA.new File.read(key_file_path), key_password
-    end
-
     def priv_key_file_valid?(key_file_path, key_password = nil)
-      key = key_obj(key_file_path, key_password)
-      return false if key == false
-      key.public?
-    end
-
-    def pub_key_file_valid?(key_file_path, key_password = nil)
-      key = key_obj(key_file_path, key_password)
-      return false if key == false
+      # Check if the key file exists
+      # Verify the key file contains a private key
+      return false unless ::File.exist?(key_file_path)
+      key = OpenSSL::PKey::RSA.new File.read(key_file_path), key_password
       key.private?
     end
 

@@ -94,7 +94,7 @@ describe OpenSSLCookbook::Helpers do
     end
   end
 
-  describe '#key_file_valid?' do
+  describe '#priv_key_file_valid?' do
     require 'tempfile'
     require 'openssl' unless defined?(OpenSSL)
 
@@ -106,7 +106,7 @@ describe OpenSSLCookbook::Helpers do
 
     context 'When the key file does not exist' do
       it 'returns false' do
-        expect(instance.key_file_valid?('/tmp/bad_filename')).to be_falsey
+        expect(instance.priv_key_file_valid?('/tmp/bad_filename')).to be_falsey
       end
     end
 
@@ -115,7 +115,7 @@ describe OpenSSLCookbook::Helpers do
         expect do
           @keyfile.puts('I_am_not_a_key_I_am_a_free_man')
           @keyfile.close
-          instance.key_file_valid?(@keyfile.path)
+          instance.priv_key_file_valid?(@keyfile.path)
         end.to raise_error(OpenSSL::PKey::RSAError)
       end
     end
@@ -124,7 +124,7 @@ describe OpenSSLCookbook::Helpers do
       it 'returns true' do
         @keyfile.puts(OpenSSL::PKey::RSA.new(2048).to_pem)
         @keyfile.close
-        expect(instance.key_file_valid?(@keyfile.path)).to be_truthy
+        expect(instance.priv_key_file_valid?(@keyfile.path)).to be_truthy
       end
     end
 
@@ -133,7 +133,7 @@ describe OpenSSLCookbook::Helpers do
         expect do
           @keyfile.puts(OpenSSL::PKey::RSA.new(2048).to_pem(cipher, 'oink'))
           @keyfile.close
-          instance.key_file_valid?(@keyfile.path, 'poml')
+          instance.priv_key_file_valid?(@keyfile.path, 'poml')
         end.to raise_error(OpenSSL::PKey::RSAError)
       end
     end
@@ -142,7 +142,7 @@ describe OpenSSLCookbook::Helpers do
       it 'returns true' do
         @keyfile.puts(OpenSSL::PKey::RSA.new(2048).to_pem(cipher, 'oink'))
         @keyfile.close
-        expect(instance.key_file_valid?(@keyfile.path, 'oink')).to be_truthy
+        expect(instance.priv_key_file_valid?(@keyfile.path, 'oink')).to be_truthy
       end
     end
 
