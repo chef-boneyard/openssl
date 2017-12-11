@@ -19,10 +19,10 @@ action :create do
           "RSA key file at #{new_resource.path}, this may take some time"
 
       if new_resource.key_pass
-        unencrypted_rsa_key = gen_rsa_key(new_resource.key_length)
+        unencrypted_rsa_key = gen_rsa_priv_key(new_resource.key_length)
         rsa_key_content = encrypt_rsa_key(unencrypted_rsa_key, new_resource.key_pass, new_resource.cipher)
       else
-        rsa_key_content = gen_rsa_key(new_resource.key_length).to_pem
+        rsa_key_content = gen_rsa_priv_key(new_resource.key_length).to_pem
       end
 
       file new_resource.path do

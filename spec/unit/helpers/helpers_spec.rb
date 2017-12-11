@@ -176,18 +176,18 @@ describe OpenSSLCookbook::Helpers do
     end
   end
 
-  describe '#gen_rsa_key' do
+  describe '#gen_rsa_priv_key' do
     context 'When given an invalid key length' do
       it 'Throws an ArgumentError' do
         expect do
-          instance.gen_rsa_key(4093)
+          instance.gen_rsa_priv_key(4093)
         end.to raise_error(ArgumentError)
       end
     end
 
     context 'When a proper key length is given' do
       it 'Generates an RSA key object' do
-        expect(instance.gen_rsa_key(1024)).to be_kind_of(OpenSSL::PKey::RSA)
+        expect(instance.gen_rsa_priv_key(1024)).to be_kind_of(OpenSSL::PKey::RSA)
       end
     end
   end

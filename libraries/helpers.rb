@@ -45,10 +45,16 @@ module OpenSSLCookbook
       OpenSSL::PKey::DH.new(key_length, generator)
     end
 
-    def gen_rsa_key(key_length)
+    # Given the key length generate an RSA private key
+    def gen_rsa_priv_key(key_length)
       raise ArgumentError, 'Key length must be a power of 2 greater than or equal to 1024' unless key_length_valid?(key_length)
 
       OpenSSL::PKey::RSA.new(key_length)
+    end
+
+    def gen_rsa_pub_key(priv_key_path, key_type, priv_key_password = nil)
+      key = OpenSSL::PKey::RSA.new File.read(priv_key_path), priv_key_password
+      key.public_key.to_pem
     end
 
     # Key manipulation helpers

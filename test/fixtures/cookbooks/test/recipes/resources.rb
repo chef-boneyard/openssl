@@ -64,6 +64,11 @@ openssl_rsa_key '/etc/ssl_test/rsakey_aes128cbc.pem' do
   action :create
 end
 
+openssl_rsa_public_key '/etc/ssl_test/rsakey_des3.pub' do
+  private_key_path '/etc/ssl_test/rsakey_des3.pem'
+  action :create
+end
+
 #
 # X509 HERE
 #
