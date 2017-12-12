@@ -2,7 +2,7 @@ name             'openssl'
 maintainer       'Chef Software, Inc.'
 maintainer_email 'cookbooks@chef.io'
 license          'Apache-2.0'
-description      'Provides a library with a method for generating secure random passwords.'
+description      'Resources and libraries for interacting with certificates, keys, passwords, and dhparam files.'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version '7.1.0'
 
