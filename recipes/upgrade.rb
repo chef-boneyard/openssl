@@ -30,8 +30,10 @@ else
   packages = []
 end
 
-packages.each do |ssl_pkg|
-  package ssl_pkg do
+if packages.empty?
+  Chef::Log.warn("The openssl::upgrade recipe does not currently support #{node['platform']}. If you believe it could please open a PR at https://github.com/chef-cookbooks/openssl")
+else
+  package packages do
     action :upgrade
     node['openssl']['restart_services'].each do |ssl_svc|
       notifies :restart, "service[#{ssl_svc}]"
