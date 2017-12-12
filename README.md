@@ -58,7 +58,7 @@ include_recipe 'openssl::upgrade'
 
 When executed, this recipe will ensure that openssl is upgraded to the latest version, and that the `stats_collector` service is restarted to pick up the latest security fixes released in the openssl package.
 
-## Libraries & Resources
+## Libraries
 
 There are two mixins packaged with this cookbook.
 
@@ -79,18 +79,7 @@ node.normal['my_secure_attribute'] = random_password(length: 50, mode: :base64, 
 
 Note that node attributes are widely accessible. Storing unencrypted passwords in node attributes, as in this example, carries risk.
 
-### ~~secure_password (`Opscode::OpenSSL::Password`)~~
-
-This library should be considered deprecated and will be removed in a future version. Please use `OpenSSLCookbook::RandomPassword` instead. The documentation is kept here for historical reasons.
-
-#### ~~Example Usage~~
-
-```ruby
-::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
-node.normal_unless['my_password'] = secure_password
-```
-
-~~Note that node attributes are widely accessible. Storing unencrypted passwords in node attributes, as in this example, carries risk.~~
+## Resources
 
 ### openssl_x509
 
