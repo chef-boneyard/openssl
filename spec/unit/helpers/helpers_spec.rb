@@ -98,7 +98,7 @@ describe OpenSSLCookbook::Helpers do
     require 'tempfile'
     require 'openssl' unless defined?(OpenSSL)
 
-    cipher = OpenSSL::Cipher::Cipher.new('des3')
+    cipher = OpenSSL::Cipher.new('des3')
 
     before(:each) do
       @keyfile = Tempfile.new('keyfile')
@@ -112,35 +112,31 @@ describe OpenSSLCookbook::Helpers do
 
     context 'When the key file does exist, but does not contain a valid rsa private key' do
       it 'Throws an OpenSSL::PKey::RSAError exception' do
-        expect do
-          @keyfile.puts('I_am_not_a_key_I_am_a_free_man')
-          @keyfile.close
-          instance.priv_key_file_valid?(@keyfile.path)
-        end.to raise_error(OpenSSL::PKey::RSAError)
+        @keyfile.write('I_am_not_a_key_I_am_a_free_man')
+        @keyfile.close
+        expect(instance.priv_key_file_valid?(@keyfile.path)).to be_falsey
       end
     end
 
     context 'When the key file does exist, and does contain a vaild rsa private key' do
       it 'returns true' do
-        @keyfile.puts(OpenSSL::PKey::RSA.new(1024).to_pem)
+        @keyfile.write(OpenSSL::PKey::RSA.new(1024).to_pem)
         @keyfile.close
         expect(instance.priv_key_file_valid?(@keyfile.path)).to be_truthy
       end
     end
 
     context 'When a valid keyfile requires a passphrase, and an invalid passphrase is supplied' do
-      it 'Throws an OpenSSL::PKey::RSAError exception' do
-        expect do
-          @keyfile.puts(OpenSSL::PKey::RSA.new(1024).to_pem(cipher, 'oink'))
-          @keyfile.close
-          instance.priv_key_file_valid?(@keyfile.path, 'poml')
-        end.to raise_error(OpenSSL::PKey::RSAError)
+      it 'returns false' do
+        @keyfile.write(OpenSSL::PKey::RSA.new(1024).to_pem(cipher, 'oink'))
+        @keyfile.close
+        expect(instance.priv_key_file_valid?(@keyfile.path, 'poml')).to be_falsey
       end
     end
 
     context 'When a valid keyfile requires a passphrase, and a valid passphrase is supplied' do
       it 'returns true' do
-        @keyfile.puts(OpenSSL::PKey::RSA.new(1024).to_pem(cipher, 'oink'))
+        @keyfile.write(OpenSSL::PKey::RSA.new(1024).to_pem(cipher, 'oink'))
         @keyfile.close
         expect(instance.priv_key_file_valid?(@keyfile.path, 'oink')).to be_truthy
       end
