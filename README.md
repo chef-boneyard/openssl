@@ -91,6 +91,8 @@ Name               | Type                         | Description
 `common_name`      | String (Required)            | Value for the `CN` certificate field.
 `org`              | String (Required)            | Value for the `O` certificate field.
 `org_unit`         | String (Required)            | Value for the `OU` certificate field.
+`city`             | String (Optional)            | Value for the `L` certificate field.
+`state`            | String (Optional)            | Value for the `ST` certificate field.
 `country`          | String (Required)            | Value for the `C` ssl field.
 `expire`           | Integer (Optional)           | Value representing the number of days from _now_ through which the issued certificate cert will remain valid. The certificate will expire after this period.
 `subject_alt_name` | Array (Optional)             | Array of _Subject Alternative Name_ entries, in format `DNS:example.com` or `IP:1.2.3.4` _Default: empty_
