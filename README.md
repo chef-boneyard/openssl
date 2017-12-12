@@ -6,22 +6,20 @@ This cookbook provides tools for working with the Ruby OpenSSL library. It inclu
 
 - A library method to generate secure random passwords in recipes, using the Ruby SecureRandom library.
 - A resource for generating RSA private keys.
+- A resource for generating RSA public keys.
 - A resource for generating x509 certificates.
 - A resource for generating dhparam.pem files.
 - An attribute-driven recipe for upgrading OpenSSL packages.
 
 ## Platforms
 
-The `random_password` mixin works on any platform with the Ruby SecureRandom module. This module is already included with Chef.
-
-The `openssl_x509`, `openssl_rsa_private_key` and `openssl_dhparam` resources work on any platform with the OpenSSL Ruby bindings installed. These bindings are already included with Chef.
-
-The `upgrade` recipe has been tested on the following platforms:
-
 - Debian / Ubuntu derivatives
-- RHEL and derivatives
 - Fedora
+- FreeBSD
+- macOS
 - openSUSE / SUSE Linux Enterprises
+- RHEL/CentOS/Scientific/Amazon/Oracle
+- Solaris
 
 ## Chef
 

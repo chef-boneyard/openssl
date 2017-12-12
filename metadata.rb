@@ -8,7 +8,7 @@ version '7.1.0'
 
 recipe 'openssl::upgrade', 'Upgrade OpenSSL library and restart dependent services'
 
-%w(ubuntu debian redhat centos suse opensuse opensuseleap scientific oracle amazon zlinux).each do |os|
+%w(amazon centos debian fedora freebsd opensuse opensuseleap oracle redhat scientific solaris2 suse ubuntu zlinux).each do |os|
   supports os
 end
 
