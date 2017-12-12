@@ -24,15 +24,36 @@
 require 'spec_helper'
 
 describe 'openssl::upgrade' do
-  context 'When all attributes are default, on Ubuntu the recipe:' do
+  context 'When all attributes are default, on Ubuntu 16.04 the recipe:' do
     cached(:chef_run) do
       runner = ChefSpec::ServerRunner.new(platform: 'ubuntu', version: '16.04')
       runner.converge(described_recipe)
     end
 
     it 'installs the correct packages' do
-      expect(chef_run).to upgrade_package('libssl1.0.0')
-      expect(chef_run).to upgrade_package('openssl')
+      expect(chef_run).to upgrade_package(['libssl1.0.0', 'openssl'])
+    end
+  end
+
+  context 'When all attributes are default, on Debian 8 the recipe:' do
+    cached(:chef_run) do
+      runner = ChefSpec::ServerRunner.new(platform: 'debian', version: '8.9')
+      runner.converge(described_recipe)
+    end
+
+    it 'installs the correct packages' do
+      expect(chef_run).to upgrade_package(['libssl1.0.0', 'openssl'])
+    end
+  end
+
+  context 'When all attributes are default, on Debian 9 the recipe:' do
+    cached(:chef_run) do
+      runner = ChefSpec::ServerRunner.new(platform: 'debian', version: '9.1')
+      runner.converge(described_recipe)
+    end
+
+    it 'installs the correct packages' do
+      expect(chef_run).to upgrade_package(['libssl1.0.2', 'openssl'])
     end
   end
 
@@ -43,7 +64,7 @@ describe 'openssl::upgrade' do
     end
 
     it 'installs the correct packages' do
-      expect(chef_run).to upgrade_package('openssl')
+      expect(chef_run).to upgrade_package(['openssl'])
     end
   end
 
