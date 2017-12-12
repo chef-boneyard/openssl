@@ -6,8 +6,7 @@ description      'Provides a library with a method for generating secure random 
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version '7.1.0'
 
-recipe 'openssl', 'Empty, this cookbook provides a library, see README.md'
-recipe 'upgrade', 'Upgrade OpenSSL library and restart dependent services'
+recipe 'openssl::upgrade', 'Upgrade OpenSSL library and restart dependent services'
 
 %w(ubuntu debian redhat centos suse opensuse opensuseleap scientific oracle amazon zlinux).each do |os|
   supports os
