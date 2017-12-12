@@ -87,6 +87,7 @@ This resource generates self-signed, PEM-formatted x509 certificates. If no exis
 
 Name               | Type                         | Description
 ------------------ | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+`path`             | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
 `common_name`      | String (Required)            | Value for the `CN` certificate field.
 `org`              | String (Required)            | Value for the `O` certificate field.
 `org_unit`         | String (Required)            | Value for the `OU` certificate field.
@@ -122,7 +123,8 @@ This resource generates dhparam.pem files. If a valid dhparam.pem file is found 
 #### Properties
 
 Name         | Type                         | Description
------------- | ---------------------------- | ---------------------------------------------------------------------------
+------------ | ---------------------------- | ---------------------------------------------------------------------------------------------------
+`path`       | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
 `key_length` | Integer (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
 `generator`  | Integer (Optional)           | The desired Diffie-Hellmann generator. Can be _2_ or _5_.
 `owner`      | String (optional)            | The owner of all files created by the resource. _Default: "root"_
@@ -152,6 +154,7 @@ Note: This resource was renamed from openssl_rsa_key to openssl_rsa_private_key.
 
 Name         | Type                         | Description
 ------------ | ---------------------------- | -----------------------------------------------------------------------------------------------------------------------------------
+`path`       | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
 `key_length` | Integer (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
 `cipher`     | String (Optional)            | The designed cipher to use when generating your key. Run `openssl list-cipher-algorithms` to see available options. _Default: des3_
 `key_pass`   | String (Optional)            | The desired passphrase for the key.
@@ -172,16 +175,38 @@ end
 
 When executed, this recipe will generate a passwordless RSA key file at `/etc/httpd/ssl/server.key`.
 
-## License and Author
+### openssl_rsa_public_key
 
-Author:: Jesse Nelson ([spheromak@gmail.com](mailto:spheromak@gmail.com))<br>
-Author:: Seth Vargo ([sethvargo@gmail.com](mailto:sethvargo@gmail.com))<br>
-Author:: Charles Johnson ([charles@chef.io](mailto:charles@chef.io))<br>
-Author:: Joshua Timberman ([joshua@chef.io](mailto:joshua@chef.io))
+This resource generates rsa public key files given a private key.
 
-```text
-Copyright:: 2009-2016, Chef Software, Inc <legal@chef.io>
+#### Properties
 
+Name               | Type                         | Description
+------------------ | ---------------------------- | ---------------------------------------------------------------------------------------------------
+`path`             | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
+`private_key_path` | String                       | The path to the private key to generate the public key from
+`private_key_pass` | String (Optional)            | The passphrase of the provided private key
+`owner`            | String (optional)            | The owner of all files created by the resource. _Default: "root"_
+`group`            | String (optional)            | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
+`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0640"_
+
+#### Example Usage
+
+```ruby
+openssl_rsa_public_key '/etc/foo/something.pub' do
+  priv_key_path '/etc/foo/something.pem'
+end
+```
+
+## Maintainers
+
+This cookbook is maintained by Chef's Community Cookbook Engineering team. Our goal is to improve cookbook quality and to aid the community in contributing to cookbooks. To learn more about our team, process, and design goals see our [team documentation](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/COOKBOOK_TEAM.MD). To learn more about contributing to cookbooks like this see our [contributing documentation](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/CONTRIBUTING.MD), or if you have general questions about this cookbook come chat with us in #cookbok-engineering on the [Chef Community Slack](http://community-slack.chef.io/)
+
+## License
+
+**Copyright:** 2009-2017, Chef Software, Inc.
+
+```
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
