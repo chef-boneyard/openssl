@@ -25,14 +25,22 @@ module OpenSSLCookbook
       dhparam.params_ok?
     end
 
-    def priv_key_file_valid?(key_file_path, key_password = nil)
-      # Check if the key file exists
-      # Verify the key file contains a private key
-      return false unless ::File.exist?(key_file_path)
-      key = OpenSSL::PKey::RSA.new File.read(key_file_path), key_password
+    # given either a key file path or key file content see if it's actually
+    # a private key
+    def priv_key_file_valid?(key_file, key_password = nil)
+      # if the file exists try to read the content
+      # if not assume we were passed the key and set the string to the content
+      key_content = ::File.exist?(key_file) ? File.read(key_file) : key_file
+
+      begin
+        key = OpenSSL::PKey::RSA.new key_content, key_password
+      rescue OpenSSL::PKey::RSAError
+        return false
+      end
       key.private?
     end
 
+    # return an array of all valid openssl ciphers on this host
     def valid_ciphers
       OpenSSL::Cipher.ciphers
     end
@@ -52,8 +60,11 @@ module OpenSSLCookbook
       OpenSSL::PKey::RSA.new(key_length)
     end
 
-    def gen_rsa_pub_key(priv_key_path, priv_key_password = nil)
-      key = OpenSSL::PKey::RSA.new File.read(priv_key_path), priv_key_password
+    def gen_rsa_pub_key(priv_key, priv_key_password = nil)
+      # if the file exists try to read the content
+      # if not assume we were passed the key and set the string to the content
+      key_content = ::File.exist?(priv_key) ? File.read(priv_key) : priv_key
+      key = OpenSSL::PKey::RSA.new key_content, priv_key_password
       key.public_key.to_pem
     end
 

@@ -181,14 +181,21 @@ This resource generates rsa public key files given a private key.
 
 #### Properties
 
-Name               | Type                         | Description
------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------
-`path`             | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
-`private_key_path` | String                       | The path to the private key to generate the public key from
-`private_key_pass` | String (Optional)            | The passphrase of the provided private key
-`owner`            | String (optional)            | The owner of all files created by the resource. _Default: "root"_
-`group`            | String (optional)            | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
-`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0640"_
+Name                  | Type                                              | Description
+--------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------
+`path`                | String (Optional)                                 | Optional path to write the file to if you'd like to specify it here instead of in the resource name
+`private_key_path`    | String (Required unless private_key_content used) | The path to the private key to generate the public key from
+`private_key_content` | String (Required unless private_key_path used)    | The content of the private key including new lines. Used if you don't want to write a private key to disk and use `private_key_path`.
+`private_key_pass`    | String (Optional)                                 | The passphrase of the provided private key
+`owner`               | String (optional)                                 | The owner of all files created by the resource. _Default: "root"_
+`group`               | String (optional)                                 | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
+`mode`                | String or Integer (Optional)                      | The permission mode of all files created by the resource. _Default: "0640"_
+
+**Note**: To use `private_key_content` the private key string must be properly formatted including new lines. The easiest way to get the right string is to run the following from irb (/opt/chefdk/embedded/bin/irb from ChefDK)
+
+```ruby
+File.read('/foo/bar/private.pem')
+```
 
 #### Example Usage
 
