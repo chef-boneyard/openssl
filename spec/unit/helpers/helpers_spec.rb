@@ -122,7 +122,7 @@ describe OpenSSLCookbook::Helpers do
 
     context 'When the key file does exist, and does contain a vaild rsa private key' do
       it 'returns true' do
-        @keyfile.puts(OpenSSL::PKey::RSA.new(2048).to_pem)
+        @keyfile.puts(OpenSSL::PKey::RSA.new(1024).to_pem)
         @keyfile.close
         expect(instance.priv_key_file_valid?(@keyfile.path)).to be_truthy
       end
@@ -131,7 +131,7 @@ describe OpenSSLCookbook::Helpers do
     context 'When a valid keyfile requires a passphrase, and an invalid passphrase is supplied' do
       it 'Throws an OpenSSL::PKey::RSAError exception' do
         expect do
-          @keyfile.puts(OpenSSL::PKey::RSA.new(2048).to_pem(cipher, 'oink'))
+          @keyfile.puts(OpenSSL::PKey::RSA.new(1024).to_pem(cipher, 'oink'))
           @keyfile.close
           instance.priv_key_file_valid?(@keyfile.path, 'poml')
         end.to raise_error(OpenSSL::PKey::RSAError)
@@ -140,7 +140,7 @@ describe OpenSSLCookbook::Helpers do
 
     context 'When a valid keyfile requires a passphrase, and a valid passphrase is supplied' do
       it 'returns true' do
-        @keyfile.puts(OpenSSL::PKey::RSA.new(2048).to_pem(cipher, 'oink'))
+        @keyfile.puts(OpenSSL::PKey::RSA.new(1024).to_pem(cipher, 'oink'))
         @keyfile.close
         expect(instance.priv_key_file_valid?(@keyfile.path, 'oink')).to be_truthy
       end
