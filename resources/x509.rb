@@ -1,27 +1,35 @@
 include OpenSSLCookbook::Helpers
 
-property :path,             String, name_property: true
-property :owner,            String, default: 'root'
-property :group,            String, default: node['root_group']
-property :expire,           Integer
-property :mode,             [Integer, String], default: '0644'
-property :org,              String, required: true
-property :org_unit,         String, required: true
-property :country,          String, required: true
-property :common_name,      String, required: true
-property :state,            String
-property :city,             String
-property :subject_alt_name, Array, default: []
-property :key_file,         String
-property :key_pass,         String
-property :key_length,       equal_to: [1024, 2048, 4096, 8192], default: 2048
+property :path,                String, name_property: true
+property :owner,               String, default: 'root'
+property :group,               String, default: node['root_group']
+property :expire,              Integer
+property :mode,                [Integer, String], default: '0644'
+property :org,                 String, required: true
+property :org_unit,            String, required: true
+property :country,             String, required: true
+property :state,               String
+property :city,                String
+property :common_name,         String, required: true
+property :subject_alt_name,    Array, default: []
+property :private_key_content, String
+property :private_key_path,    String
+property :private_key_pass,    String
+property :key_length,          equal_to: [1024, 2048, 4096, 8192], default: 2048
+
+alias_method :key_file, :private_key_path # key_file was too ambiguous
+alias_method :key_pass, :private_key_pass # key_pass was too ambiguous
+
+def after_created
+  raise ArgumentError, "You cannot specify both 'private_key_content' and 'private_key_path' properties at the same time." if private_key_content && private_key_path
+  raise ArgumentError, "You must specify the private key with either 'private_key_content' or 'private_key_path' properties. The openssl_rsa_private_key resource may be used to generate this key in your cookbook." unless private_key_content || private_key_path
+end
 
 action :create do
   unless ::File.exist? new_resource.path
-    converge_by("Create #{@new_resource}") do
+    converge_by("Create #{new_resource.path}") do
       create_keys
       cert_content = cert.to_pem
-      key_content = key.to_pem
 
       file new_resource.path do
         action :create_if_missing
@@ -31,34 +39,16 @@ action :create do
         sensitive true
         content cert_content
       end
-
-      file new_resource.key_file do
-        action :create_if_missing
-        mode new_resource.mode
-        owner new_resource.owner
-        group new_resource.group
-        sensitive true
-        content key_content
-      end
     end
   end
 end
 
 action_class do
-  def generate_key_file
-    unless new_resource.key_file
-      path, file = ::File.split(new_resource.path)
-      filename = ::File.basename(file, ::File.extname(file))
-      new_resource.key_file path + '/' + filename + '.key'
-    end
-    new_resource.key_file
-  end
-
   def key
-    @key ||= if priv_key_file_valid?(generate_key_file, new_resource.key_pass)
-               OpenSSL::PKey::RSA.new ::File.read(generate_key_file), new_resource.key_pass
+    @key ||= if priv_key_file_valid?((new_resource.private_key_path || new_resource.private_key_content), new_resource.key_pass) # rubocop: disable Style/GuardClause
+               OpenSSL::PKey::RSA.new (new_resource.private_key_content || ::File.read(new_resource.private_key_path)), new_resource.key_pass
              else
-               OpenSSL::PKey::RSA.new(new_resource.key_length)
+               raise 'The provided private key is not valid or the provided key_pass was not correct!'
              end
     @key
   end

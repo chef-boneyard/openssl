@@ -75,33 +75,38 @@ node.normal['my_secure_attribute'] = random_password(length: 50, mode: :base64)
 node.normal['my_secure_attribute'] = random_password(length: 50, mode: :base64, encoding: 'ASCII')
 ```
 
-Note that node attributes are widely accessible. Storing unencrypted passwords in node attributes, as in this example, carries risk.
+**Note**: Node attributes are widely accessible. Storing unencrypted passwords in node attributes, as in this example, carries risk.
 
 ## Resources
 
 ### openssl_x509
 
-This resource generates self-signed, PEM-formatted x509 certificates. If no existing key is specified, the resource will automatically generate a passwordless key with the certificate.
+This resource generates self-signed, PEM-formatted x509 certificates.
 
 #### Properties
 
-Name               | Type                         | Description
------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-`path`             | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
-`common_name`      | String (Required)            | Value for the `CN` certificate field.
-`org`              | String (Required)            | Value for the `O` certificate field.
-`org_unit`         | String (Required)            | Value for the `OU` certificate field.
-`city`             | String (Optional)            | Value for the `L` certificate field.
-`state`            | String (Optional)            | Value for the `ST` certificate field.
-`country`          | String (Required)            | Value for the `C` ssl field.
-`expire`           | Integer (Optional)           | Value representing the number of days from _now_ through which the issued certificate cert will remain valid. The certificate will expire after this period.
-`subject_alt_name` | Array (Optional)             | Array of _Subject Alternative Name_ entries, in format `DNS:example.com` or `IP:1.2.3.4` _Default: empty_
-`key_file`         | String (Optional)            | The path to a certificate key file on the filesystem. If the `key_file` attribute is specified, the resource will attempt to source a key from this location. If no key file is found, the resource will generate a new key file at this location. If the `key_file` attribute is not specified, the resource will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
-`key_pass`         | String (Optional)            | The passphrase for an existing key's passphrase
-`key_length`       | Integer (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
-`owner`            | String (optional)            | The owner of all files created by the resource. _Default: "root"_
-`group`            | String (optional)            | The group of all files created by the resource. _Default: "root"_
-`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0400"_
+Name                  | Type                                              | Description
+--------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------
+`path`                | String (Optional)                                 | Optional path to write the file to if you'd like to specify it here instead of in the resource name
+`common_name`         | String (Required)                                 | Value for the `CN` certificate field.
+`org`                 | String (Required)                                 | Value for the `O` certificate field.
+`org_unit`            | String (Required)                                 | Value for the `OU` certificate field.
+`city`                | String (Optional)                                 | Value for the `L` certificate field.
+`state`               | String (Optional)                                 | Value for the `ST` certificate field.
+`country`             | String (Required)                                 | Value for the `C` ssl field.
+`expire`              | Integer (Optional)                                | Value representing the number of days from _now_ through which the issued certificate cert will remain valid. The certificate will expire after this period.
+`subject_alt_name`    | Array (Optional)                                  | Array of _Subject Alternative Name_ entries, in format `DNS:example.com` or `IP:1.2.3.4` _Default: empty_
+`private_key_path`    | String (Required unless private_key_content used) | The path to the private key to generate the public key from
+`private_key_content` | String (Required unless private_key_path used)    | The content of the private key including new lines. Used if you don't want to write a private key to disk and use `private_key_path`.
+`private_key_pass`    | String (Optional)                                 | The passphrase for an existing key's passphrase
+`key_length`          | Integer (Optional)                                | The desired Bit Length of the generated key. _Default: 2048_
+`owner`               | String (optional)                                 | The owner of all files created by the resource. _Default: "root"_
+`group`               | String (optional)                                 | The group of all files created by the resource. _Default: "root"_
+`mode`                | String or Integer (Optional)                      | The permission mode of all files created by the resource. _Default: "0400"_
+
+**Note** This resource previously generated private keys if the specified key did not exist. This resource will now fail if the key cannot be found. Use `openssl_rsa_private_key` to generate a key first if necessary.
+
+**Note** key_file/key_pass properties have been renamed `private_key_path` and `private_key_pass`. The previous names will continue to function, but cookbooks should be updated for the new property names.
 
 #### Example Usage
 
@@ -150,7 +155,7 @@ When executed, this recipe will generate a dhparam file at `/etc/httpd/ssl/dhpar
 
 This resource generates rsa private key files. If a valid rsa key file can be opened at the specified location, no new file will be created. If the RSA key file cannot be opened, either because it does not exist or because the password to the RSA key file does not match the password in the recipe, it will be overwritten.
 
-Note: This resource was renamed from openssl_rsa_key to openssl_rsa_private_key. The legacy name will continue to function, but cookbook code should be updated for the new resource name.
+**Note** This resource was renamed from openssl_rsa_key to openssl_rsa_private_key. The legacy name will continue to function, but cookbook code should be updated for the new resource name.
 
 #### Properties
 
