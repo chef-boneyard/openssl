@@ -2,6 +2,13 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 8.1.0 (2017-12-28)
+
+- Adding x509 support for /ST and /L
+- Allow passing private key content to rsa_public_key resource via property
+- Fix openssl_rsa_public_key converging on every run
+- Fix undefied method "cipher" error in openssl_rsa_private_key resource
+
 ## 8.0.0 (2017-12-11)
 
 - Added a new openssl_rsa_public_key resource which generates a public key from a private key
