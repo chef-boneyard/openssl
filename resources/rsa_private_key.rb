@@ -20,7 +20,7 @@ action :create do
 
       if new_resource.key_pass
         unencrypted_rsa_key = gen_rsa_priv_key(new_resource.key_length)
-        rsa_key_content = encrypt_rsa_key(unencrypted_rsa_key, new_resource.key_pass, new_resource.cipher)
+        rsa_key_content = encrypt_rsa_key(unencrypted_rsa_key, new_resource.key_pass, new_resource.key_cipher)
       else
         rsa_key_content = gen_rsa_priv_key(new_resource.key_length).to_pem
       end
