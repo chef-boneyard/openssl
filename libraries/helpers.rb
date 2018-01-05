@@ -38,11 +38,6 @@ module OpenSSLCookbook
       key.private?
     end
 
-    # return an array of all valid openssl ciphers on this host
-    def valid_ciphers
-      OpenSSL::Cipher.ciphers
-    end
-
     # Generators
     def gen_dhparam(key_length, generator)
       raise TypeError, 'Generator must be an integer' unless generator.is_a?(Integer)
