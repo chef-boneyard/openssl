@@ -22,6 +22,9 @@ module OpenSSLCookbook
 
     # given either a key file path or key file content see if it's actually
     # a private key
+    # @param [String] key_file the path to the keyfile or the key contents
+    # @param [String] key_password optional password to the keyfile
+    # @return [Boolean] is the key valid?
     def priv_key_file_valid?(key_file, key_password = nil)
       # if the file exists try to read the content
       # if not assume we were passed the key and set the string to the content
@@ -47,7 +50,9 @@ module OpenSSLCookbook
       OpenSSL::PKey::DH.new(key_length, generator)
     end
 
-    # Given the key length generate an RSA private key
+    # generate an RSA private key given key length
+    # @param [Integer] key_length the key length of the private key
+    #
     def gen_rsa_priv_key(key_length)
       OpenSSL::PKey::RSA.new(key_length)
     end
@@ -60,8 +65,11 @@ module OpenSSLCookbook
       key.public_key.to_pem
     end
 
-    # Key manipulation helpers
-    # Returns a pem string
+    # generate a pem file given a cipher, key, an optional key_password
+    # @param [OpenSSL::PKey::RSA] rsa_key the private key object
+    # @param [String] key_password the password for the private key
+    # @param [String] key_cipher the cipher to use
+    # @return [String] pem contents
     def encrypt_rsa_key(rsa_key, key_password, key_cipher)
       raise TypeError, 'rsa_key must be a Ruby OpenSSL::PKey::RSA object' unless rsa_key.is_a?(OpenSSL::PKey::RSA)
       raise TypeError, 'key_password must be a string' unless key_password.is_a?(String)
