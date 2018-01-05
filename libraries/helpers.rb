@@ -5,13 +5,18 @@ module OpenSSLCookbook
       require 'openssl' unless defined?(OpenSSL)
     end
 
-    # Path helpers
+    # determine the key filename from the cert filename
+    # @param [String] cert_filename the path to the certfile
+    # @return [String] the path to the keyfile
     def get_key_filename(cert_filename)
       cert_file_path, cert_filename = ::File.split(cert_filename)
       cert_filename = ::File.basename(cert_filename, ::File.extname(cert_filename))
       cert_file_path + ::File::SEPARATOR + cert_filename + '.key'
     end
 
+    # validate a dhparam file from path
+    # @param [String] dhparam_pem_path the path to the pem file
+    # @return [Boolean] is the key valid
     def dhparam_pem_valid?(dhparam_pem_path)
       # Check if the dhparam.pem file exists
       # Verify the dhparam.pem file contains a key
@@ -38,7 +43,10 @@ module OpenSSLCookbook
       key.private?
     end
 
-    # Generators
+    # generate a dhparam file
+    # @param [String] key_length the length of the key
+    # @param [Integer] generator the dhparam generator to use
+    # @return [OpenSSL::PKey::DH]
     def gen_dhparam(key_length, generator)
       raise TypeError, 'Generator must be an integer' unless generator.is_a?(Integer)
 
@@ -47,11 +55,15 @@ module OpenSSLCookbook
 
     # generate an RSA private key given key length
     # @param [Integer] key_length the key length of the private key
-    #
+    # @return [OpenSSL::PKey::DH]
     def gen_rsa_priv_key(key_length)
       OpenSSL::PKey::RSA.new(key_length)
     end
 
+    # generate pem format of the public key given a private key
+    # @param [String] priv_key either the contents of the private key or the path to the file
+    # @param [String] priv_key_password optional password for the private key
+    # @return [String] pem format of the public key
     def gen_rsa_pub_key(priv_key, priv_key_password = nil)
       # if the file exists try to read the content
       # if not assume we were passed the key and set the string to the content
