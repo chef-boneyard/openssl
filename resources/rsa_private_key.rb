@@ -7,7 +7,7 @@ property :path,        String, name_property: true
 property :key_length,  equal_to: [1024, 2048, 4096, 8192], default: 2048
 property :key_pass,    String
 property :key_cipher,  String, default: 'des3', equal_to: OpenSSL::Cipher.ciphers
-property :owner,       String, default: 'root'
+property :owner,       String, default: node['platform'] == 'windows' ? 'Adminstrator' : 'root'
 property :group,       String, default: node['root_group']
 property :mode,        [Integer, String], default: '0640'
 property :force,       [true, false], default: false

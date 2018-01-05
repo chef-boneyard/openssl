@@ -1,7 +1,7 @@
 include OpenSSLCookbook::Helpers
 
 property :path,             String, name_property: true
-property :owner,            String, default: 'root'
+property :owner,            String, default: node['platform'] == 'windows' ? 'Adminstrator' : 'root'
 property :group,            String, default: node['root_group']
 property :expire,           Integer
 property :mode,             [Integer, String], default: '0644'
