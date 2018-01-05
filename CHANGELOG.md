@@ -2,6 +2,13 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 8.1.1 (2018-01-05)
+
+- Add YARD comments to all the helpers
+- Move valid ciphers directly into the equal_to check
+- Remove the Chefspec matchers since modern ChefSpec does this automatically
+- Fix failures on Windows nodes
+
 ## 8.1.0 (2017-12-28)
 
 - Adding x509 support for /ST and /L
