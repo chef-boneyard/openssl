@@ -12,11 +12,6 @@ module OpenSSLCookbook
       cert_file_path + ::File::SEPARATOR + cert_filename + '.key'
     end
 
-    # Validation helpers
-    def key_length_valid?(number)
-      number >= 1024 && number & (number - 1) == 0
-    end
-
     def dhparam_pem_valid?(dhparam_pem_path)
       # Check if the dhparam.pem file exists
       # Verify the dhparam.pem file contains a key
@@ -47,7 +42,6 @@ module OpenSSLCookbook
 
     # Generators
     def gen_dhparam(key_length, generator)
-      raise ArgumentError, 'Key length must be a power of 2 greater than or equal to 1024' unless key_length_valid?(key_length)
       raise TypeError, 'Generator must be an integer' unless generator.is_a?(Integer)
 
       OpenSSL::PKey::DH.new(key_length, generator)
@@ -55,8 +49,6 @@ module OpenSSLCookbook
 
     # Given the key length generate an RSA private key
     def gen_rsa_priv_key(key_length)
-      raise ArgumentError, 'Key length must be a power of 2 greater than or equal to 1024' unless key_length_valid?(key_length)
-
       OpenSSL::PKey::RSA.new(key_length)
     end
 

@@ -30,34 +30,6 @@ describe OpenSSLCookbook::Helpers do
   end
 
   # Validation helpers
-  describe '#key_length_valid?' do
-    context 'When the number is less than 1024' do
-      it 'returns false' do
-        expect(instance.key_length_valid?(1023)).to be_falsey
-        expect(instance.key_length_valid?(2)).to be_falsey
-        expect(instance.key_length_valid?(64)).to be_falsey
-        expect(instance.key_length_valid?(512)).to be_falsey
-      end
-    end
-
-    context 'When the number is greater than 1024 but is not a power of 2' do
-      it 'returns false' do
-        expect(instance.key_length_valid?(1025)).to be_falsey
-        expect(instance.key_length_valid?(6666)).to be_falsey
-        expect(instance.key_length_valid?(8191)).to be_falsey
-      end
-    end
-
-    context 'When the number is a power of 2, equal to or greater than 1024' do
-      it 'returns true' do
-        expect(instance.key_length_valid?(1024)).to be_truthy
-        expect(instance.key_length_valid?(2048)).to be_truthy
-        expect(instance.key_length_valid?(4096)).to be_truthy
-        expect(instance.key_length_valid?(8192)).to be_truthy
-      end
-    end
-  end
-
   describe '#dhparam_pem_valid?' do
     require 'tempfile'
 
