@@ -158,7 +158,7 @@ Name         | Type                         | Description
 ------------ | ---------------------------- | -----------------------------------------------------------------------------------------------------------------------------------
 `path`       | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
 `key_length` | Integer (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
-`cipher`     | String (Optional)            | The designed cipher to use when generating your key. Run `openssl list-cipher-algorithms` to see available options. _Default: des3_
+`key_cipher` | String (Optional)            | The designed cipher to use when generating your key. Run `openssl list-cipher-algorithms` to see available options. _Default: des3_
 `key_pass`   | String (Optional)            | The desired passphrase for the key.
 `owner`      | String (optional)            | The owner of all files created by the resource. _Default: "root"_
 `group`      | String (optional)            | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
