@@ -9,7 +9,7 @@ property :org,              String, required: true
 property :org_unit,         String, required: true
 property :country,          String, required: true
 property :common_name,      String, required: true
-property :state,            String
+property :state_name,       String
 property :city,             String
 property :subject_alt_name, Array, default: []
 property :key_file,         String
@@ -79,7 +79,7 @@ action_class do
 
   def subject
     @subject ||= '/C=' + new_resource.country +
-                 '/ST=' + (new_resource.state ? new_resource.state : ' ') +
+                 '/ST=' + (new_resource.state_name ? new_resource.state_name : ' ') +
                  '/L=' + (new_resource.city ? new_resource.city : ' ') +
                  '/O=' + new_resource.org +
                  '/OU=' + new_resource.org_unit +
