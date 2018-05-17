@@ -43,8 +43,8 @@ module OpenSSLCookbook
       key_content = ::File.exist?(key_file) ? File.read(key_file) : key_file
 
       begin
-        key = OpenSSL::PKey::RSA.new key_content, key_password
-      rescue OpenSSL::PKey::RSAError
+        key = OpenSSL::PKey.read key_content, key_password
+      rescue OpenSSL::PKey::PKeyError
         return false
       end
       key.private?
@@ -95,6 +95,54 @@ module OpenSSLCookbook
 
       cipher = OpenSSL::Cipher.new(key_cipher)
       rsa_key.to_pem(cipher, key_password)
+    end
+
+    # generate an ec private key given curve type
+    # @param [String] curve the kind of curve to use
+    # @return [OpenSSL::PKey::DH]
+    def gen_ec_priv_key(curve)
+      raise TypeError, 'curve must be a string' unless curve.is_a?(String)
+      raise ArgumentError, 'Specified curve is not available on this system' unless curve == 'prime256v1' || curve == 'secp384r1' || curve == 'secp521r1'
+      OpenSSL::PKey::EC.generate(curve)
+    end
+
+    # generate pem format of the public key given a private key
+    # @param [String] priv_key either the contents of the private key or the path to the file
+    # @param [String] priv_key_password optional password for the private key
+    # @return [String] pem format of the public key
+    def gen_ec_pub_key(priv_key, priv_key_password = nil)
+      # if the file exists try to read the content
+      # if not assume we were passed the key and set the string to the content
+      key_content = ::File.exist?(priv_key) ? File.read(priv_key) : priv_key
+      key = OpenSSL::PKey::RSA.new key_content, priv_key_password
+
+      # Get curve type (prime256v1...)
+      group = OpenSSL::PKey::EC::Group.new(key.group.curve_name)
+      # Get Generator point & public point (priv * generator)
+      generator = group.generator
+      pub_point = generator.mul(key.private_key)
+      key.public_key = pub_point
+
+      # Public Key in pem
+      public_key = OpenSSL::PKey::EC.new
+      public_key.group = group
+      public_key.public_key = pub_point
+      public_key.to_pem
+    end
+
+    # generate a pem file given a cipher, key, an optional key_password
+    # @param [OpenSSL::PKey::EC] ec_key the private key object
+    # @param [String] key_password the password for the private key
+    # @param [String] key_cipher the cipher to use
+    # @return [String] pem contents
+    def encrypt_ec_key(ec_key, key_password, key_cipher)
+      raise TypeError, 'ec_key must be a Ruby OpenSSL::PKey::EC object' unless ec_key.is_a?(OpenSSL::PKey::EC)
+      raise TypeError, 'key_password must be a string' unless key_password.is_a?(String)
+      raise TypeError, 'key_cipher must be a string' unless key_cipher.is_a?(String)
+      raise ArgumentError, 'Specified key_cipher is not available on this system' unless OpenSSL::Cipher.ciphers.include?(key_cipher)
+
+      cipher = OpenSSL::Cipher.new(key_cipher)
+      ec_key.to_pem(cipher, key_password)
     end
   end
 end

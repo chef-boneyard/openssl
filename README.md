@@ -207,6 +207,65 @@ openssl_rsa_public_key '/etc/foo/something.pub' do
 end
 ```
 
+### openssl_ec_private_key
+
+This resource generates ec private key files. If a valid ec key file can be opened at the specified location, no new file will be created. If the EC key file cannot be opened, either because it does not exist or because the password to the EC key file does not match the password in the recipe, it will be overwritten.
+
+#### Properties
+
+Name         | Type                         | Description
+------------ | ---------------------------- | -----------------------------------------------------------------------------------------------------------------------------------
+`path`       | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
+`key_curve`  | String (Optional)            | The desired curve of the generated key. Run `openssl ecparam -list_curves` to see available options. _Default: prime256v1
+`key_cipher` | String (Optional)            | The designed cipher to use when generating your key. Run `openssl list-cipher-algorithms` to see available options. _Default: des3_
+`key_pass`   | String (Optional)            | The desired passphrase for the key.
+`owner`      | String (optional)            | The owner of all files created by the resource. _Default: "root"_
+`group`      | String (optional)            | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
+`mode`       | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0640"_
+`force`      | true/false (Optional)        | Force creating the key even if the existing key exists. _Default: false_
+
+#### Example Usage
+
+In this example, an administrator wishes to create a new EC private key file in order to generate other certificates and public keys. In order to create the key file, the administrator crafts this recipe:
+
+```ruby
+openssl_ec_private_key '/etc/httpd/ssl/server.key' do
+  key_curve "prime256v1'
+end
+```
+
+When executed, this recipe will generate a passwordless EC key file at `/etc/httpd/ssl/server.key`.
+
+### openssl_ec_public_key
+
+This resource generates ec public key files given a private key.
+
+#### Properties
+
+Name                  | Type                                              | Description
+--------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------
+`path`                | String (Optional)                                 | Optional path to write the file to if you'd like to specify it here instead of in the resource name
+`private_key_path`    | String (Required unless private_key_content used) | The path to the private key to generate the public key from
+`private_key_content` | String (Required unless private_key_path used)    | The content of the private key including new lines. Used if you don't want to write a private key to disk and use `private_key_path`.
+`private_key_pass`    | String (Optional)                                 | The passphrase of the provided private key
+`owner`               | String (optional)                                 | The owner of all files created by the resource. _Default: "root"_
+`group`               | String (optional)                                 | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
+`mode`                | String or Integer (Optional)                      | The permission mode of all files created by the resource. _Default: "0640"_
+
+**Note**: To use `private_key_content` the private key string must be properly formatted including new lines. The easiest way to get the right string is to run the following from irb (/opt/chefdk/embedded/bin/irb from ChefDK)
+
+```ruby
+File.read('/foo/bar/private.pem')
+```
+
+#### Example Usage
+
+```ruby
+openssl_ec_public_key '/etc/foo/something.pub' do
+  priv_key_path '/etc/foo/something.pem'
+end
+```
+
 ## Maintainers
 
 This cookbook is maintained by Chef's Community Cookbook Engineering team. Our goal is to improve cookbook quality and to aid the community in contributing to cookbooks. To learn more about our team, process, and design goals see our [team documentation](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/COOKBOOK_TEAM.MD). To learn more about contributing to cookbooks like this see our [contributing documentation](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/CONTRIBUTING.MD), or if you have general questions about this cookbook come chat with us in #cookbok-engineering on the [Chef Community Slack](http://community-slack.chef.io/)

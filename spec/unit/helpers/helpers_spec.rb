@@ -110,15 +110,15 @@ describe OpenSSLCookbook::Helpers do
       end
     end
 
-    context 'When the key file does exist, but does not contain a valid rsa private key' do
-      it 'Throws an OpenSSL::PKey::RSAError exception' do
+    context 'When the key file does exist, but does not contain a valid rsa/ec private key' do
+      it 'Throws an OpenSSL::PKey::PKeyError exception' do
         @keyfile.write('I_am_not_a_key_I_am_a_free_man')
         @keyfile.close
         expect(instance.priv_key_file_valid?(@keyfile.path)).to be_falsey
       end
     end
 
-    context 'When the key file does exist, and does contain a vaild rsa private key' do
+    context 'When the rsa key file does exist, and does contain a vaild rsa private key' do
       it 'returns true' do
         @keyfile.write(OpenSSL::PKey::RSA.new(1024).to_pem)
         @keyfile.close
@@ -126,7 +126,15 @@ describe OpenSSLCookbook::Helpers do
       end
     end
 
-    context 'When a valid keyfile requires a passphrase, and an invalid passphrase is supplied' do
+    context 'When the ec key file does exist, and does contain a vaild ec private key' do
+      it 'returns true' do
+        @keyfile.write(OpenSSL::PKey::EC.generate('prime256v1').to_pem)
+        @keyfile.close
+        expect(instance.priv_key_file_valid?(@keyfile.path)).to be_truthy
+      end
+    end
+
+    context 'When a valid rsa keyfile requires a passphrase, and an invalid passphrase is supplied' do
       it 'returns false' do
         @keyfile.write(OpenSSL::PKey::RSA.new(1024).to_pem(cipher, 'oink'))
         @keyfile.close
@@ -134,9 +142,25 @@ describe OpenSSLCookbook::Helpers do
       end
     end
 
-    context 'When a valid keyfile requires a passphrase, and a valid passphrase is supplied' do
+    context 'When a valid ec keyfile requires a passphrase, and an invalid passphrase is supplied' do
+      it 'returns false' do
+        @keyfile.write(OpenSSL::PKey::EC.generate('prime256v1').to_pem(cipher, 'oink'))
+        @keyfile.close
+        expect(instance.priv_key_file_valid?(@keyfile.path, 'poml')).to be_falsey
+      end
+    end
+
+    context 'When a valid rsa keyfile requires a passphrase, and a valid passphrase is supplied' do
       it 'returns true' do
         @keyfile.write(OpenSSL::PKey::RSA.new(1024).to_pem(cipher, 'oink'))
+        @keyfile.close
+        expect(instance.priv_key_file_valid?(@keyfile.path, 'oink')).to be_truthy
+      end
+    end
+
+    context 'When a valid ec keyfile requires a passphrase, and a valid passphrase is supplied' do
+      it 'returns true' do
+        @keyfile.write(OpenSSL::PKey::EC.generate('prime256v1').to_pem(cipher, 'oink'))
         @keyfile.close
         expect(instance.priv_key_file_valid?(@keyfile.path, 'oink')).to be_truthy
       end
@@ -230,6 +254,74 @@ describe OpenSSLCookbook::Helpers do
         @encrypted_key = instance.encrypt_rsa_key(@rsa_key, 'oink', 'des3')
         expect(@encrypted_key).to be_kind_of(String)
         expect(OpenSSL::PKey::RSA.new(@encrypted_key, 'oink').private?).to be_truthy
+      end
+    end
+  end
+
+  describe '#gen_ec_priv_key' do
+    context 'When given an invalid curve' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.gen_ec_priv_key(2048)
+        end.to raise_error(TypeError)
+      end
+
+      it 'Throws an ArgumentError' do
+        expect do
+          instance.gen_ec_priv_key('primeFromTheFuture')
+        end.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'When a proper curve is given' do
+      it 'Generates an ec key object' do
+        expect(instance.gen_ec_priv_key('prime256v1')).to be_kind_of(OpenSSL::PKey::EC)
+      end
+    end
+  end
+
+  describe '#encrypt_ec_key' do
+    before(:all) do
+      @ec_key = OpenSSL::PKey::EC.generate('prime256v1')
+    end
+
+    context 'When given anything other than an EC key object to encrypt' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.encrypt_ec_key('abcd', 'efgh', 'des3')
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When given anything other than a string as the passphrase' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.encrypt_ec_key(@ec_key, 1234, 'des3')
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When given anything other than a string as the cipher' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.encrypt_ec_key(@ec_key, '1234', 1234)
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When given an invalid cipher string' do
+      it 'Raises an ArgumentError' do
+        expect do
+          instance.encrypt_ec_key(@ec_key, '1234', 'des3_bogus')
+        end.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'When given a valid ec key and a valid passphrase string' do
+      it 'Generates a valid encrypted PEM' do
+        @encrypted_key = instance.encrypt_ec_key(@ec_key, 'oink', 'des3')
+        expect(@encrypted_key).to be_kind_of(String)
+        expect(OpenSSL::PKey::EC.new(@encrypted_key, 'oink').private?).to be_truthy
       end
     end
   end

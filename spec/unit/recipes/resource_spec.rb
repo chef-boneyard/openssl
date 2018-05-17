@@ -86,4 +86,19 @@ describe 'test::resources' do
   #     expect(chef_run).to create_file('/etc/ssl_test/rsakey_des3.pub')
   #   end
   # end
+
+  context 'the openssl_ec_private_key resource:' do
+    cached(:chef_run) do
+      runner = ChefSpec::ServerRunner.new(platform: 'ubuntu', version: '16.04', step_into: ['openssl_ec_private_key'])
+      runner.converge(described_recipe)
+    end
+
+    it 'adds a directory resource \'/etc/ssl_test\' with action create' do
+      expect(chef_run).to create_directory('/etc/ssl_test')
+    end
+
+    it 'The resource adds a file resource \'/etc/ssl_test/eckey_prime256v1_des3.pem\' with action create' do
+      expect(chef_run).to create_file('/etc/ssl_test/eckey_prime256v1_des3.pem')
+    end
+  end
 end
