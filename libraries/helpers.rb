@@ -114,7 +114,7 @@ module OpenSSLCookbook
       # if the file exists try to read the content
       # if not assume we were passed the key and set the string to the content
       key_content = ::File.exist?(priv_key) ? File.read(priv_key) : priv_key
-      key = OpenSSL::PKey::RSA.new key_content, priv_key_password
+      key = OpenSSL::PKey::EC.new key_content, priv_key_password
 
       # Get curve type (prime256v1...)
       group = OpenSSL::PKey::EC::Group.new(key.group.curve_name)
