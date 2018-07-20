@@ -22,7 +22,6 @@ env:
   - INSTANCE=resources-amazonlinux
   - INSTANCE=resources-ubuntu-1404
   - INSTANCE=resources-ubuntu-1604
-  - INSTANCE=resources-debian-7
   - INSTANCE=resources-debian-8
   - INSTANCE=resources-debian-9
   - INSTANCE=resources-centos-6
@@ -31,7 +30,6 @@ env:
   - INSTANCE=resources-fedora-latest
   - INSTANCE=upgrade-ubuntu-1404
   - INSTANCE=upgrade-ubuntu-1604
-  - INSTANCE=upgrade-debian-7
   - INSTANCE=upgrade-debian-8
   - INSTANCE=upgrade-debian-9
   - INSTANCE=upgrade-centos-6
