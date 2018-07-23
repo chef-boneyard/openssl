@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 8.2.0 (2018-07-23)
+
+- Add ec_private_key & ec_public_key resources
+
 ## 8.1.2 (2018-02-09)
 
 - Fix typo in resources that caused failures on Windows.
