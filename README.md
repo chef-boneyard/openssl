@@ -7,7 +7,10 @@ This cookbook provides tools for working with the Ruby OpenSSL library. It inclu
 - A library method to generate secure random passwords in recipes, using the Ruby SecureRandom library.
 - A resource for generating RSA private keys.
 - A resource for generating RSA public keys.
+- A resource for generating EC private keys.
+- A resource for generating EC public keys.
 - A resource for generating x509 certificates.
+- A resource for generating x509 requests.
 - A resource for generating dhparam.pem files.
 - An attribute-driven recipe for upgrading OpenSSL packages.
 
@@ -117,6 +120,44 @@ end
 ```
 
 When executed, this recipe will generate a key certificate at `/etc/httpd/ssl/mycert.key`. It will then use that key to generate a new certificate file at `/etc/httpd/ssl/mycert.pem`.
+
+### openssl_x509_request
+
+
+This resource generates PEM-formatted x509 certificates requests. If no existing key is specified, the resource will automatically generate a passwordless key with the certificate.
+
+
+#### Properties
+
+Name                  | Type                                              | Description
+--------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------
+`path`             | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
+`common_name`      | String (Required)            | Value for the `CN` certificate field.
+`org`              | String (Optional)            | Value for the `O` certificate field.
+`org_unit`         | String (Optional)            | Value for the `OU` certificate field.
+`city`             | String (Optional)            | Value for the `L` certificate field.
+`state`            | String (Optional)            | Value for the `ST` certificate field.
+`country`          | String (Optional)            | Value for the `C` ssl field.
+`key_file`         | String (Optional)            | The path to a certificate key file on the filesystem. If the `key_file` attribute is specified, the resource will attempt to source a key from this location. If no key file is found, the resource will generate a new key file at this location. If the `key_file` attribute is not specified, the resource will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
+`key_pass`         | String (Optional)            | The passphrase for an existing key's passphrase
+`key_type`         | String (Optional)            | The desired type of the generated key (rsa or ec). _Default: ec_
+`key_length`       | Integer (Optional)           | The desired Bit Length of the generated key (if key_type is equal to 'rsa'). _Default: 2048_
+`key_curve`        | String (Optional)            | The desired curve of the generated key (if key_type is equal to 'ec'). Run `openssl ecparam -list_curves` to see available options. _Default: prime256v1
+`owner`            | String (optional)            | The owner of all files created by the resource. _Default: "root"_
+`group`            | String (optional)            | The group of all files created by the resource. _Default: "root"_
+`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
+
+
+#### Example Usage
+
+```ruby
+openssl_x509_request '/etc/ssl_test/my_ec_request.csr' do
+  common_name 'myecrequest.example.com'
+  org 'Test Kitchen Example'
+  org_unit 'Kitchens'
+  country 'UK'
+end
+```
 
 ### openssl_dhparam
 

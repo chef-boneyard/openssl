@@ -24,3 +24,27 @@ end
 describe command('openssl x509 -in /etc/ssl_test/mycert.crt -noout') do
   its('exit_status') { should eq 0 }
 end
+
+describe command('openssl ec -in /etc/ssl_test/my_ec_request.key -text -noout') do
+  its('exit_status') { should eq 0 }
+end
+
+describe command('openssl rsa -in /etc/ssl_test/my_rsa_request.key -check -noout') do
+  its('exit_status') { should eq 0 }
+end
+
+describe command('openssl req -text -noout -verify -in /etc/ssl_test/my_ec_request.csr') do
+  its('exit_status') { should eq 0 }
+end
+
+describe command('openssl req -text -noout -verify -in /etc/ssl_test/my_ec_request2.csr') do
+  its('exit_status') { should eq 0 }
+end
+
+describe command('openssl req -text -noout -verify -in /etc/ssl_test/my_rsa_request.csr') do
+  its('exit_status') { should eq 0 }
+end
+
+describe command('openssl req -text -noout -verify -in /etc/ssl_test/my_rsa_request2.csr') do
+  its('exit_status') { should eq 0 }
+end

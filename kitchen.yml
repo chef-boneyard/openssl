@@ -4,6 +4,7 @@ driver:
 provisioner:
   name: chef_zero
   deprecations_as_errors: true
+  require_chef_omnibus: 13.10.0
 
 verifier:
   name: inspec
