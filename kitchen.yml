@@ -3,7 +3,7 @@ driver:
 
 provisioner:
   name: chef_zero
-  deprecations_as_errors: true
+  deprecations_as_errors: false
 
 verifier:
   name: inspec
@@ -30,6 +30,7 @@ platforms:
       box: chef/solaris-11.3 # private box
   - name: ubuntu-14.04
   - name: ubuntu-16.04
+  - name: ubuntu-18.04
 
 suites:
 - name: resources
