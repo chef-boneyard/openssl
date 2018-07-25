@@ -26,6 +26,12 @@
   /etc/ssl_test/mycert.crt
   /etc/ssl_test/mycert.key
   /etc/ssl_test/mycert2.crt
+  /etc/ssl_test/my_ec_request.csr
+  /etc/ssl_test/my_ec_request.key
+  /etc/ssl_test/my_ec_request2.csr
+  /etc/ssl_test/my_rsa_request.csr
+  /etc/ssl_test/my_rsa_request.key
+  /etc/ssl_test/my_rsa_request2.csr
 ).each do |f|
   file "delete existing test file #{f}" do
     path f
@@ -114,4 +120,43 @@ openssl_x509 '/etc/ssl_test/mycert2.crt' do
   org_unit 'Kitchens'
   country 'UK'
   key_file '/etc/ssl_test/mycert.key'
+end
+
+#
+# X509_REQUEST HERE
+#
+
+# Generate new ec key and csr
+openssl_x509_request '/etc/ssl_test/my_ec_request.csr' do
+  common_name 'myecrequest.example.com'
+  org 'Test Kitchen Example'
+  org_unit 'Kitchens'
+  country 'UK'
+end
+
+# Generate a new csr from an existing ec key
+openssl_x509_request '/etc/ssl_test/my_ec_request2.csr' do
+  common_name 'myecrequest2.example.com'
+  org 'Test Kitchen Example'
+  org_unit 'Kitchens'
+  country 'UK'
+  key_file '/etc/ssl_test/my_ec_request.key'
+end
+
+# Generate new rsa key and csr
+openssl_x509_request '/etc/ssl_test/my_rsa_request.csr' do
+  common_name 'myrsarequest.example.com'
+  org 'Test Kitchen Example'
+  org_unit 'Kitchens'
+  country 'UK'
+  key_type 'rsa'
+end
+
+# Generate a new certificate from an existing rsa key
+openssl_x509_request '/etc/ssl_test/my_rsa_request2.csr' do
+  common_name 'myrsarequest2.example.com'
+  org 'Test Kitchen Example'
+  org_unit 'Kitchens'
+  country 'UK'
+  key_file '/etc/ssl_test/my_ec_request.key'
 end

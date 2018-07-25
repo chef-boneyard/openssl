@@ -60,6 +60,41 @@ describe 'test::resources' do
     end
   end
 
+  context 'the openssl_x509_request resource:' do
+    cached(:chef_run) do
+      runner = ChefSpec::ServerRunner.new(platform: 'ubuntu', version: '16.04', step_into: ['openssl_x509_request'])
+      runner.converge(described_recipe)
+    end
+
+    it 'adds a directory resource \'/etc/ssl_test\' with action create' do
+      expect(chef_run).to create_directory('/etc/ssl_test')
+    end
+
+    it 'The resource adds a file resource \'/etc/ssl_test/my_ec_request.csr\' with action create' do
+      expect(chef_run).to create_file('/etc/ssl_test/my_ec_request.csr')
+    end
+
+    it 'The resource adds a file resource \'/etc/ssl_test/my_ec_request.key\' with action create' do
+      expect(chef_run).to create_file('/etc/ssl_test/my_ec_request.key')
+    end
+
+    it 'The resource adds a file resource \'/etc/ssl_test/my_ec_request2.csr\' with action create' do
+      expect(chef_run).to create_file('/etc/ssl_test/my_ec_request2.csr')
+    end
+
+    it 'The resource adds a file resource \'/etc/ssl_test/my_rsa_request.csr\' with action create' do
+      expect(chef_run).to create_file('/etc/ssl_test/my_rsa_request.csr')
+    end
+
+    it 'The resource adds a file resource \'/etc/ssl_test/my_rsa_request.key\' with action create' do
+      expect(chef_run).to create_file('/etc/ssl_test/my_rsa_request.key')
+    end
+
+    it 'The resource adds a file resource \'/etc/ssl_test/my_rsa_request2.csr\' with action create' do
+      expect(chef_run).to create_file('/etc/ssl_test/my_rsa_request2.csr')
+    end
+  end
+
   context 'the openssl_rsa_private_key resource:' do
     cached(:chef_run) do
       runner = ChefSpec::ServerRunner.new(platform: 'ubuntu', version: '16.04', step_into: ['openssl_rsa_private_key'])

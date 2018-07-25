@@ -144,5 +144,22 @@ module OpenSSLCookbook
       cipher = OpenSSL::Cipher.new(key_cipher)
       ec_key.to_pem(cipher, key_password)
     end
+
+    # generate a csr pem file given a subject and a private key
+    # @param [OpenSSL::X509::Name] subject the x509 subject object
+    # @param [OpenSSL::PKey::EC, OpenSSL::PKey::RSA] key the private key object
+    # @return [OpenSSL::X509::Request]
+    def gen_x509_request(subject, key)
+      raise TypeError, 'subject must be a Ruby OpenSSL::X509::Name object' unless subject.is_a?(OpenSSL::X509::Name)
+      raise TypeError, 'key must be a Ruby OpenSSL::PKey::EC or a Ruby OpenSSL::PKey::RSA object' unless key.is_a?(OpenSSL::PKey::EC) || key.is_a?(OpenSSL::PKey::RSA)
+
+      request = OpenSSL::X509::Request.new
+      request.version = 0
+      request.subject = subject
+      request.public_key = key
+
+      request.sign(key, OpenSSL::Digest::SHA256.new)
+      request
+    end
   end
 end

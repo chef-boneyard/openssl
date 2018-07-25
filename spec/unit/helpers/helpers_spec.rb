@@ -325,4 +325,44 @@ describe OpenSSLCookbook::Helpers do
       end
     end
   end
+
+  describe '#gen_x509_request' do
+    before(:all) do
+      @subject = OpenSSL::X509::Name.new [%w(CN x509request)]
+      @ec_key = OpenSSL::PKey::EC.generate('prime256v1')
+      @rsa_key = OpenSSL::PKey::RSA.new(2048)
+    end
+
+    context 'When given anything other than an RSA/EC key object' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.gen_x509_request(@subject, 'abc')
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When given anything other than an X509 Name object' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.gen_x509_request('abc', @key)
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When given a valid EC key and a valid subject' do
+      it 'Generates a valid x509 request PEM' do
+        @x509_request = instance.gen_x509_request(@subject, @ec_key)
+        expect(@x509_request).to be_kind_of(OpenSSL::X509::Request)
+        expect(OpenSSL::X509::Request.new(@x509_request).verify(@ec_key)).to be_truthy
+      end
+    end
+
+    context 'When given a valid RSA key and a valid subject' do
+      it 'Generates a valid x509 request PEM' do
+        @x509_request = instance.gen_x509_request(@subject, @rsa_key)
+        expect(@x509_request).to be_kind_of(OpenSSL::X509::Request)
+        expect(OpenSSL::X509::Request.new(@x509_request).verify(@rsa_key)).to be_truthy
+      end
+    end
+  end
 end
