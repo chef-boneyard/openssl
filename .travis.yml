@@ -1,5 +1,4 @@
 sudo: required
-dist: trusty
 
 addons:
   apt:
@@ -20,16 +19,16 @@ services: docker
 env:
   matrix:
   - INSTANCE=resources-amazonlinux
-  - INSTANCE=resources-ubuntu-1404
   - INSTANCE=resources-ubuntu-1604
+  - INSTANCE=resources-ubuntu-1804
   - INSTANCE=resources-debian-8
   - INSTANCE=resources-debian-9
   - INSTANCE=resources-centos-6
   - INSTANCE=resources-centos-7
   - INSTANCE=resources-opensuse-leap
   - INSTANCE=resources-fedora-latest
-  - INSTANCE=upgrade-ubuntu-1404
   - INSTANCE=upgrade-ubuntu-1604
+  - INSTANCE=upgrade-ubuntu-1804
   - INSTANCE=upgrade-debian-8
   - INSTANCE=upgrade-debian-9
   - INSTANCE=upgrade-centos-6
