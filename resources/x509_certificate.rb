@@ -1,5 +1,4 @@
 provides :openssl_x509 # legacy_name
-provides :openssl_x509_cert
 provides :openssl_x509_certificate
 
 include OpenSSLCookbook::Helpers
