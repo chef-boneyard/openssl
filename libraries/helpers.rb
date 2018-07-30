@@ -161,5 +161,71 @@ module OpenSSLCookbook
       request.sign(key, OpenSSL::Digest::SHA256.new)
       request
     end
+
+    # generate an array of X509 Extensions given a hash of extensions
+    # @param [Hash] extensions hash of extensions
+    # @return [Array]
+    def gen_x509_extensions(extensions)
+      raise TypeError, 'extensions must be a Ruby Hash object' unless extensions.is_a?(Hash)
+
+      exts = []
+      extensions.each do |ext_name, ext_prop|
+        raise TypeError, "#{ext_name} must contain a Ruby Hash" unless ext_prop.is_a?(Hash)
+        raise ArgumentError, "keys in #{ext_name} must be 'values' and 'critical'" unless ext_prop.key?('values') && ext_prop.key?('critical')
+        raise TypeError, "the key 'values' must contain a Ruby Arrays" unless ext_prop['values'].is_a?(Array)
+        raise TypeError, "the key 'critical' must be a Ruby Boolean true/false" unless ext_prop['critical'].is_a?(TrueClass) || ext_prop['critical'].is_a?(FalseClass)
+
+        exts << OpenSSL::X509::ExtensionFactory.new.create_extension(ext_name, ext_prop['values'].join(','), ext_prop['critical'])
+      end
+      exts
+    end
+
+    # generate a random Serial
+    # @return [Integer]
+    def gen_serial
+      OpenSSL::BN.generate_prime(160)
+    end
+
+    # generate a Certificate given a X509 request
+    # @param [OpenSSL::X509::Request] request X509 Certificate Request
+    # @param [Array] extension Array of X509 Certificate Extension
+    # @param [Hash] info issuer & validity
+    # @param [OpenSSL::PKey::EC, OpenSSL::PKey::RSA] key private key to sign with
+    # @return [OpenSSL::X509::Certificate]
+    def gen_x509_cert(request, extension, info, key)
+      raise TypeError, 'request must be a Ruby OpenSSL::X509::Request' unless request.is_a?(OpenSSL::X509::Request)
+      raise TypeError, 'extension must be a Ruby Array' unless extension.is_a?(Array)
+      raise TypeError, 'info must be a Ruby Hash' unless info.is_a?(Hash)
+      raise TypeError, 'key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless key.is_a?(OpenSSL::PKey::EC) || key.is_a?(OpenSSL::PKey::RSA)
+
+      cert = OpenSSL::X509::Certificate.new
+      ef = OpenSSL::X509::ExtensionFactory.new
+
+      cert.serial = gen_serial()
+      cert.version = 2
+      cert.subject = request.subject
+      cert.public_key = request.public_key
+      cert.not_before = Time.now
+      cert.not_after = cert.not_before + info['validity'] * 24 * 60 * 60
+
+      if info['issuer'].nil?
+        cert.issuer = request.subject
+        ef.issuer_certificate = cert
+        extension << ef.create_extension('basicConstraints', 'CA:TRUE', true)
+      else
+        cert.issuer = info['issuer'].subject
+        ef.issuer_certificate = info['issuer']
+      end
+      ef.subject_certificate = cert
+      ef.config = OpenSSL::Config.load(OpenSSL::Config::DEFAULT_CONFIG_FILE)
+
+      cert.extensions = extension
+      cert.add_extension ef.create_extension('subjectKeyIdentifier', 'hash')
+      cert.add_extension ef.create_extension('authorityKeyIdentifier',
+                                             'keyid:always,issuer:always')
+
+      cert.sign(key, OpenSSL::Digest::SHA256.new)
+      cert
+    end
   end
 end

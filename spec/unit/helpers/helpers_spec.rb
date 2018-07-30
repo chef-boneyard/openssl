@@ -365,4 +365,131 @@ describe OpenSSLCookbook::Helpers do
       end
     end
   end
+
+  describe '#gen_x509_extensions' do
+    context 'When given anything other than an Ruby Hash object' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.gen_x509_extensions('abc')
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When a misformatted ruby Hash is given' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.gen_x509_extensions('pouet' => 'plop')
+        end.to raise_error(TypeError)
+      end
+
+      it 'Raises a ArgumentError' do
+        expect do
+          instance.gen_x509_extensions('pouet' => { 'values' => [ 'keyCertSign' ], 'wrong_key' => true })
+        end.to raise_error(ArgumentError)
+      end
+
+      it 'Raises a TypeError' do
+        expect do
+          instance.gen_x509_extensions('keyUsage' => { 'values' => 'keyCertSign', 'critical' => true })
+        end.to raise_error(TypeError)
+      end
+
+      it 'Raises a TypeError' do
+        expect do
+          instance.gen_x509_extensions('keyUsage' => { 'values' => [ 'keyCertSign' ], 'critical' => 'yes' })
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When given a well formatted ruby Hash' do
+      it 'Generates a valid Array of X509 Extensions' do
+        @x509_extension = instance.gen_x509_extensions('keyUsage' => { 'values' => [ 'keyCertSign' ], 'critical' => true })
+        expect(@x509_extension).to be_kind_of(Array)
+        @x509_extension.each { |e| expect(e).to be_kind_of(OpenSSL::X509::Extension) }
+      end
+    end
+  end
+
+  describe '#gen_x509_cert' do
+    include OpenSSLCookbook::Helpers
+    before(:all) do
+      @rsa_key = OpenSSL::PKey::RSA.new(2048)
+      @ec_key = OpenSSL::PKey::EC.generate('prime256v1')
+
+      @rsa_request = gen_x509_request(OpenSSL::X509::Name.new([%w(CN RSACert)]), @rsa_key)
+      @ec_request = gen_x509_request(OpenSSL::X509::Name.new([%w(CN ECCert)]), @ec_key)
+
+      @x509_extension = gen_x509_extensions('keyUsage' => { 'values' => [ 'keyCertSign' ], 'critical' => true })
+
+      # Generating CA
+      @ca_key = OpenSSL::PKey::RSA.new(2048)
+      @ca_cert = OpenSSL::X509::Certificate.new
+      @ca_cert.version = 2
+      @ca_cert.serial = 1
+      @ca_cert.subject = OpenSSL::X509::Name.new [%w(CN TestCA)]
+      @ca_cert.issuer = @ca_cert.subject
+      @ca_cert.public_key = @ca_key.public_key
+      @ca_cert.not_before = Time.now
+      @ca_cert.not_after = @ca_cert.not_before + 365 * 24 * 60 * 60
+      ef = OpenSSL::X509::ExtensionFactory.new
+      ef.subject_certificate = @ca_cert
+      ef.issuer_certificate = @ca_cert
+      @ca_cert.add_extension(ef.create_extension('basicConstraints', 'CA:TRUE', true))
+      @ca_cert.add_extension(ef.create_extension('keyUsage', 'keyCertSign, cRLSign', true))
+      @ca_cert.add_extension(ef.create_extension('subjectKeyIdentifier', 'hash', false))
+      @ca_cert.add_extension(ef.create_extension('authorityKeyIdentifier', 'keyid:always', false))
+      @ca_cert.sign(@ca_key, OpenSSL::Digest::SHA256.new)
+
+      @info_with_issuer = { 'validity' => 365, 'issuer' => @ca_cert }
+      @info_without_issuer = { 'validity' => 365 }
+    end
+
+    context 'When the request given is anything other then a Ruby OpenSSL::X509::Request' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.gen_x509_cert('abc', @x509_extension, @info_without_issuer, @rsa_key)
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When the extension given is anything other then a Ruby Array' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.gen_x509_cert(@rsa_request, 'abc', @info_without_issuer, @rsa_key)
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When the info given is anything other then a Ruby Hash' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.gen_x509_cert(@rsa_request, @x509_extension, 'abc', @rsa_key)
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When the key given is anything other then a Ruby OpenSSL::Pkey::EC or OpenSSL::Pkey::RSA object' do
+      it 'Raises a TypeError' do
+        expect do
+          instance.gen_x509_cert(@rsa_request, @x509_extension, @info_without_issuer, 'abc')
+        end.to raise_error(TypeError)
+      end
+    end
+
+    context 'When given valid parameters to generate a self signed certificate' do
+      it 'Generates a valid x509 Certificate' do
+        @x509_certificate = instance.gen_x509_cert(@rsa_request, @x509_extension, @info_without_issuer, @rsa_key)
+        expect(@x509_certificate).to be_kind_of(OpenSSL::X509::Certificate)
+        expect(OpenSSL::X509::Certificate.new(@x509_certificate).verify(@rsa_key)).to be_truthy
+      end
+    end
+
+    context 'When given valid parameters to generate a CA signed certificate' do
+      it 'Generates a valid x509 Certificate' do
+        @x509_certificate = instance.gen_x509_cert(@ec_request, @x509_extension, @info_with_issuer, @ca_key)
+        expect(@x509_certificate).to be_kind_of(OpenSSL::X509::Certificate)
+        expect(OpenSSL::X509::Certificate.new(@x509_certificate).verify(@ca_key)).to be_truthy
+      end
+    end
+  end
 end
