@@ -4,7 +4,7 @@ property :path,             String, name_property: true
 property :owner,            String, default: node['platform'] == 'windows' ? 'Administrator' : 'root'
 property :group,            String, default: node['root_group']
 property :mode,             [Integer, String], default: '0644'
-property :country,          String, required: true
+property :country,          String
 property :state,            String
 property :city,             String
 property :org,              String
@@ -36,7 +36,7 @@ action :create do
         group new_resource.group
         content key.to_pem
         sensitive true
-        action :create
+        action :create_if_missing
       end
     end
   end

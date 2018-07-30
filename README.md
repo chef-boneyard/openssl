@@ -82,26 +82,36 @@ Note that node attributes are widely accessible. Storing unencrypted passwords i
 
 ## Resources
 
-### openssl_x509
+### openssl_x509_certificate
 
-This resource generates self-signed, PEM-formatted x509 certificates. If no existing key is specified, the resource will automatically generate a passwordless key with the certificate.
+This resource generates signed or self-signed, PEM-formatted x509 certificates. If no existing key is specified, the resource will automatically generate a passwordless key with the certificate. If a CA private key and certificate are provided, the certificate will be signed with them.
+
+Note: This resource was renamed from openssl_x509 to openssl_x509_certificate. The legacy name will continue to function, but cookbook code should be updated for the new resource name.
 
 #### Properties
 
 Name               | Type                         | Description
 ------------------ | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 `path`             | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
-`common_name`      | String (Required)            | Value for the `CN` certificate field.
-`org`              | String (Required)            | Value for the `O` certificate field.
-`org_unit`         | String (Required)            | Value for the `OU` certificate field.
+`common_name`      | String (Optional)            | Value for the `CN` certificate field.
+`org`              | String (Optional)            | Value for the `O` certificate field.
+`org_unit`         | String (Optional)            | Value for the `OU` certificate field.
 `city`             | String (Optional)            | Value for the `L` certificate field.
 `state`            | String (Optional)            | Value for the `ST` certificate field.
-`country`          | String (Required)            | Value for the `C` ssl field.
-`expire`           | Integer (Optional)           | Value representing the number of days from _now_ through which the issued certificate cert will remain valid. The certificate will expire after this period.
+`country`          | String (Optional)            | Value for the `C` ssl field.
+`email`            | String (Optional)            | Value for the `email` ssl field.
+`expire`           | Integer (Optional)           | Value representing the number of days from _now_ through which the issued certificate cert will remain valid. The certificate will expire after this period. _Default: 365
+`extensions`       | Hash (Optional)              | Hash of X509 Extensions entries, in format `{ 'keyUsage' => { 'values' => %w( keyEncipherment digitalSignature), 'critical' => true } }`
 `subject_alt_name` | Array (Optional)             | Array of _Subject Alternative Name_ entries, in format `DNS:example.com` or `IP:1.2.3.4` _Default: empty_
 `key_file`         | String (Optional)            | The path to a certificate key file on the filesystem. If the `key_file` attribute is specified, the resource will attempt to source a key from this location. If no key file is found, the resource will generate a new key file at this location. If the `key_file` attribute is not specified, the resource will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
 `key_pass`         | String (Optional)            | The passphrase for an existing key's passphrase
-`key_length`       | Integer (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
+`key_type`         | String (Optional)            | The desired type of the generated key (rsa or ec). _Default: ec_
+`key_length`       | Integer (Optional)           | The desired Bit Length of the generated key (if key_type is equal to 'rsa'). _Default: 2048_
+`key_curve`        | String (Optional)            | The desired curve of the generated key (if key_type is equal to 'ec'). Run `openssl ecparam -list_curves` to see available options. _Default: prime256v1
+`csr_file`         | String (Optional)            | The path to a X509 Certificate Request (CSR) on the filesystem. If the `csr_file` attribute is specified, the resource will attempt to source a CSR from this location. If no CSR file is found, the resource will generate a Self-Signed Certificate and the certificate fields must be specified (common_name at last).
+`ca_cert_file`     | String (Optionel)            | The path to the CA X509 Certificate on the filesystem. If the `ca_cert_file` attribute is specified, the `ca_key_file` attribute must also be specified, the certificate will be signed with them.
+`ca_key_file`      | String (Optionel)            | The path to the CA private key on the filesystem. If the `ca_key_file` attribute is specified, the `ca_cert_file' attribute must also be specified, the certificate will be signed with them.
+`ca_key_pass`      | String (Optionel)            | The passphrase for CA private key's passphrase
 `owner`            | String (optional)            | The owner of all files created by the resource. _Default: "root"_
 `group`            | String (optional)            | The group of all files created by the resource. _Default: "root"_
 `mode`             | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0400"_
@@ -120,6 +130,33 @@ end
 ```
 
 When executed, this recipe will generate a key certificate at `/etc/httpd/ssl/mycert.key`. It will then use that key to generate a new certificate file at `/etc/httpd/ssl/mycert.pem`.
+
+In this example, an administrator wishes to create a x509 certificate signed with a CA certificate and key. In order to create the certificate, the administrator crafts this recipe:
+
+```ruby
+openssl_x509_certificate '/etc/ssl_test/my_signed_cert.crt' do
+  common_name 'www.f00bar.com'
+  ca_key_file '/etc/ssl_test/my_ca.key'
+  ca_cert_file '/etc/ssl_test/my_ca.crt'
+  expire 365
+  extensions(
+    'keyUsage' => {
+      'values' => %w(
+        keyEncipherment
+        digitalSignature),
+      'critical' => true,
+    },
+    'extendedKeyUsage' => {
+      'values' => %w(serverAuth),
+      'critical' => false,
+    }
+  )
+  subject_alt_name ['IP:127.0.0.1', 'DNS:localhost.localdomain']
+end
+```
+
+When executed, this recipe will generate a key certificate at `/etc/ssl_test/my_signed_cert.key`. It will then use that key to generate a CSR and signed it with `my_ca.key/my_ca.crt`. A new certificate file at `/etc/ssl_test/my_signed_cert.cert` will be created as a result.
+
 
 ### openssl_x509_request
 
@@ -158,6 +195,8 @@ openssl_x509_request '/etc/ssl_test/my_ec_request.csr' do
   country 'UK'
 end
 ```
+
+When executed, this recipe will generate a key certificate at `/etc/httpd/ssl/my_ec_request.key`. It will then use that key to generate a new csr file at `/etc/ssl_test/my_ec_request.csr`.
 
 ### openssl_dhparam
 
