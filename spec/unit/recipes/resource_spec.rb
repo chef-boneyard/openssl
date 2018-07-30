@@ -87,7 +87,7 @@ describe 'test::resources' do
     end
 
     it 'The resource adds a file resource \'/etc/ssl_test/my_ec_request.key\' with action create' do
-      expect(chef_run).to create_file('/etc/ssl_test/my_ec_request.key')
+      expect(chef_run).to create_file_if_missing('/etc/ssl_test/my_ec_request.key')
     end
 
     it 'The resource adds a file resource \'/etc/ssl_test/my_ec_request2.csr\' with action create' do
@@ -99,7 +99,7 @@ describe 'test::resources' do
     end
 
     it 'The resource adds a file resource \'/etc/ssl_test/my_rsa_request.key\' with action create' do
-      expect(chef_run).to create_file('/etc/ssl_test/my_rsa_request.key')
+      expect(chef_run).to create_file_if_missing('/etc/ssl_test/my_rsa_request.key')
     end
 
     it 'The resource adds a file resource \'/etc/ssl_test/my_rsa_request2.csr\' with action create' do
