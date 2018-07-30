@@ -41,7 +41,7 @@ describe 'test::resources' do
     end
   end
 
-  context 'the openssl_x509 resource:' do
+  context 'the openssl_x509_certificate resource:' do
     cached(:chef_run) do
       runner = ChefSpec::ServerRunner.new(platform: 'ubuntu', version: '16.04', step_into: ['openssl_x509'])
       runner.converge(described_recipe)
@@ -57,6 +57,18 @@ describe 'test::resources' do
 
     it 'The resource adds a file resource \'/etc/ssl_test/mycert.key\' with action create_if_missing' do
       expect(chef_run).to create_file_if_missing('/etc/ssl_test/mycert.key')
+    end
+
+    it 'The resource adds a file resource \'/etc/ssl_test/mycert2.crt\' with action create_if_missing' do
+      expect(chef_run).to create_file_if_missing('/etc/ssl_test/mycert2.crt')
+    end
+
+    it 'The resource adds a file resource \'/etc/ssl_test/my_ca.crt\' with action create_if_missing' do
+      expect(chef_run).to create_file_if_missing('/etc/ssl_test/my_ca.crt')
+    end
+
+    it 'The resource adds a file resource \'/etc/ssl_test/my_ca.key\' with action create_if_missing' do
+      expect(chef_run).to create_file_if_missing('/etc/ssl_test/my_ca.crt')
     end
   end
 
@@ -75,7 +87,7 @@ describe 'test::resources' do
     end
 
     it 'The resource adds a file resource \'/etc/ssl_test/my_ec_request.key\' with action create' do
-      expect(chef_run).to create_file('/etc/ssl_test/my_ec_request.key')
+      expect(chef_run).to create_file_if_missing('/etc/ssl_test/my_ec_request.key')
     end
 
     it 'The resource adds a file resource \'/etc/ssl_test/my_ec_request2.csr\' with action create' do
@@ -87,7 +99,7 @@ describe 'test::resources' do
     end
 
     it 'The resource adds a file resource \'/etc/ssl_test/my_rsa_request.key\' with action create' do
-      expect(chef_run).to create_file('/etc/ssl_test/my_rsa_request.key')
+      expect(chef_run).to create_file_if_missing('/etc/ssl_test/my_rsa_request.key')
     end
 
     it 'The resource adds a file resource \'/etc/ssl_test/my_rsa_request2.csr\' with action create' do

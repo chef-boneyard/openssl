@@ -26,6 +26,16 @@
   /etc/ssl_test/mycert.crt
   /etc/ssl_test/mycert.key
   /etc/ssl_test/mycert2.crt
+  /etc/ssl_test/my_ca.crt
+  /etc/ssl_test/my_ca.key
+  /etc/ssl_test/my_signed_cert.crt
+  /etc/ssl_test/my_signed_cert.key
+  /etc/ssl_test/my_ca2.key
+  /etc/ssl_test/my_ca2.csr
+  /etc/ssl_test/my_ca2.crt
+  /etc/ssl_test/my_signed_cert2.key
+  /etc/ssl_test/my_signed_cert2.csr
+  /etc/ssl_test/my_signed_cert2.crt
   /etc/ssl_test/my_ec_request.csr
   /etc/ssl_test/my_ec_request.key
   /etc/ssl_test/my_ec_request2.csr
@@ -101,7 +111,7 @@ openssl_ec_private_key '/etc/ssl_test/eckey_prime256v1_des3.pem' do
 end
 
 #
-# X509 HERE
+# X509_CERTIFICATE HERE
 #
 
 # Generate new key and certificate
@@ -120,6 +130,102 @@ openssl_x509 '/etc/ssl_test/mycert2.crt' do
   org_unit 'Kitchens'
   country 'UK'
   key_file '/etc/ssl_test/mycert.key'
+end
+
+# Generate a new CA certificate
+openssl_x509 '/etc/ssl_test/my_ca.crt' do
+  common_name 'CA'
+  expire 3650
+  extensions(
+    'keyUsage' => {
+      'values' => %w(
+        keyCertSign
+        keyEncipherment
+        digitalSignature
+        cRLSign),
+      'critical' => true,
+    }
+  )
+end
+
+# Generate and sign a certificate with the CA
+openssl_x509_certificate '/etc/ssl_test/my_signed_cert.crt' do
+  common_name 'mysignedcert.example.com'
+  ca_key_file '/etc/ssl_test/my_ca.key'
+  ca_cert_file '/etc/ssl_test/my_ca.crt'
+  expire 365
+  extensions(
+    'keyUsage' => {
+      'values' => %w(
+        keyEncipherment
+        digitalSignature),
+      'critical' => true,
+    },
+    'extendedKeyUsage' => {
+      'values' => %w(serverAuth),
+      'critical' => false,
+    }
+  )
+  subject_alt_name ['IP:127.0.0.1', 'DNS:localhost.localdomain']
+end
+
+# Generate CA with CSR and EC key
+openssl_ec_private_key '/etc/ssl_test/my_ca2.key' do
+  mode '0400'
+  key_curve 'secp521r1'
+end
+
+openssl_x509_request '/etc/ssl_test/my_ca2.csr' do
+  common_name 'CA2'
+  key_file '/etc/ssl_test/my_ca2.key'
+  action :create
+end
+
+openssl_x509_certificate '/etc/ssl_test/my_ca2.crt' do
+  csr_file '/etc/ssl_test/my_ca2.csr'
+  ca_key_file '/etc/ssl_test/my_ca2.key'
+  expire 3650
+  extensions(
+    'keyUsage' => {
+      'values' => %w(
+        keyCertSign
+        keyEncipherment
+        digitalSignature
+        cRLSign),
+      'critical' => true,
+    }
+  )
+end
+
+# Generate key, csr & sign it with CA
+openssl_ec_private_key '/etc/ssl_test/my_signed_cert2.key'
+
+openssl_x509_request '/etc/ssl_test/my_signed_cert2.csr' do
+  common_name 'mysignedcert2.example.com'
+  org 'Test Kitchen Example'
+  org_unit 'Kitchens'
+  country 'UK'
+  key_file '/etc/ssl_test/my_signed_cert2.key'
+end
+
+openssl_x509_certificate '/etc/ssl_test/my_signed_cert2.crt' do
+  csr_file '/etc/ssl_test/my_signed_cert2.csr'
+  ca_key_file '/etc/ssl_test/my_ca2.key'
+  ca_cert_file '/etc/ssl_test/my_ca2.crt'
+  expire 365
+  extensions(
+    'keyUsage' => {
+      'values' => %w(
+        keyEncipherment
+        digitalSignature),
+      'critical' => true,
+    },
+    'extendedKeyUsage' => {
+      'values' => %w(serverAuth),
+      'critical' => false,
+    }
+  )
+  subject_alt_name ['IP:127.0.0.1', 'DNS:localhost.localdomain']
 end
 
 #
