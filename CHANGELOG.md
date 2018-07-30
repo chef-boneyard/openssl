@@ -2,6 +2,19 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 8.4.0 (2018-07-30)
+
+This release is brought to you by Institut National de l'Audiovisuel, which contributed the following changes:
+
+- openssl_x509 is renamed to openssl_x509_certificate with backwards compatibility for the old name
+- openssl_x509_certificate can now generate a signed certificate with a provided CA cert & key
+- openssl_x509_certificate now support x509 extensions
+- openssl_x509_certificate now support x509 csr
+- openssl_x509_certificate now generate a random serial for the certificate
+- openssl_x509_certificate expires has now a default value : 365
+- country field is now mandatory in x509_request
+- the private key file is not rewrited in x509_request if it already exist
+
 ## 8.3.0 (2018-07-25)
 
 - Add resource x509_request
