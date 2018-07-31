@@ -21,7 +21,12 @@
 %w(
   /etc/ssl_test/rsakey_des3.pem
   /etc/ssl_test/rsakey_aes128cbc.pem
+  /etc/ssl_test/private_key.pem
+  /etc/ssl_test/rsakey_des3.pub
+  /etc/ssl_test/rsakey_2.pub
   /etc/ssl_test/eckey_prime256v1_des3.pem
+  /etc/ssl_test/eckey_prime256v1_des3.pub
+  /etc/ssl_test/eckey_prime256v1_des3_2.pub
   /etc/ssl_test/dhparam.pem
   /etc/ssl_test/mycert.crt
   /etc/ssl_test/mycert.key
@@ -107,6 +112,17 @@ end
 openssl_ec_private_key '/etc/ssl_test/eckey_prime256v1_des3.pem' do
   key_curve 'prime256v1'
   key_pass 'something'
+  action :create
+end
+
+openssl_ec_public_key '/etc/ssl_test/eckey_prime256v1_des3.pub' do
+  private_key_path '/etc/ssl_test/eckey_prime256v1_des3.pem'
+  private_key_pass 'something'
+  action :create
+end
+
+openssl_ec_public_key '/etc/ssl_test/eckey_prime256v1_des3_2.pub' do
+  private_key_content "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEII2VAU9re44mAUzYPWCg+qqwdmP8CplsEg0b/DYPXLg2oAoGCCqGSM49\nAwEHoUQDQgAEKkpMCbIQ2C6Qlp/B+Odp1a9Y06Sm8yqPvCVIkWYP7M8PX5+RmoIv\njGBVf/+mVBx77ji3NpTilMUt2KPZ87lZ3w==\n-----END EC PRIVATE KEY-----\n"
   action :create
 end
 

@@ -15,6 +15,19 @@ describe command('openssl ec -in /etc/ssl_test/eckey_prime256v1_des3.pem -text -
   its('stdout') { should match /prime256v1/ }
 end
 
+describe command('openssl ec -in /etc/ssl_test/eckey_prime256v1_des3.pem -pubout -out /tmp/ec_pub && diff /etc/ssl_test/eckey_prime256v1_des3.pub /tmp/ec_pub') do
+  its('exit_status') { should eq 0 }
+end
+
+describe command('openssl ec -in /etc/ssl_test/eckey_prime256v1_des3v2.pem -text -noout -passin pass:"something"') do
+  its('exit_status') { should eq 0 }
+  its('stdout') { should match /prime256v1/ }
+end
+
+describe command('openssl ec -in /etc/ssl_test/eckey_prime256v1_des3v2.pem -pubout -out /tmp/ec_pub && diff /etc/ssl_test/eckey_prime256v1_des3v2.pub /tmp/ec_pub') do
+  its('exit_status') { should eq 0 }
+end
+
 describe command('openssl dhparam -in /etc/ssl_test/dhparam.pem -check -noout') do
   its('exit_status') { should eq 0 }
 end
