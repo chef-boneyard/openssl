@@ -105,16 +105,16 @@ Name               | Type                         | Description
 `subject_alt_name` | Array (Optional)             | Array of _Subject Alternative Name_ entries, in format `DNS:example.com` or `IP:1.2.3.4` _Default: empty_
 `key_file`         | String (Optional)            | The path to a certificate key file on the filesystem. If the `key_file` attribute is specified, the resource will attempt to source a key from this location. If no key file is found, the resource will generate a new key file at this location. If the `key_file` attribute is not specified, the resource will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
 `key_pass`         | String (Optional)            | The passphrase for an existing key's passphrase
-`key_type`         | String (Optional)            | The desired type of the generated key (rsa or ec). _Default: ec_
+`key_type`         | String (Optional)            | The desired type of the generated key (rsa or ec). _Default: rsa_
 `key_length`       | Integer (Optional)           | The desired Bit Length of the generated key (if key_type is equal to 'rsa'). _Default: 2048_
-`key_curve`        | String (Optional)            | The desired curve of the generated key (if key_type is equal to 'ec'). Run `openssl ecparam -list_curves` to see available options. _Default: prime256v1
+`key_curve`        | String (Optional)            | The desired curve of the generated key (if key_type is equal to 'ec'). Run `openssl ecparam -list_curves` to see available options. _Default: prime256v1_
 `csr_file`         | String (Optional)            | The path to a X509 Certificate Request (CSR) on the filesystem. If the `csr_file` attribute is specified, the resource will attempt to source a CSR from this location. If no CSR file is found, the resource will generate a Self-Signed Certificate and the certificate fields must be specified (common_name at last).
 `ca_cert_file`     | String (Optionel)            | The path to the CA X509 Certificate on the filesystem. If the `ca_cert_file` attribute is specified, the `ca_key_file` attribute must also be specified, the certificate will be signed with them.
 `ca_key_file`      | String (Optionel)            | The path to the CA private key on the filesystem. If the `ca_key_file` attribute is specified, the `ca_cert_file' attribute must also be specified, the certificate will be signed with them.
 `ca_key_pass`      | String (Optionel)            | The passphrase for CA private key's passphrase
 `owner`            | String (optional)            | The owner of all files created by the resource. _Default: "root"_
 `group`            | String (optional)            | The group of all files created by the resource. _Default: "root"_
-`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0400"_
+`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
 
 #### Example Usage
 
