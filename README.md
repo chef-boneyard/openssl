@@ -11,6 +11,7 @@ This cookbook provides tools for working with the Ruby OpenSSL library. It inclu
 - A resource for generating EC public keys.
 - A resource for generating x509 certificates.
 - A resource for generating x509 requests.
+- A resource for generating x509 crl.
 - A resource for generating dhparam.pem files.
 - An attribute-driven recipe for upgrading OpenSSL packages.
 
