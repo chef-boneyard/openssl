@@ -11,6 +11,7 @@ This cookbook provides tools for working with the Ruby OpenSSL library. It inclu
 - A resource for generating EC public keys.
 - A resource for generating x509 certificates.
 - A resource for generating x509 requests.
+- A resource for generating x509 crl.
 - A resource for generating dhparam.pem files.
 - An attribute-driven recipe for upgrading OpenSSL packages.
 
@@ -101,20 +102,20 @@ Name               | Type                         | Description
 `country`          | String (Optional)            | Value for the `C` ssl field.
 `email`            | String (Optional)            | Value for the `email` ssl field.
 `expire`           | Integer (Optional)           | Value representing the number of days from _now_ through which the issued certificate cert will remain valid. The certificate will expire after this period. _Default: 365
-`extensions`       | Hash (Optional)              | Hash of X509 Extensions entries, in format `{ 'keyUsage' => { 'values' => %w( keyEncipherment digitalSignature), 'critical' => true } }`
+`extensions`       | Hash (Optional)              | Hash of X509 Extensions entries, in format `{ 'keyUsage' => { 'values' => %w( keyEncipherment digitalSignature), 'critical' => true } }` _Default: empty_
 `subject_alt_name` | Array (Optional)             | Array of _Subject Alternative Name_ entries, in format `DNS:example.com` or `IP:1.2.3.4` _Default: empty_
 `key_file`         | String (Optional)            | The path to a certificate key file on the filesystem. If the `key_file` attribute is specified, the resource will attempt to source a key from this location. If no key file is found, the resource will generate a new key file at this location. If the `key_file` attribute is not specified, the resource will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
 `key_pass`         | String (Optional)            | The passphrase for an existing key's passphrase
-`key_type`         | String (Optional)            | The desired type of the generated key (rsa or ec). _Default: ec_
+`key_type`         | String (Optional)            | The desired type of the generated key (rsa or ec). _Default: rsa_
 `key_length`       | Integer (Optional)           | The desired Bit Length of the generated key (if key_type is equal to 'rsa'). _Default: 2048_
-`key_curve`        | String (Optional)            | The desired curve of the generated key (if key_type is equal to 'ec'). Run `openssl ecparam -list_curves` to see available options. _Default: prime256v1
+`key_curve`        | String (Optional)            | The desired curve of the generated key (if key_type is equal to 'ec'). Run `openssl ecparam -list_curves` to see available options. _Default: prime256v1_
 `csr_file`         | String (Optional)            | The path to a X509 Certificate Request (CSR) on the filesystem. If the `csr_file` attribute is specified, the resource will attempt to source a CSR from this location. If no CSR file is found, the resource will generate a Self-Signed Certificate and the certificate fields must be specified (common_name at last).
-`ca_cert_file`     | String (Optionel)            | The path to the CA X509 Certificate on the filesystem. If the `ca_cert_file` attribute is specified, the `ca_key_file` attribute must also be specified, the certificate will be signed with them.
-`ca_key_file`      | String (Optionel)            | The path to the CA private key on the filesystem. If the `ca_key_file` attribute is specified, the `ca_cert_file' attribute must also be specified, the certificate will be signed with them.
-`ca_key_pass`      | String (Optionel)            | The passphrase for CA private key's passphrase
+`ca_cert_file`     | String (Optional)            | The path to the CA X509 Certificate on the filesystem. If the `ca_cert_file` attribute is specified, the `ca_key_file` attribute must also be specified, the certificate will be signed with them.
+`ca_key_file`      | String (Optional)            | The path to the CA private key on the filesystem. If the `ca_key_file` attribute is specified, the `ca_cert_file' attribute must also be specified, the certificate will be signed with them.
+`ca_key_pass`      | String (Optional)            | The passphrase for CA private key's passphrase
 `owner`            | String (optional)            | The owner of all files created by the resource. _Default: "root"_
 `group`            | String (optional)            | The group of all files created by the resource. _Default: "root"_
-`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0400"_
+`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
 
 #### Example Usage
 
@@ -160,9 +161,7 @@ When executed, this recipe will generate a key certificate at `/etc/ssl_test/my_
 
 ### openssl_x509_request
 
-
 This resource generates PEM-formatted x509 certificates requests. If no existing key is specified, the resource will automatically generate a passwordless key with the certificate.
-
 
 #### Properties
 
@@ -187,6 +186,8 @@ Name                  | Type                                              | Desc
 
 #### Example Usage
 
+In this example, an administrator wishes to create a x509 CRL. In order to create the CRL, the administrator crafts this recipe:
+
 ```ruby
 openssl_x509_request '/etc/ssl_test/my_ec_request.csr' do
   common_name 'myecrequest.example.com'
@@ -197,6 +198,50 @@ end
 ```
 
 When executed, this recipe will generate a key certificate at `/etc/httpd/ssl/my_ec_request.key`. It will then use that key to generate a new csr file at `/etc/ssl_test/my_ec_request.csr`.
+
+### openssl_x509_crl
+
+This resource generates PEM-formatted x509 CRL.
+
+#### Properties
+
+Name                  | Type                                              | Description
+--------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------
+`path`               | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
+`serial_to_revoke`   | String or Integer(Optional)  | Serial of the X509 Certificate to revoke
+`revokation_reason`  | String or Integer(Optional)  | [Reason of the revokation]((https://en.wikipedia.org/wiki/Certificate_revocation_list#Reasons_for_revocation)) _Default: 0_
+`expire`             | Integer (Optional)           | Value representing the number of days from _now_ through which the issued CRL will remain valid. The CRL will expire after this period. _Default: 8_
+`renewal_threshold`  | Integer (Optional)           | Number of days before the expiration. It this threshold is reached, the CRL will be renewed _Default: 1_
+`ca_cert_file`       | String (Required)            | The path to the CA X509 Certificate on the filesystem. If the `ca_cert_file` attribute is specified, the `ca_key_file` attribute must also be specified, the CRL will be signed with them.
+`ca_key_file`        | String (Required)            | The path to the CA private key on the filesystem. If the `ca_key_file` attribute is specified, the `ca_cert_file' attribute must also be specified, the CRL will be signed with them.
+`ca_key_pass`        | String (Optional)            | The passphrase for CA private key's passphrase
+`owner`              | String (optional)            | The owner of all files created by the resource. _Default: "root"_
+`group`              | String (optional)            | The group of all files created by the resource. _Default: "root"_
+`mode`               | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
+
+
+#### Example Usage
+
+In this example, an administrator wishes to create an empty X509 CRL. In order to create the CRL, the administrator crafts this recipe:
+
+```ruby
+openssl_x509_crl '/etc/ssl_test/my_ca.crl' do
+  ca_cert_file '/etc/ssl_test/my_ca.crt'
+  ca_key_file '/etc/ssl_test/my_ca.key'
+end
+```
+
+When executed, this recipe will generate a new CRL file at `/etc/ssl_test/my_ca.crl`.
+
+In this example, an administrator wishes to revoke a certificate in an existing X509 CRL.
+
+```ruby
+openssl_x509_crl '/etc/ssl_test/my_ca.crl' do
+  ca_cert_file '/etc/ssl_test/my_ca.crt'
+  ca_key_file '/etc/ssl_test/my_ca.key'
+  serial_to_revoke C7BCB6602A2E4251EF4E2827A228CB52BC0CEA2F
+end
+```
 
 ### openssl_dhparam
 

@@ -21,7 +21,12 @@
 %w(
   /etc/ssl_test/rsakey_des3.pem
   /etc/ssl_test/rsakey_aes128cbc.pem
+  /etc/ssl_test/private_key.pem
+  /etc/ssl_test/rsakey_des3.pub
+  /etc/ssl_test/rsakey_2.pub
   /etc/ssl_test/eckey_prime256v1_des3.pem
+  /etc/ssl_test/eckey_prime256v1_des3.pub
+  /etc/ssl_test/eckey_prime256v1_des3_2.pub
   /etc/ssl_test/dhparam.pem
   /etc/ssl_test/mycert.crt
   /etc/ssl_test/mycert.key
@@ -33,6 +38,7 @@
   /etc/ssl_test/my_ca2.key
   /etc/ssl_test/my_ca2.csr
   /etc/ssl_test/my_ca2.crt
+  /etc/ssl_test/my_ca2.crl
   /etc/ssl_test/my_signed_cert2.key
   /etc/ssl_test/my_signed_cert2.csr
   /etc/ssl_test/my_signed_cert2.crt
@@ -107,6 +113,17 @@ end
 openssl_ec_private_key '/etc/ssl_test/eckey_prime256v1_des3.pem' do
   key_curve 'prime256v1'
   key_pass 'something'
+  action :create
+end
+
+openssl_ec_public_key '/etc/ssl_test/eckey_prime256v1_des3.pub' do
+  private_key_path '/etc/ssl_test/eckey_prime256v1_des3.pem'
+  private_key_pass 'something'
+  action :create
+end
+
+openssl_ec_public_key '/etc/ssl_test/eckey_prime256v1_des3_2.pub' do
+  private_key_content "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEII2VAU9re44mAUzYPWCg+qqwdmP8CplsEg0b/DYPXLg2oAoGCCqGSM49\nAwEHoUQDQgAEKkpMCbIQ2C6Qlp/B+Odp1a9Y06Sm8yqPvCVIkWYP7M8PX5+RmoIv\njGBVf/+mVBx77ji3NpTilMUt2KPZ87lZ3w==\n-----END EC PRIVATE KEY-----\n"
   action :create
 end
 
@@ -229,6 +246,28 @@ openssl_x509_certificate '/etc/ssl_test/my_signed_cert2.crt' do
 end
 
 #
+# X509_CRL HERE
+#
+
+openssl_x509_crl '/etc/ssl_test/my_ca2.crl' do
+  ca_cert_file '/etc/ssl_test/my_ca2.crt'
+  ca_key_file '/etc/ssl_test/my_ca2.key'
+  expire 1
+end
+
+openssl_x509_crl '/etc/ssl_test/my_ca2.crl' do
+  ca_cert_file '/etc/ssl_test/my_ca2.crt'
+  ca_key_file '/etc/ssl_test/my_ca2.key'
+  renewal_threshold 2
+end
+
+openssl_x509_crl '/etc/ssl_test/my_ca2.crl' do
+  ca_cert_file '/etc/ssl_test/my_ca2.crt'
+  ca_key_file '/etc/ssl_test/my_ca2.key'
+  serial_to_revoke 'C7BCB6602A2E4251EF4E2827A228CB52BC0CEA2F'
+end
+
+#
 # X509_REQUEST HERE
 #
 
@@ -264,5 +303,5 @@ openssl_x509_request '/etc/ssl_test/my_rsa_request2.csr' do
   org 'Test Kitchen Example'
   org_unit 'Kitchens'
   country 'UK'
-  key_file '/etc/ssl_test/my_ec_request.key'
+  key_file '/etc/ssl_test/my_rsa_request.key'
 end

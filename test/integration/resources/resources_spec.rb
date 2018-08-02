@@ -15,6 +15,10 @@ describe command('openssl ec -in /etc/ssl_test/eckey_prime256v1_des3.pem -text -
   its('stdout') { should match /prime256v1/ }
 end
 
+describe command('openssl ec -in /etc/ssl_test/eckey_prime256v1_des3.pem -passin pass:"something" -pubout -out /tmp/ec_pub && diff /etc/ssl_test/eckey_prime256v1_des3.pub /tmp/ec_pub') do
+  its('exit_status') { should eq 0 }
+end
+
 describe command('openssl dhparam -in /etc/ssl_test/dhparam.pem -check -noout') do
   its('exit_status') { should eq 0 }
 end
@@ -214,6 +218,12 @@ describe x509_certificate('/etc/ssl_test/my_signed_cert2.crt') do
   its('extensions.keyUsage') { should match ['critical', 'Digital Signature', 'Key Encipherment'] }
   its('extensions.subjectAltName') { should include 'DNS:localhost.localdomain' }
   its('extensions.subjectAltName') { should include 'IP Address:127.0.0.1' }
+end
+
+# X509 CRL
+describe command('openssl crl -in /etc/ssl_test/my_ca2.crl -text -noout | grep Serial') do
+  its('exit_status') { should eq 0 }
+  its('stdout') { should match /C7BCB6602A2E4251EF4E2827A228CB52BC0CEA2F/ }
 end
 
 # X509 REQUESTS
