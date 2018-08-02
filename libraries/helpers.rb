@@ -47,7 +47,7 @@ module OpenSSLCookbook
       rescue OpenSSL::PKey::PKeyError, ArgumentError
         return false
       end
-      
+
       if key.is_a?(OpenSSL::PKey::EC)
         key.private_key?
       else
