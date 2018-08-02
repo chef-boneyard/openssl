@@ -2,6 +2,14 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 8.5.0 (2018-08-02)
+
+- Use the system provided owner/group defaults in resources
+- Added new openssl_x509_crl resource
+- Fix openssl_ec_public_key with documentation & tests
+- Few corrections in the documentation
+- Fix backward compatibility with chef client 12
+
 ## 8.4.0 (2018-07-30)
 
 This release is brought to you by Institut National de l'Audiovisuel, which contributed the following changes:
