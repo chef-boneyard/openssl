@@ -44,10 +44,15 @@ module OpenSSLCookbook
 
       begin
         key = OpenSSL::PKey.read key_content, key_password
-      rescue OpenSSL::PKey::PKeyError
+      rescue OpenSSL::PKey::PKeyError, ArgumentError
         return false
       end
-      key.private?
+      
+      if key.is_a?(OpenSSL::PKey::EC)
+        key.private_key?
+      else
+        key.private?
+      end
     end
 
     # given a crl file path see if it's actually a crl
@@ -135,7 +140,7 @@ module OpenSSLCookbook
     def gen_ec_priv_key(curve)
       raise TypeError, 'curve must be a string' unless curve.is_a?(String)
       raise ArgumentError, 'Specified curve is not available on this system' unless curve == 'prime256v1' || curve == 'secp384r1' || curve == 'secp521r1'
-      OpenSSL::PKey::EC.generate(curve)
+      OpenSSL::PKey::EC.new(curve).generate_key
     end
 
     # generate pem format of the public key given a private key
@@ -189,6 +194,9 @@ module OpenSSLCookbook
       request.version = 0
       request.subject = subject
       request.public_key = key
+
+      # Chef 12 backward compatibility
+      OpenSSL::PKey::EC.send(:alias_method, :private?, :private_key?)
 
       request.sign(key, OpenSSL::Digest::SHA256.new)
       request

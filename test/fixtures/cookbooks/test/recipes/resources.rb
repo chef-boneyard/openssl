@@ -303,5 +303,5 @@ openssl_x509_request '/etc/ssl_test/my_rsa_request2.csr' do
   org 'Test Kitchen Example'
   org_unit 'Kitchens'
   country 'UK'
-  key_file '/etc/ssl_test/my_ec_request.key'
+  key_file '/etc/ssl_test/my_rsa_request.key'
 end

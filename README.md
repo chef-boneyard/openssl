@@ -27,7 +27,7 @@ This cookbook provides tools for working with the Ruby OpenSSL library. It inclu
 
 ## Chef
 
-- Chef 13.0+
+- Chef 12.7+
 
 ## Cookbooks
 
