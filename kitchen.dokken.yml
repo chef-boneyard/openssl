@@ -18,6 +18,8 @@ platforms:
   driver:
     image: dokken/amazonlinux
     pid_one_command: /sbin/init
+    intermediate_instructions:
+      - RUN /usr/bin/yum -y install diffutils
 
 - name: debian-8
   driver:
