@@ -50,6 +50,38 @@ module OpenSSLCookbook
       key.private?
     end
 
+    # given a crl file path see if it's actually a crl
+    # @param [String] crl_file the path to the crlfile
+    # @return [Boolean] is the key valid?
+    def crl_file_valid?(crl_file)
+      begin
+        OpenSSL::X509::CRL.new ::File.read(crl_file)
+      rescue OpenSSL::X509::CRLError, Errno::ENOENT
+        return false
+      end
+      true
+    end
+
+    # check is a serial given is revoked in a crl given
+    # @param [OpenSSL::X509::CRL] crl X509 CRL to check
+    # @param [String, Integer] serial X509 Certificate Serial Number
+    # @return [true, false]
+    def serial_revoked?(crl, serial)
+      raise TypeError, 'crl must be a Ruby OpenSSL::X509::CRL object' unless crl.is_a?(OpenSSL::X509::CRL)
+      raise TypeError, 'serial must be a Ruby String or Integer object' unless serial.is_a?(String) || serial.is_a?(Integer)
+
+      serial_to_verify = if serial.is_a?(String)
+                           serial.to_i(16)
+                         else
+                           serial
+                         end
+      status = false
+      crl.revoked.each do |revoked|
+        status = true if revoked.serial == serial_to_verify
+      end
+      status
+    end
+
     # generate a dhparam file
     # @param [String] key_length the length of the key
     # @param [Integer] generator the dhparam generator to use
@@ -198,6 +230,9 @@ module OpenSSLCookbook
       raise TypeError, 'info must be a Ruby Hash' unless info.is_a?(Hash)
       raise TypeError, 'key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless key.is_a?(OpenSSL::PKey::EC) || key.is_a?(OpenSSL::PKey::RSA)
 
+      raise ArgumentError, 'info must contain a validity' unless info.key?('validity')
+      raise TypeError, 'info[\'validity\'] must be a Ruby Integer object' unless info['validity'].is_a?(Integer)
+
       cert = OpenSSL::X509::Certificate.new
       ef = OpenSSL::X509::ExtensionFactory.new
 
@@ -213,6 +248,7 @@ module OpenSSLCookbook
         ef.issuer_certificate = cert
         extension << ef.create_extension('basicConstraints', 'CA:TRUE', true)
       else
+        raise TypeError, 'info[\'issuer\'] must be a Ruby OpenSSL::X509::Certificate object' unless info['issuer'].is_a?(OpenSSL::X509::Certificate)
         cert.issuer = info['issuer'].subject
         ef.issuer_certificate = info['issuer']
       end
@@ -226,6 +262,114 @@ module OpenSSLCookbook
 
       cert.sign(key, OpenSSL::Digest::SHA256.new)
       cert
+    end
+
+    # generate a X509 CRL given a CA
+    # @param [OpenSSL::PKey::EC, OpenSSL::PKey::RSA] ca_private_key private key from the CA
+    # @param [Hash] info issuer & validity
+    # @return [OpenSSL::X509::CRL]
+    def gen_x509_crl(ca_private_key, info)
+      raise TypeError, 'ca_private_key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless ca_private_key.is_a?(OpenSSL::PKey::EC) || ca_private_key.is_a?(OpenSSL::PKey::RSA)
+      raise TypeError, 'info must be a Ruby Hash' unless info.is_a?(Hash)
+
+      raise ArgumentError, 'info must contain a issuer and a validity' unless info.key?('issuer') && info.key?('validity')
+      raise TypeError, 'info[\'issuer\'] must be a Ruby OpenSSL::X509::Certificate object' unless info['issuer'].is_a?(OpenSSL::X509::Certificate)
+      raise TypeError, 'info[\'validity\'] must be a Ruby Integer object' unless info['validity'].is_a?(Integer)
+
+      crl = OpenSSL::X509::CRL.new
+      ef = OpenSSL::X509::ExtensionFactory.new
+
+      crl.version = 1
+      crl.issuer = info['issuer'].subject
+      crl.last_update = Time.now
+      crl.next_update = Time.now + 3600 * 24 * info['validity']
+
+      ef.config = OpenSSL::Config.load(OpenSSL::Config::DEFAULT_CONFIG_FILE)
+      ef.issuer_certificate = info['issuer']
+
+      crl.add_extension OpenSSL::X509::Extension.new('crlNumber', OpenSSL::ASN1::Integer(1))
+      crl.add_extension ef.create_extension('authorityKeyIdentifier',
+                                            'keyid:always,issuer:always')
+      crl.sign(ca_private_key, OpenSSL::Digest::SHA256.new)
+      crl
+    end
+
+    # generate the next CRL number available for a X509 CRL given
+    # @param [OpenSSL::X509::CRL] crl x509 CRL
+    # @return [Integer]
+    def get_next_crl_number(crl)
+      raise TypeError, 'crl must be a Ruby OpenSSL::X509::CRL object' unless crl.is_a?(OpenSSL::X509::CRL)
+      crlnum = 1
+      crl.extensions.each do |e|
+        crlnum = e.value if e.oid == 'crlNumber'
+      end
+      crlnum.to_i + 1
+    end
+
+    # add a serial given in the crl given
+    # @param [Hash] revoke_info serial to revoke & revokation reason
+    # @param [OpenSSL::X509::CRL] crl X509 CRL
+    # @param [OpenSSL::PKey::EC, OpenSSL::PKey::RSA] ca_private_key private key from the CA
+    # @param [Hash] info issuer & validity
+    # @return [OpenSSL::X509::CRL]
+    def revoke_x509_crl(revoke_info, crl, ca_private_key, info)
+      raise TypeError, 'revoke_info must be a Ruby Hash oject' unless revoke_info.is_a?(Hash)
+      raise TypeError, 'crl must be a Ruby OpenSSL::X509::CRL object' unless crl.is_a?(OpenSSL::X509::CRL)
+      raise TypeError, 'ca_private_key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless ca_private_key.is_a?(OpenSSL::PKey::EC) || ca_private_key.is_a?(OpenSSL::PKey::RSA)
+      raise TypeError, 'info must be a Ruby Hash' unless info.is_a?(Hash)
+
+      raise ArgumentError, 'revoke_info must contain a serial and a reason' unless revoke_info.key?('serial') && revoke_info.key?('reason')
+      raise TypeError, 'revoke_info[\'serial\'] must be a Ruby String or Integer object' unless revoke_info['serial'].is_a?(String) || revoke_info['serial'].is_a?(Integer)
+      raise TypeError, 'revoke_info[\'reason\'] must be a Ruby Integer object' unless revoke_info['reason'].is_a?(Integer)
+
+      raise ArgumentError, 'info must contain a issuer and a validity' unless info.key?('issuer') && info.key?('validity')
+      raise TypeError, 'info[\'issuer\'] must be a Ruby OpenSSL::X509::Certificate object' unless info['issuer'].is_a?(OpenSSL::X509::Certificate)
+      raise TypeError, 'info[\'validity\'] must be a Ruby Integer object' unless info['validity'].is_a?(Integer)
+
+      revoked = OpenSSL::X509::Revoked.new
+      revoked.serial = if revoke_info['serial'].is_a?(String)
+                         revoke_info['serial'].to_i(16)
+                       else
+                         revoke_info['serial']
+                       end
+      revoked.time = Time.now
+
+      ext = OpenSSL::X509::Extension.new('CRLReason',
+             OpenSSL::ASN1::Enumerated(revoke_info['reason']))
+      revoked.add_extension(ext)
+      crl.add_revoked(revoked)
+
+      crl = renew_x509_crl(crl, ca_private_key, info)
+      crl
+    end
+
+    # renew a X509 crl given
+    # @param [OpenSSL::X509::CRL] crl CRL to renew
+    # @param [OpenSSL::PKey::EC, OpenSSL::PKey::RSA] ca_private_key private key from the CA
+    # @param [Hash] info issuer & validity
+    # @return [OpenSSL::X509::CRL]
+    def renew_x509_crl(crl, ca_private_key, info)
+      raise TypeError, 'crl must be a Ruby OpenSSL::X509::CRL object' unless crl.is_a?(OpenSSL::X509::CRL)
+      raise TypeError, 'ca_private_key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless ca_private_key.is_a?(OpenSSL::PKey::EC) || ca_private_key.is_a?(OpenSSL::PKey::RSA)
+      raise TypeError, 'info must be a Ruby Hash' unless info.is_a?(Hash)
+
+      raise ArgumentError, 'info must contain a issuer and a validity' unless info.key?('issuer') && info.key?('validity')
+      raise TypeError, 'info[\'issuer\'] must be a Ruby OpenSSL::X509::Certificate object' unless info['issuer'].is_a?(OpenSSL::X509::Certificate)
+      raise TypeError, 'info[\'validity\'] must be a Ruby Integer object' unless info['validity'].is_a?(Integer)
+
+      crl.last_update = Time.now
+      crl.next_update = crl.last_update + 3600 * 24 * info['validity']
+
+      ef = OpenSSL::X509::ExtensionFactory.new
+      ef.config = OpenSSL::Config.load(OpenSSL::Config::DEFAULT_CONFIG_FILE)
+      ef.issuer_certificate = info['issuer']
+
+      crl.extensions = [ OpenSSL::X509::Extension.new('crlNumber',
+                 OpenSSL::ASN1::Integer(get_next_crl_number(crl)))]
+      crl.add_extension ef.create_extension('authorityKeyIdentifier',
+                                            'keyid:always,issuer:always')
+      crl.sign(ca_private_key, OpenSSL::Digest::SHA256.new)
+      crl
     end
   end
 end

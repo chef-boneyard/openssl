@@ -220,6 +220,12 @@ describe x509_certificate('/etc/ssl_test/my_signed_cert2.crt') do
   its('extensions.subjectAltName') { should include 'IP Address:127.0.0.1' }
 end
 
+# X509 CRL
+describe command('openssl crl -in /etc/ssl_test/my_ca2.crl -text -noout | grep Serial') do
+  its('exit_status') { should eq 0 }
+  its('stdout') { should match /C7BCB6602A2E4251EF4E2827A228CB52BC0CEA2F/ }
+end
+
 # X509 REQUESTS
 
 describe command('openssl ec -in /etc/ssl_test/my_ec_request.key -text -noout') do

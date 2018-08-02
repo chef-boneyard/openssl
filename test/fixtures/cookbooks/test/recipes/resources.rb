@@ -38,6 +38,7 @@
   /etc/ssl_test/my_ca2.key
   /etc/ssl_test/my_ca2.csr
   /etc/ssl_test/my_ca2.crt
+  /etc/ssl_test/my_ca2.crl
   /etc/ssl_test/my_signed_cert2.key
   /etc/ssl_test/my_signed_cert2.csr
   /etc/ssl_test/my_signed_cert2.crt
@@ -242,6 +243,28 @@ openssl_x509_certificate '/etc/ssl_test/my_signed_cert2.crt' do
     }
   )
   subject_alt_name ['IP:127.0.0.1', 'DNS:localhost.localdomain']
+end
+
+#
+# X509_CRL HERE
+#
+
+openssl_x509_crl '/etc/ssl_test/my_ca2.crl' do
+  ca_cert_file '/etc/ssl_test/my_ca2.crt'
+  ca_key_file '/etc/ssl_test/my_ca2.key'
+  expire 1
+end
+
+openssl_x509_crl '/etc/ssl_test/my_ca2.crl' do
+  ca_cert_file '/etc/ssl_test/my_ca2.crt'
+  ca_key_file '/etc/ssl_test/my_ca2.key'
+  renewal_threshold 2
+end
+
+openssl_x509_crl '/etc/ssl_test/my_ca2.crl' do
+  ca_cert_file '/etc/ssl_test/my_ca2.crt'
+  ca_key_file '/etc/ssl_test/my_ca2.key'
+  serial_to_revoke 'C7BCB6602A2E4251EF4E2827A228CB52BC0CEA2F'
 end
 
 #
