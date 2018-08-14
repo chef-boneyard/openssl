@@ -65,7 +65,7 @@ action_class do
 
   def key
     @key ||= if priv_key_file_valid?(generate_key_file, new_resource.key_pass)
-               OpenSSL::PKey.read ::File.read(generate_key_file), new_resource.key_pass
+               ::OpenSSL::PKey.read ::File.read(generate_key_file), new_resource.key_pass
              elsif new_resource.key_type == 'rsa'
                gen_rsa_priv_key(new_resource.key_length)
              else
@@ -78,13 +78,13 @@ action_class do
     request = if new_resource.csr_file.nil?
                 gen_x509_request(subject, key)
               else
-                OpenSSL::X509::Request.new ::File.read(new_resource.csr_file)
+                ::OpenSSL::X509::Request.new ::File.read(new_resource.csr_file)
               end
     request
   end
 
   def subject
-    subject = OpenSSL::X509::Name.new()
+    subject = ::OpenSSL::X509::Name.new()
     subject.add_entry('C', new_resource.country) unless new_resource.country.nil?
     subject.add_entry('ST', new_resource.state) unless new_resource.state.nil?
     subject.add_entry('L', new_resource.city) unless new_resource.city.nil?
@@ -99,7 +99,7 @@ action_class do
     ca_private_key = if new_resource.csr_file.nil?
                        key
                      else
-                       OpenSSL::PKey.read ::File.read(new_resource.ca_key_file), new_resource.ca_key_pass
+                       ::OpenSSL::PKey.read ::File.read(new_resource.ca_key_file), new_resource.ca_key_pass
                      end
     ca_private_key
   end
@@ -109,7 +109,7 @@ action_class do
     ca_info = {}
 
     unless new_resource.ca_cert_file.nil?
-      ca_info['issuer'] = OpenSSL::X509::Certificate.new ::File.read(new_resource.ca_cert_file)
+      ca_info['issuer'] = ::OpenSSL::X509::Certificate.new ::File.read(new_resource.ca_cert_file)
     end
     ca_info['validity'] = new_resource.expire
 

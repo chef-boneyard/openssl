@@ -27,7 +27,7 @@ action_class do
     # Will contain issuer & expiration
     crl_info = {}
 
-    crl_info['issuer'] = OpenSSL::X509::Certificate.new ::File.read(new_resource.ca_cert_file)
+    crl_info['issuer'] = ::OpenSSL::X509::Certificate.new ::File.read(new_resource.ca_cert_file)
     crl_info['validity'] = new_resource.expire
 
     crl_info
@@ -44,13 +44,13 @@ action_class do
   end
 
   def ca_private_key
-    ca_private_key = OpenSSL::PKey.read ::File.read(new_resource.ca_key_file), new_resource.ca_key_pass
+    ca_private_key = ::OpenSSL::PKey.read ::File.read(new_resource.ca_key_file), new_resource.ca_key_pass
     ca_private_key
   end
 
   def crl
     if crl_file_valid?(new_resource.path)
-      crl = OpenSSL::X509::CRL.new ::File.read(new_resource.path)
+      crl = ::OpenSSL::X509::CRL.new ::File.read(new_resource.path)
     else
       log "Creating a CRL #{new_resource.path} for CA #{new_resource.ca_cert_file}"
       crl = gen_x509_crl(ca_private_key, crl_info)
