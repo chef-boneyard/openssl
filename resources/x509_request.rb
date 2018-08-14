@@ -32,8 +32,6 @@ property :key_type,         equal_to: %w(rsa ec), default: 'ec'
 property :key_length,       equal_to: [1024, 2048, 4096, 8192], default: 2048
 property :key_curve,        equal_to: %w(secp384r1 secp521r1 prime256v1), default: 'prime256v1'
 
-default_action :create
-
 action :create do
   unless ::File.exist? new_resource.path
     converge_by("Create CSR #{@new_resource}") do

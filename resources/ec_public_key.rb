@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 include OpenSSLCookbook::Helpers
 
 property :path,                String, name_property: true
@@ -23,8 +24,6 @@ property :private_key_pass,    String
 property :owner,               String
 property :group,               String
 property :mode,                [Integer, String], default: '0640'
-
-default_action :create
 
 action :create do
   raise ArgumentError, "You cannot specify both 'private_key_path' and 'private_key_content' properties at the same time." if new_resource.private_key_path && new_resource.private_key_content
