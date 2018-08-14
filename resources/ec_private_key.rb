@@ -23,7 +23,7 @@ property :key_pass,    String
 property :key_cipher,  String, default: 'des3', equal_to: OpenSSL::Cipher.ciphers
 property :owner,       String
 property :group,       String
-property :mode,        [Integer, String], default: '0600'
+property :mode,        [Integer, String], default: '0640'
 property :force,       [true, false], default: false
 
 action :create do
