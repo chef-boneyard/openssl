@@ -26,8 +26,6 @@ property :group,       String, default: node['root_group']
 property :mode,        [Integer, String], default: '0640'
 property :force,       [true, false], default: false
 
-default_action :create
-
 action :create do
   unless new_resource.force || priv_key_file_valid?(new_resource.path, new_resource.key_pass)
     converge_by("Create an EC private key #{new_resource.path}") do
