@@ -21,9 +21,9 @@ property :path,        String, name_property: true
 property :key_curve,   equal_to: %w(secp384r1 secp521r1 prime256v1 secp224r1 secp256k1), default: 'prime256v1'
 property :key_pass,    String
 property :key_cipher,  String, default: 'des3', equal_to: OpenSSL::Cipher.ciphers
-property :owner,       String, default: node['platform'] == 'windows' ? 'Administrator' : 'root'
-property :group,       String, default: node['root_group']
 property :mode,        [Integer, String], default: '0640'
+property :owner,       String
+property :group,       String
 property :force,       [true, false], default: false
 
 action :create do
@@ -41,8 +41,8 @@ action :create do
 
       file new_resource.path do
         action :create
-        owner new_resource.owner
-        group new_resource.group
+        owner new_resource.owner unless new_resource.owner.nil?
+        group new_resource.group unless new_resource.group.nil?
         mode new_resource.mode
         sensitive true
         content ec_key_content

@@ -16,8 +16,8 @@
 include OpenSSLCookbook::Helpers
 
 property :path,             String, name_property: true
-property :owner,            String, default: node['platform'] == 'windows' ? 'Administrator' : 'root'
-property :group,            String, default: node['root_group']
+property :owner,            String
+property :group,            String
 property :mode,             [Integer, String], default: '0644'
 property :country,          String
 property :state,            String
@@ -38,8 +38,8 @@ action :create do
   unless ::File.exist? new_resource.path
     converge_by("Create CSR #{@new_resource}") do
       file new_resource.name do
-        owner new_resource.owner
-        group new_resource.group
+        owner new_resource.owner unless new_resource.owner.nil?
+        group new_resource.group unless new_resource.group.nil?
         mode new_resource.mode
         content csr.to_pem
         action :create
@@ -47,8 +47,8 @@ action :create do
 
       file new_resource.key_file do
         mode new_resource.mode
-        owner new_resource.owner
-        group new_resource.group
+        owner new_resource.owner unless new_resource.owner.nil?
+        group new_resource.group unless new_resource.group.nil?
         content key.to_pem
         sensitive true
         action :create_if_missing

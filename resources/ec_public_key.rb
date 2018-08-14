@@ -20,8 +20,8 @@ property :path,                String, name_property: true
 property :private_key_path,    String
 property :private_key_content, String
 property :private_key_pass,    String
-property :owner,               String, default: node['platform'] == 'windows' ? 'Administrator' : 'root'
-property :group,               String, default: node['root_group']
+property :owner,               String
+property :group,               String
 property :mode,                [Integer, String], default: '0640'
 
 default_action :create
@@ -35,8 +35,8 @@ action :create do
 
   file new_resource.path do
     action :create
-    owner new_resource.owner
-    group new_resource.group
+    owner new_resource.owner unless new_resource.owner.nil?
+    group new_resource.group unless new_resource.group.nil?
     mode new_resource.mode
     content ec_key_content
   end

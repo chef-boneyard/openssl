@@ -4,8 +4,8 @@ provides :openssl_x509_certificate
 include OpenSSLCookbook::Helpers
 
 property :path,             String, name_property: true
-property :owner,            String, default: node['platform'] == 'windows' ? 'Administrator' : 'root'
-property :group,            String, default: node['root_group']
+property :owner,            String
+property :group,            String
 property :expire,           Integer, default: 365
 property :mode,             [Integer, String], default: '0644'
 property :country,          String
@@ -33,8 +33,8 @@ action :create do
       file new_resource.path do
         action :create_if_missing
         mode new_resource.mode
-        owner new_resource.owner
-        group new_resource.group
+        owner new_resource.owner unless new_resource.owner.nil?
+        group new_resource.group unless new_resource.group.nil?
         sensitive true
         content cert.to_pem
       end
@@ -43,8 +43,8 @@ action :create do
         file new_resource.key_file do
           action :create_if_missing
           mode new_resource.mode
-          owner new_resource.owner
-          group new_resource.group
+          owner new_resource.owner unless new_resource.owner.nil?
+          group new_resource.group unless new_resource.group.nil?
           sensitive true
           content key.to_pem
         end
