@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 8.5.2 (2018-08-14)
+
+- Back out mode change in ec_private_key
+
 ## 8.5.1 (2018-08-14)
 
 - Add license headers to the resources
