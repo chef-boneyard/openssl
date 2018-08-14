@@ -18,7 +18,7 @@ module OpenSSLCookbook
   # Helper functions for the OpenSSL cookbook.
   module Helpers
     def self.included(_base)
-      require 'openssl' unless defined?(OpenSSL)
+      require 'openssl' unless defined?(::OpenSSL)
     end
 
     # determine the key filename from the cert filename
@@ -34,7 +34,7 @@ module OpenSSLCookbook
     # @param [Integer] number
     # @return [Boolean] is length valid
     def key_length_valid?(number)
-      number >= 1024 && number & (number - 1) == 0
+      number >= 1024 && (number & (number - 1) == 0)
     end
 
     # validate a dhparam file from path
@@ -44,7 +44,7 @@ module OpenSSLCookbook
       # Check if the dhparam.pem file exists
       # Verify the dhparam.pem file contains a key
       return false unless ::File.exist?(dhparam_pem_path)
-      dhparam = OpenSSL::PKey::DH.new File.read(dhparam_pem_path)
+      dhparam = ::OpenSSL::PKey::DH.new File.read(dhparam_pem_path)
       dhparam.params_ok?
     end
 
@@ -131,7 +131,7 @@ module OpenSSLCookbook
       # if the file exists try to read the content
       # if not assume we were passed the key and set the string to the content
       key_content = ::File.exist?(priv_key) ? File.read(priv_key) : priv_key
-      key = OpenSSL::PKey::RSA.new key_content, priv_key_password
+      key = ::OpenSSL::PKey::RSA.new key_content, priv_key_password
       key.public_key.to_pem
     end
 
@@ -146,7 +146,7 @@ module OpenSSLCookbook
       raise TypeError, 'key_cipher must be a string' unless key_cipher.is_a?(String)
       raise ArgumentError, 'Specified key_cipher is not available on this system' unless OpenSSL::Cipher.ciphers.include?(key_cipher)
 
-      cipher = OpenSSL::Cipher.new(key_cipher)
+      cipher = ::OpenSSL::Cipher.new(key_cipher)
       rsa_key.to_pem(cipher, key_password)
     end
 
