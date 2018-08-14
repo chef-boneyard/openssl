@@ -2,6 +2,14 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 8.5.1 (2018-08-14)
+
+- Add license headers to the resources
+- Remove default_action setup from the resources since this is done automatically in custom resources now
+- Make sure to use the path name_property when creating the ec public key file
+- Make sure we're using openssl and not Chef's Openssl class
+- Simplify how we handle user/group properties
+
 ## 8.5.0 (2018-08-02)
 
 - Use the system provided owner/group defaults in resources
