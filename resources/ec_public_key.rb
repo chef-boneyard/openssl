@@ -33,7 +33,7 @@ action :create do
 
   ec_key_content = gen_ec_pub_key((new_resource.private_key_path || new_resource.private_key_content), new_resource.private_key_pass)
 
-  file new_resource.name do
+  file new_resource.path do
     action :create
     owner new_resource.owner
     group new_resource.group
