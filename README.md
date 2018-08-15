@@ -174,6 +174,7 @@ Name                  | Type                                              | Desc
 `city`             | String (Optional)            | Value for the `L` certificate field.
 `state`            | String (Optional)            | Value for the `ST` certificate field.
 `country`          | String (Optional)            | Value for the `C` ssl field.
+`email`            | String (Optional)            | Value for the `email` ssl field.
 `key_file`         | String (Optional)            | The path to a certificate key file on the filesystem. If the `key_file` attribute is specified, the resource will attempt to source a key from this location. If no key file is found, the resource will generate a new key file at this location. If the `key_file` attribute is not specified, the resource will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
 `key_pass`         | String (Optional)            | The passphrase for an existing key's passphrase
 `key_type`         | String (Optional)            | The desired type of the generated key (rsa or ec). _Default: ec_
