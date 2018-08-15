@@ -59,12 +59,12 @@ module OpenSSLCookbook
       key_content = ::File.exist?(key_file) ? File.read(key_file) : key_file
 
       begin
-        key = OpenSSL::PKey.read key_content, key_password
-      rescue OpenSSL::PKey::PKeyError, ArgumentError
+        key = ::OpenSSL::PKey.read key_content, key_password
+      rescue ::OpenSSL::PKey::PKeyError, ArgumentError
         return false
       end
 
-      if key.is_a?(OpenSSL::PKey::EC)
+      if key.is_a?(::OpenSSL::PKey::EC)
         key.private_key?
       else
         key.private?
@@ -76,8 +76,8 @@ module OpenSSLCookbook
     # @return [Boolean] is the key valid?
     def crl_file_valid?(crl_file)
       begin
-        OpenSSL::X509::CRL.new ::File.read(crl_file)
-      rescue OpenSSL::X509::CRLError, Errno::ENOENT
+        ::OpenSSL::X509::CRL.new ::File.read(crl_file)
+      rescue ::OpenSSL::X509::CRLError, Errno::ENOENT
         return false
       end
       true
@@ -88,7 +88,7 @@ module OpenSSLCookbook
     # @param [String, Integer] serial X509 Certificate Serial Number
     # @return [true, false]
     def serial_revoked?(crl, serial)
-      raise TypeError, 'crl must be a Ruby OpenSSL::X509::CRL object' unless crl.is_a?(OpenSSL::X509::CRL)
+      raise TypeError, 'crl must be a Ruby OpenSSL::X509::CRL object' unless crl.is_a?(::OpenSSL::X509::CRL)
       raise TypeError, 'serial must be a Ruby String or Integer object' unless serial.is_a?(String) || serial.is_a?(Integer)
 
       serial_to_verify = if serial.is_a?(String)
@@ -111,7 +111,7 @@ module OpenSSLCookbook
       raise ArgumentError, 'Key length must be a power of 2 greater than or equal to 1024' unless key_length_valid?(key_length)
       raise TypeError, 'Generator must be an integer' unless generator.is_a?(Integer)
 
-      OpenSSL::PKey::DH.new(key_length, generator)
+      ::OpenSSL::PKey::DH.new(key_length, generator)
     end
 
     # generate an RSA private key given key length
@@ -120,7 +120,7 @@ module OpenSSLCookbook
     def gen_rsa_priv_key(key_length)
       raise ArgumentError, 'Key length must be a power of 2 greater than or equal to 1024' unless key_length_valid?(key_length)
 
-      OpenSSL::PKey::RSA.new(key_length)
+      ::OpenSSL::PKey::RSA.new(key_length)
     end
 
     # generate pem format of the public key given a private key
@@ -141,10 +141,10 @@ module OpenSSLCookbook
     # @param [String] key_cipher the cipher to use
     # @return [String] pem contents
     def encrypt_rsa_key(rsa_key, key_password, key_cipher)
-      raise TypeError, 'rsa_key must be a Ruby OpenSSL::PKey::RSA object' unless rsa_key.is_a?(OpenSSL::PKey::RSA)
+      raise TypeError, 'rsa_key must be a Ruby OpenSSL::PKey::RSA object' unless rsa_key.is_a?(::OpenSSL::PKey::RSA)
       raise TypeError, 'key_password must be a string' unless key_password.is_a?(String)
       raise TypeError, 'key_cipher must be a string' unless key_cipher.is_a?(String)
-      raise ArgumentError, 'Specified key_cipher is not available on this system' unless OpenSSL::Cipher.ciphers.include?(key_cipher)
+      raise ArgumentError, 'Specified key_cipher is not available on this system' unless ::OpenSSL::Cipher.ciphers.include?(key_cipher)
 
       cipher = ::OpenSSL::Cipher.new(key_cipher)
       rsa_key.to_pem(cipher, key_password)
@@ -156,7 +156,7 @@ module OpenSSLCookbook
     def gen_ec_priv_key(curve)
       raise TypeError, 'curve must be a string' unless curve.is_a?(String)
       raise ArgumentError, 'Specified curve is not available on this system' unless curve == 'prime256v1' || curve == 'secp384r1' || curve == 'secp521r1'
-      OpenSSL::PKey::EC.new(curve).generate_key
+      ::OpenSSL::PKey::EC.new(curve).generate_key
     end
 
     # generate pem format of the public key given a private key
@@ -167,17 +167,17 @@ module OpenSSLCookbook
       # if the file exists try to read the content
       # if not assume we were passed the key and set the string to the content
       key_content = ::File.exist?(priv_key) ? File.read(priv_key) : priv_key
-      key = OpenSSL::PKey::EC.new key_content, priv_key_password
+      key = ::OpenSSL::PKey::EC.new key_content, priv_key_password
 
       # Get curve type (prime256v1...)
-      group = OpenSSL::PKey::EC::Group.new(key.group.curve_name)
+      group = ::OpenSSL::PKey::EC::Group.new(key.group.curve_name)
       # Get Generator point & public point (priv * generator)
       generator = group.generator
       pub_point = generator.mul(key.private_key)
       key.public_key = pub_point
 
       # Public Key in pem
-      public_key = OpenSSL::PKey::EC.new
+      public_key = ::OpenSSL::PKey::EC.new
       public_key.group = group
       public_key.public_key = pub_point
       public_key.to_pem
@@ -189,12 +189,12 @@ module OpenSSLCookbook
     # @param [String] key_cipher the cipher to use
     # @return [String] pem contents
     def encrypt_ec_key(ec_key, key_password, key_cipher)
-      raise TypeError, 'ec_key must be a Ruby OpenSSL::PKey::EC object' unless ec_key.is_a?(OpenSSL::PKey::EC)
+      raise TypeError, 'ec_key must be a Ruby OpenSSL::PKey::EC object' unless ec_key.is_a?(::OpenSSL::PKey::EC)
       raise TypeError, 'key_password must be a string' unless key_password.is_a?(String)
       raise TypeError, 'key_cipher must be a string' unless key_cipher.is_a?(String)
-      raise ArgumentError, 'Specified key_cipher is not available on this system' unless OpenSSL::Cipher.ciphers.include?(key_cipher)
+      raise ArgumentError, 'Specified key_cipher is not available on this system' unless ::OpenSSL::Cipher.ciphers.include?(key_cipher)
 
-      cipher = OpenSSL::Cipher.new(key_cipher)
+      cipher = ::OpenSSL::Cipher.new(key_cipher)
       ec_key.to_pem(cipher, key_password)
     end
 
@@ -203,18 +203,18 @@ module OpenSSLCookbook
     # @param [OpenSSL::PKey::EC, OpenSSL::PKey::RSA] key the private key object
     # @return [OpenSSL::X509::Request]
     def gen_x509_request(subject, key)
-      raise TypeError, 'subject must be a Ruby OpenSSL::X509::Name object' unless subject.is_a?(OpenSSL::X509::Name)
-      raise TypeError, 'key must be a Ruby OpenSSL::PKey::EC or a Ruby OpenSSL::PKey::RSA object' unless key.is_a?(OpenSSL::PKey::EC) || key.is_a?(OpenSSL::PKey::RSA)
+      raise TypeError, 'subject must be a Ruby OpenSSL::X509::Name object' unless subject.is_a?(::OpenSSL::X509::Name)
+      raise TypeError, 'key must be a Ruby OpenSSL::PKey::EC or a Ruby OpenSSL::PKey::RSA object' unless key.is_a?(::OpenSSL::PKey::EC) || key.is_a?(::OpenSSL::PKey::RSA)
 
-      request = OpenSSL::X509::Request.new
+      request = ::OpenSSL::X509::Request.new
       request.version = 0
       request.subject = subject
       request.public_key = key
 
       # Chef 12 backward compatibility
-      OpenSSL::PKey::EC.send(:alias_method, :private?, :private_key?)
+      ::OpenSSL::PKey::EC.send(:alias_method, :private?, :private_key?)
 
-      request.sign(key, OpenSSL::Digest::SHA256.new)
+      request.sign(key, ::OpenSSL::Digest::SHA256.new)
       request
     end
 
@@ -231,7 +231,7 @@ module OpenSSLCookbook
         raise TypeError, "the key 'values' must contain a Ruby Arrays" unless ext_prop['values'].is_a?(Array)
         raise TypeError, "the key 'critical' must be a Ruby Boolean true/false" unless ext_prop['critical'].is_a?(TrueClass) || ext_prop['critical'].is_a?(FalseClass)
 
-        exts << OpenSSL::X509::ExtensionFactory.new.create_extension(ext_name, ext_prop['values'].join(','), ext_prop['critical'])
+        exts << ::OpenSSL::X509::ExtensionFactory.new.create_extension(ext_name, ext_prop['values'].join(','), ext_prop['critical'])
       end
       exts
     end
@@ -239,7 +239,7 @@ module OpenSSLCookbook
     # generate a random Serial
     # @return [Integer]
     def gen_serial
-      OpenSSL::BN.generate_prime(160)
+      ::OpenSSL::BN.generate_prime(160)
     end
 
     # generate a Certificate given a X509 request
@@ -249,16 +249,16 @@ module OpenSSLCookbook
     # @param [OpenSSL::PKey::EC, OpenSSL::PKey::RSA] key private key to sign with
     # @return [OpenSSL::X509::Certificate]
     def gen_x509_cert(request, extension, info, key)
-      raise TypeError, 'request must be a Ruby OpenSSL::X509::Request' unless request.is_a?(OpenSSL::X509::Request)
+      raise TypeError, 'request must be a Ruby OpenSSL::X509::Request' unless request.is_a?(::OpenSSL::X509::Request)
       raise TypeError, 'extension must be a Ruby Array' unless extension.is_a?(Array)
       raise TypeError, 'info must be a Ruby Hash' unless info.is_a?(Hash)
-      raise TypeError, 'key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless key.is_a?(OpenSSL::PKey::EC) || key.is_a?(OpenSSL::PKey::RSA)
+      raise TypeError, 'key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless key.is_a?(::OpenSSL::PKey::EC) || key.is_a?(::OpenSSL::PKey::RSA)
 
       raise ArgumentError, 'info must contain a validity' unless info.key?('validity')
       raise TypeError, 'info[\'validity\'] must be a Ruby Integer object' unless info['validity'].is_a?(Integer)
 
-      cert = OpenSSL::X509::Certificate.new
-      ef = OpenSSL::X509::ExtensionFactory.new
+      cert = ::OpenSSL::X509::Certificate.new
+      ef = ::OpenSSL::X509::ExtensionFactory.new
 
       cert.serial = gen_serial()
       cert.version = 2
@@ -272,19 +272,19 @@ module OpenSSLCookbook
         ef.issuer_certificate = cert
         extension << ef.create_extension('basicConstraints', 'CA:TRUE', true)
       else
-        raise TypeError, 'info[\'issuer\'] must be a Ruby OpenSSL::X509::Certificate object' unless info['issuer'].is_a?(OpenSSL::X509::Certificate)
+        raise TypeError, 'info[\'issuer\'] must be a Ruby OpenSSL::X509::Certificate object' unless info['issuer'].is_a?(::OpenSSL::X509::Certificate)
         cert.issuer = info['issuer'].subject
         ef.issuer_certificate = info['issuer']
       end
       ef.subject_certificate = cert
-      ef.config = OpenSSL::Config.load(OpenSSL::Config::DEFAULT_CONFIG_FILE)
+      ef.config = ::OpenSSL::Config.load(::OpenSSL::Config::DEFAULT_CONFIG_FILE)
 
       cert.extensions = extension
       cert.add_extension ef.create_extension('subjectKeyIdentifier', 'hash')
       cert.add_extension ef.create_extension('authorityKeyIdentifier',
                                              'keyid:always,issuer:always')
 
-      cert.sign(key, OpenSSL::Digest::SHA256.new)
+      cert.sign(key, ::OpenSSL::Digest::SHA256.new)
       cert
     end
 
@@ -293,28 +293,28 @@ module OpenSSLCookbook
     # @param [Hash] info issuer & validity
     # @return [OpenSSL::X509::CRL]
     def gen_x509_crl(ca_private_key, info)
-      raise TypeError, 'ca_private_key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless ca_private_key.is_a?(OpenSSL::PKey::EC) || ca_private_key.is_a?(OpenSSL::PKey::RSA)
+      raise TypeError, 'ca_private_key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless ca_private_key.is_a?(::OpenSSL::PKey::EC) || ca_private_key.is_a?(::OpenSSL::PKey::RSA)
       raise TypeError, 'info must be a Ruby Hash' unless info.is_a?(Hash)
 
       raise ArgumentError, 'info must contain a issuer and a validity' unless info.key?('issuer') && info.key?('validity')
-      raise TypeError, 'info[\'issuer\'] must be a Ruby OpenSSL::X509::Certificate object' unless info['issuer'].is_a?(OpenSSL::X509::Certificate)
+      raise TypeError, 'info[\'issuer\'] must be a Ruby OpenSSL::X509::Certificate object' unless info['issuer'].is_a?(::OpenSSL::X509::Certificate)
       raise TypeError, 'info[\'validity\'] must be a Ruby Integer object' unless info['validity'].is_a?(Integer)
 
-      crl = OpenSSL::X509::CRL.new
-      ef = OpenSSL::X509::ExtensionFactory.new
+      crl = ::OpenSSL::X509::CRL.new
+      ef = ::OpenSSL::X509::ExtensionFactory.new
 
       crl.version = 1
       crl.issuer = info['issuer'].subject
       crl.last_update = Time.now
       crl.next_update = Time.now + 3600 * 24 * info['validity']
 
-      ef.config = OpenSSL::Config.load(OpenSSL::Config::DEFAULT_CONFIG_FILE)
+      ef.config = ::OpenSSL::Config.load(::OpenSSL::Config::DEFAULT_CONFIG_FILE)
       ef.issuer_certificate = info['issuer']
 
-      crl.add_extension OpenSSL::X509::Extension.new('crlNumber', OpenSSL::ASN1::Integer(1))
+      crl.add_extension ::OpenSSL::X509::Extension.new('crlNumber', ::OpenSSL::ASN1::Integer(1))
       crl.add_extension ef.create_extension('authorityKeyIdentifier',
                                             'keyid:always,issuer:always')
-      crl.sign(ca_private_key, OpenSSL::Digest::SHA256.new)
+      crl.sign(ca_private_key, ::OpenSSL::Digest::SHA256.new)
       crl
     end
 
@@ -322,7 +322,7 @@ module OpenSSLCookbook
     # @param [OpenSSL::X509::CRL] crl x509 CRL
     # @return [Integer]
     def get_next_crl_number(crl)
-      raise TypeError, 'crl must be a Ruby OpenSSL::X509::CRL object' unless crl.is_a?(OpenSSL::X509::CRL)
+      raise TypeError, 'crl must be a Ruby OpenSSL::X509::CRL object' unless crl.is_a?(::OpenSSL::X509::CRL)
       crlnum = 1
       crl.extensions.each do |e|
         crlnum = e.value if e.oid == 'crlNumber'
@@ -338,8 +338,8 @@ module OpenSSLCookbook
     # @return [OpenSSL::X509::CRL]
     def revoke_x509_crl(revoke_info, crl, ca_private_key, info)
       raise TypeError, 'revoke_info must be a Ruby Hash oject' unless revoke_info.is_a?(Hash)
-      raise TypeError, 'crl must be a Ruby OpenSSL::X509::CRL object' unless crl.is_a?(OpenSSL::X509::CRL)
-      raise TypeError, 'ca_private_key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless ca_private_key.is_a?(OpenSSL::PKey::EC) || ca_private_key.is_a?(OpenSSL::PKey::RSA)
+      raise TypeError, 'crl must be a Ruby OpenSSL::X509::CRL object' unless crl.is_a?(::OpenSSL::X509::CRL)
+      raise TypeError, 'ca_private_key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless ca_private_key.is_a?(::OpenSSL::PKey::EC) || ca_private_key.is_a?(::OpenSSL::PKey::RSA)
       raise TypeError, 'info must be a Ruby Hash' unless info.is_a?(Hash)
 
       raise ArgumentError, 'revoke_info must contain a serial and a reason' unless revoke_info.key?('serial') && revoke_info.key?('reason')
@@ -347,10 +347,10 @@ module OpenSSLCookbook
       raise TypeError, 'revoke_info[\'reason\'] must be a Ruby Integer object' unless revoke_info['reason'].is_a?(Integer)
 
       raise ArgumentError, 'info must contain a issuer and a validity' unless info.key?('issuer') && info.key?('validity')
-      raise TypeError, 'info[\'issuer\'] must be a Ruby OpenSSL::X509::Certificate object' unless info['issuer'].is_a?(OpenSSL::X509::Certificate)
+      raise TypeError, 'info[\'issuer\'] must be a Ruby OpenSSL::X509::Certificate object' unless info['issuer'].is_a?(::OpenSSL::X509::Certificate)
       raise TypeError, 'info[\'validity\'] must be a Ruby Integer object' unless info['validity'].is_a?(Integer)
 
-      revoked = OpenSSL::X509::Revoked.new
+      revoked = ::OpenSSL::X509::Revoked.new
       revoked.serial = if revoke_info['serial'].is_a?(String)
                          revoke_info['serial'].to_i(16)
                        else
@@ -358,8 +358,8 @@ module OpenSSLCookbook
                        end
       revoked.time = Time.now
 
-      ext = OpenSSL::X509::Extension.new('CRLReason',
-             OpenSSL::ASN1::Enumerated(revoke_info['reason']))
+      ext = ::OpenSSL::X509::Extension.new('CRLReason',
+             ::OpenSSL::ASN1::Enumerated(revoke_info['reason']))
       revoked.add_extension(ext)
       crl.add_revoked(revoked)
 
@@ -373,26 +373,26 @@ module OpenSSLCookbook
     # @param [Hash] info issuer & validity
     # @return [OpenSSL::X509::CRL]
     def renew_x509_crl(crl, ca_private_key, info)
-      raise TypeError, 'crl must be a Ruby OpenSSL::X509::CRL object' unless crl.is_a?(OpenSSL::X509::CRL)
-      raise TypeError, 'ca_private_key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless ca_private_key.is_a?(OpenSSL::PKey::EC) || ca_private_key.is_a?(OpenSSL::PKey::RSA)
+      raise TypeError, 'crl must be a Ruby OpenSSL::X509::CRL object' unless crl.is_a?(::OpenSSL::X509::CRL)
+      raise TypeError, 'ca_private_key must be a Ruby OpenSSL::PKey::EC object or a Ruby OpenSSL::PKey::RSA object' unless ca_private_key.is_a?(::OpenSSL::PKey::EC) || ca_private_key.is_a?(::OpenSSL::PKey::RSA)
       raise TypeError, 'info must be a Ruby Hash' unless info.is_a?(Hash)
 
       raise ArgumentError, 'info must contain a issuer and a validity' unless info.key?('issuer') && info.key?('validity')
-      raise TypeError, 'info[\'issuer\'] must be a Ruby OpenSSL::X509::Certificate object' unless info['issuer'].is_a?(OpenSSL::X509::Certificate)
+      raise TypeError, 'info[\'issuer\'] must be a Ruby OpenSSL::X509::Certificate object' unless info['issuer'].is_a?(::OpenSSL::X509::Certificate)
       raise TypeError, 'info[\'validity\'] must be a Ruby Integer object' unless info['validity'].is_a?(Integer)
 
       crl.last_update = Time.now
       crl.next_update = crl.last_update + 3600 * 24 * info['validity']
 
-      ef = OpenSSL::X509::ExtensionFactory.new
-      ef.config = OpenSSL::Config.load(OpenSSL::Config::DEFAULT_CONFIG_FILE)
+      ef = ::OpenSSL::X509::ExtensionFactory.new
+      ef.config = ::OpenSSL::Config.load(::OpenSSL::Config::DEFAULT_CONFIG_FILE)
       ef.issuer_certificate = info['issuer']
 
-      crl.extensions = [ OpenSSL::X509::Extension.new('crlNumber',
-                 OpenSSL::ASN1::Integer(get_next_crl_number(crl)))]
+      crl.extensions = [ ::OpenSSL::X509::Extension.new('crlNumber',
+                 ::OpenSSL::ASN1::Integer(get_next_crl_number(crl)))]
       crl.add_extension ef.create_extension('authorityKeyIdentifier',
                                             'keyid:always,issuer:always')
-      crl.sign(ca_private_key, OpenSSL::Digest::SHA256.new)
+      crl.sign(ca_private_key, ::OpenSSL::Digest::SHA256.new)
       crl
     end
   end
