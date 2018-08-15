@@ -4,7 +4,7 @@ maintainer_email 'cookbooks@chef.io'
 license          'Apache-2.0'
 description      'Resources and libraries for interacting with certificates, keys, passwords, and dhparam files.'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version '8.5.2'
+version '8.5.3'
 
 recipe 'openssl::upgrade', 'Upgrade OpenSSL library and restart dependent services'
 

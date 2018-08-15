@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 8.5.3 (2018-08-15)
+
+- Call ::OpenSSL not OpenSSL to be more defensive in the helpers
+
 ## 8.5.2 (2018-08-14)
 
 - Back out mode change in ec_private_key
