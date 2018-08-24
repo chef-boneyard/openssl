@@ -8,15 +8,15 @@ property :renewal_threshold, Integer, default: 1
 property :ca_cert_file,      String, required: true
 property :ca_key_file,       String, required: true
 property :ca_key_pass,       String
-property :owner,             String, default: 'root'
-property :group,             String, default: 'root'
-property :mode,              String, default: '0644'
+property :owner,             String
+property :group,             String
+property :mode,              String
 
 action :create do
   file new_resource.path do
-    owner new_resource.owner
-    group new_resource.group
-    mode new_resource.mode
+    owner new_resource.owner unless new_resource.owner.nil?
+    group new_resource.group unless new_resource.group.nil?
+    mode new_resource.mode unless new_resource.mode.nil?
     content crl.to_pem
     action :create
   end
