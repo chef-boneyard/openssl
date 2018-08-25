@@ -104,14 +104,14 @@ Name               | Type                         | Description
 `expire`           | Integer (Optional)           | Value representing the number of days from _now_ through which the issued certificate cert will remain valid. The certificate will expire after this period. _Default: 365
 `extensions`       | Hash (Optional)              | Hash of X509 Extensions entries, in format `{ 'keyUsage' => { 'values' => %w( keyEncipherment digitalSignature), 'critical' => true } }` _Default: empty_
 `subject_alt_name` | Array (Optional)             | Array of _Subject Alternative Name_ entries, in format `DNS:example.com` or `IP:1.2.3.4` _Default: empty_
-`key_file`         | String (Optional)            | The path to a certificate key file on the filesystem. If the `key_file` attribute is specified, the resource will attempt to source a key from this location. If no key file is found, the resource will generate a new key file at this location. If the `key_file` attribute is not specified, the resource will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
+`key_file`         | String (Optional)            | The path to a certificate key file on the filesystem. If the `key_file` property is specified, the resource will attempt to source a key from this location. If no key file is found, the resource will generate a new key file at this location. If the `key_file` property is not specified, the resource will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
 `key_pass`         | String (Optional)            | The passphrase for an existing key's passphrase
 `key_type`         | String (Optional)            | The desired type of the generated key (rsa or ec). _Default: rsa_
 `key_length`       | Integer (Optional)           | The desired Bit Length of the generated key (if key_type is equal to 'rsa'). _Default: 2048_
 `key_curve`        | String (Optional)            | The desired curve of the generated key (if key_type is equal to 'ec'). Run `openssl ecparam -list_curves` to see available options. _Default: prime256v1_
-`csr_file`         | String (Optional)            | The path to a X509 Certificate Request (CSR) on the filesystem. If the `csr_file` attribute is specified, the resource will attempt to source a CSR from this location. If no CSR file is found, the resource will generate a Self-Signed Certificate and the certificate fields must be specified (common_name at last).
-`ca_cert_file`     | String (Optional)            | The path to the CA X509 Certificate on the filesystem. If the `ca_cert_file` attribute is specified, the `ca_key_file` attribute must also be specified, the certificate will be signed with them.
-`ca_key_file`      | String (Optional)            | The path to the CA private key on the filesystem. If the `ca_key_file` attribute is specified, the `ca_cert_file' attribute must also be specified, the certificate will be signed with them.
+`csr_file`         | String (Optional)            | The path to a X509 Certificate Request (CSR) on the filesystem. If the `csr_file` property is specified, the resource will attempt to source a CSR from this location. If no CSR file is found, the resource will generate a Self-Signed Certificate and the certificate fields must be specified (common_name at last).
+`ca_cert_file`     | String (Optional)            | The path to the CA X509 Certificate on the filesystem. If the `ca_cert_file` property is specified, the `ca_key_file` property must also be specified, the certificate will be signed with them.
+`ca_key_file`      | String (Optional)            | The path to the CA private key on the filesystem. If the `ca_key_file` property is specified, the `ca_cert_file' property must also be specified, the certificate will be signed with them.
 `ca_key_pass`      | String (Optional)            | The passphrase for CA private key's passphrase
 `owner`            | String (optional)            | The owner of all files created by the resource. _Default: "root"_
 `group`            | String (optional)            | The group of all files created by the resource. _Default: "root"_
@@ -175,7 +175,7 @@ Name                  | Type                                              | Desc
 `state`            | String (Optional)            | Value for the `ST` certificate field.
 `country`          | String (Optional)            | Value for the `C` ssl field.
 `email`            | String (Optional)            | Value for the `email` ssl field.
-`key_file`         | String (Optional)            | The path to a certificate key file on the filesystem. If the `key_file` attribute is specified, the resource will attempt to source a key from this location. If no key file is found, the resource will generate a new key file at this location. If the `key_file` attribute is not specified, the resource will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
+`key_file`         | String (Optional)            | The path to a certificate key file on the filesystem. If the `key_file` property is specified, the resource will attempt to source a key from this location. If no key file is found, the resource will generate a new key file at this location. If the `key_file` property is not specified, the resource will generate a key file in the same directory as the generated certificate, with the same name as the generated certificate.
 `key_pass`         | String (Optional)            | The passphrase for an existing key's passphrase
 `key_type`         | String (Optional)            | The desired type of the generated key (rsa or ec). _Default: ec_
 `key_length`       | Integer (Optional)           | The desired Bit Length of the generated key (if key_type is equal to 'rsa'). _Default: 2048_
@@ -213,8 +213,8 @@ Name                  | Type                                              | Desc
 `revokation_reason`  | String or Integer(Optional)  | [Reason of the revokation]((https://en.wikipedia.org/wiki/Certificate_revocation_list#Reasons_for_revocation)) _Default: 0_
 `expire`             | Integer (Optional)           | Value representing the number of days from _now_ through which the issued CRL will remain valid. The CRL will expire after this period. _Default: 8_
 `renewal_threshold`  | Integer (Optional)           | Number of days before the expiration. It this threshold is reached, the CRL will be renewed _Default: 1_
-`ca_cert_file`       | String (Required)            | The path to the CA X509 Certificate on the filesystem. If the `ca_cert_file` attribute is specified, the `ca_key_file` attribute must also be specified, the CRL will be signed with them.
-`ca_key_file`        | String (Required)            | The path to the CA private key on the filesystem. If the `ca_key_file` attribute is specified, the `ca_cert_file' attribute must also be specified, the CRL will be signed with them.
+`ca_cert_file`       | String (Required)            | The path to the CA X509 Certificate on the filesystem. If the `ca_cert_file` property is specified, the `ca_key_file` property must also be specified, the CRL will be signed with them.
+`ca_key_file`        | String (Required)            | The path to the CA private key on the filesystem. If the `ca_key_file` property is specified, the `ca_cert_file' property must also be specified, the CRL will be signed with them.
 `ca_key_pass`        | String (Optional)            | The passphrase for CA private key's passphrase
 `owner`              | String (optional)            | The owner of all files created by the resource. _Default: "root"_
 `group`              | String (optional)            | The group of all files created by the resource. _Default: "root"_
@@ -398,7 +398,7 @@ This cookbook is maintained by Chef's Community Cookbook Engineering team. Our g
 
 ## License
 
-**Copyright:** 2009-2017, Chef Software, Inc.
+**Copyright:** 2009-2018, Chef Software, Inc.
 
 ```
 Licensed under the Apache License, Version 2.0 (the "License");
