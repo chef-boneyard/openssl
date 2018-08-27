@@ -113,9 +113,9 @@ Name               | Type                         | Description
 `ca_cert_file`     | String (Optional)            | The path to the CA X509 Certificate on the filesystem. If the `ca_cert_file` property is specified, the `ca_key_file` property must also be specified, the certificate will be signed with them.
 `ca_key_file`      | String (Optional)            | The path to the CA private key on the filesystem. If the `ca_key_file` property is specified, the `ca_cert_file' property must also be specified, the certificate will be signed with them.
 `ca_key_pass`      | String (Optional)            | The passphrase for CA private key's passphrase
-`owner`            | String (optional)            | The owner of all files created by the resource. _Default: "root"_
-`group`            | String (optional)            | The group of all files created by the resource. _Default: "root"_
-`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
+`owner`            | String (optional)            | The owner of all files created by the resource.
+`group`            | String (optional)            | The group of all files created by the resource.
+`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource.
 
 #### Example Usage
 
@@ -180,10 +180,9 @@ Name                  | Type                                              | Desc
 `key_type`         | String (Optional)            | The desired type of the generated key (rsa or ec). _Default: ec_
 `key_length`       | Integer (Optional)           | The desired Bit Length of the generated key (if key_type is equal to 'rsa'). _Default: 2048_
 `key_curve`        | String (Optional)            | The desired curve of the generated key (if key_type is equal to 'ec'). Run `openssl ecparam -list_curves` to see available options. _Default: prime256v1
-`owner`            | String (optional)            | The owner of all files created by the resource. _Default: "root"_
-`group`            | String (optional)            | The group of all files created by the resource. _Default: "root"_
-`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
-
+`owner`            | String (optional)            | The owner of all files created by the resource.
+`group`            | String (optional)            | The group of all files created by the resource.
+`mode`             | String or Integer (Optional) | The permission mode of all files created by the resource.
 
 #### Example Usage
 
@@ -216,9 +215,9 @@ Name                  | Type                                              | Desc
 `ca_cert_file`       | String (Required)            | The path to the CA X509 Certificate on the filesystem. If the `ca_cert_file` property is specified, the `ca_key_file` property must also be specified, the CRL will be signed with them.
 `ca_key_file`        | String (Required)            | The path to the CA private key on the filesystem. If the `ca_key_file` property is specified, the `ca_cert_file' property must also be specified, the CRL will be signed with them.
 `ca_key_pass`        | String (Optional)            | The passphrase for CA private key's passphrase
-`owner`              | String (optional)            | The owner of all files created by the resource. _Default: "root"_
-`group`              | String (optional)            | The group of all files created by the resource. _Default: "root"_
-`mode`               | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0644"_
+`owner`              | String (optional)            | The owner of all files created by the resource.
+`group`              | String (optional)            | The group of all files created by the resource.
+`mode`               | String or Integer (Optional) | The permission mode of all files created by the resource.
 
 
 #### Example Usage
@@ -255,8 +254,8 @@ Name         | Type                         | Description
 `path`       | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
 `key_length` | Integer (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
 `generator`  | Integer (Optional)           | The desired Diffie-Hellmann generator. Can be _2_ or _5_.
-`owner`      | String (optional)            | The owner of all files created by the resource. _Default: "root"_
-`group`      | String (optional)            | The group of all files created by the resource. _Default: "root"_
+`owner`      | String (optional)            | The owner of all files created by the resource.
+`group`      | String (optional)            | The group of all files created by the resource.
 `mode`       | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0640"_
 
 #### Example Usage
@@ -286,8 +285,8 @@ Name         | Type                         | Description
 `key_length` | Integer (Optional)           | The desired Bit Length of the generated key. _Default: 2048_
 `key_cipher` | String (Optional)            | The designed cipher to use when generating your key. Run `openssl list-cipher-algorithms` to see available options. _Default: des3_
 `key_pass`   | String (Optional)            | The desired passphrase for the key.
-`owner`      | String (optional)            | The owner of all files created by the resource. _Default: "root"_
-`group`      | String (optional)            | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
+`owner`      | String (optional)            | The owner of all files created by the resource.
+`group`      | String (optional)            | The group of all files created by the resource.
 `mode`       | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0640"_
 `force`      | true/false (Optional)        | Force creating the key even if the existing key exists. _Default: false_
 
@@ -315,8 +314,8 @@ Name                  | Type                                              | Desc
 `private_key_path`    | String (Required unless private_key_content used) | The path to the private key to generate the public key from
 `private_key_content` | String (Required unless private_key_path used)    | The content of the private key including new lines. Used if you don't want to write a private key to disk and use `private_key_path`.
 `private_key_pass`    | String (Optional)                                 | The passphrase of the provided private key
-`owner`               | String (optional)                                 | The owner of all files created by the resource. _Default: "root"_
-`group`               | String (optional)                                 | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
+`owner`               | String (optional)                                 | The owner of all files created by the resource.
+`group`               | String (optional)                                 | The group of all files created by the resource.
 `mode`                | String or Integer (Optional)                      | The permission mode of all files created by the resource. _Default: "0640"_
 
 **Note**: To use `private_key_content` the private key string must be properly formatted including new lines. The easiest way to get the right string is to run the following from irb (/opt/chefdk/embedded/bin/irb from ChefDK)
@@ -345,8 +344,8 @@ Name         | Type                         | Description
 `key_curve`  | String (Optional)            | The desired curve of the generated key. Run `openssl ecparam -list_curves` to see available options. _Default: prime256v1
 `key_cipher` | String (Optional)            | The designed cipher to use when generating your key. Run `openssl list-cipher-algorithms` to see available options. _Default: des3_
 `key_pass`   | String (Optional)            | The desired passphrase for the key.
-`owner`      | String (optional)            | The owner of all files created by the resource. _Default: "root"_
-`group`      | String (optional)            | The group of all files created by the resource. _Default: "root or wheel depending on platform"_
+`owner`      | String (optional)            | The owner of all files created by the resource.
+`group`      | String (optional)            | The group of all files created by the resource.
 `mode`       | String or Integer (Optional) | The permission mode of all files created by the resource. _Default: "0640"_
 `force`      | true/false (Optional)        | Force creating the key even if the existing key exists. _Default: false_
 
