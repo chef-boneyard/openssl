@@ -210,7 +210,7 @@ Name                  | Type                                              | Desc
 --------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------
 `path`               | String (Optional)            | Optional path to write the file to if you'd like to specify it here instead of in the resource name
 `serial_to_revoke`   | String or Integer(Optional)  | Serial of the X509 Certificate to revoke
-`revokation_reason`  | String or Integer(Optional)  | [Reason of the revokation]((https://en.wikipedia.org/wiki/Certificate_revocation_list#Reasons_for_revocation)) _Default: 0_
+`revocation_reason`  | String or Integer(Optional)  | [Reason of the revocation]((https://en.wikipedia.org/wiki/Certificate_revocation_list#Reasons_for_revocation)) _Default: 0_
 `expire`             | Integer (Optional)           | Value representing the number of days from _now_ through which the issued CRL will remain valid. The CRL will expire after this period. _Default: 8_
 `renewal_threshold`  | Integer (Optional)           | Number of days before the expiration. It this threshold is reached, the CRL will be renewed _Default: 1_
 `ca_cert_file`       | String (Required)            | The path to the CA X509 Certificate on the filesystem. If the `ca_cert_file` property is specified, the `ca_key_file` property must also be specified, the CRL will be signed with them.
