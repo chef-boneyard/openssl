@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+chef_version_for_provides '< 14.4' if respond_to?(:chef_version_for_provides)
+resource_name :openssl_x509_request
+
 include OpenSSLCookbook::Helpers
 
 property :path,             String, name_property: true
