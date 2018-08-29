@@ -2,6 +2,15 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 8.5.4 (2018-08-29)
+
+- Add missing email documentation for the request property
+- Fix x509_crl to work on non-Linux platforms
+- Attribute -> Property in the readme
+- revokation -> revocation in the readme
+- Update group/owner documentation
+- Avoid deprecation warnings on Chef 14.3+
+
 ## 8.5.3 (2018-08-15)
 
 - Call ::OpenSSL not OpenSSL to be more defensive in the helpers
