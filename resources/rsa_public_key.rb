@@ -15,6 +15,9 @@
 # limitations under the License.
 #
 
+chef_version_for_provides '< 14.0' if respond_to?(:chef_version_for_provides)
+resource_name :openssl_rsa_public_key
+
 include OpenSSLCookbook::Helpers
 
 property :path,                String, name_property: true

@@ -15,6 +15,9 @@
 # limitations under the License.
 #
 
+chef_version_for_provides '< 14.4' if respond_to?(:chef_version_for_provides)
+resource_name :openssl_ec_public_key
+
 include OpenSSLCookbook::Helpers
 
 property :path,                String, name_property: true
