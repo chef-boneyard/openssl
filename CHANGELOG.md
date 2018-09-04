@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 8.5.5 (2018-09-04)
+
+All resources in this cookbook are now built into Chef 14.4+. When Chef 15.4 is released (April 2019) the resources will be removed from this cookbook as all users should be running Chef 14.4 or later at that point.
+
 ## 8.5.4 (2018-08-29)
 
 - Add missing email documentation for the request property
