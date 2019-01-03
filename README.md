@@ -15,7 +15,9 @@ This cookbook provides tools for working with the Ruby OpenSSL library. It inclu
 - A resource for generating dhparam.pem files.
 - An attribute-driven recipe for upgrading OpenSSL packages.
 
-NOTE: All resources in this cookbook are now built-into Chef 14.4 and later so this cookbook is no longer necessary to use those resources. When Chef 15.4 is released (Aug 2019) the resources will be removed from this cookbook as all users should be running Chef 14.4 or later.
+## Deprecation
+
+All resources in this cookbook are now built-into Chef 14.4 and later so this cookbook is no longer necessary to use those resources. All future development of these resources will take place in the chef-client itself and we highly recommend users upgrade to get the latest and greatest functionality. No further development of this cookbook will take place.
 
 ## Platforms
 
